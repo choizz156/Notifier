@@ -1,3 +1,31 @@
 spring:
   application:
     name: Notifier
+
+  profiles:
+    active: local
+
+  config:
+    import:
+      - logging.yml
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
