@@ -10,4 +10,4 @@ pluginManagement {
 
 rootProject.name = "Notifier"
 
-include("api", "core", "application", "infrastructure:persistence", "infrastructure:persistence:jpa", "infrastructure:notifier", "support:logging")
+include("api", "core", "infrastructure:persistence", "infrastructure:persistence:jpa", "infrastructure:notifier", "support:logging")

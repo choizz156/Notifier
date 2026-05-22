@@ -9,6 +9,7 @@ tasks.getByName("jar") {
 
 
 dependencies {
+    project(":support:logging")
     implementation("org.springframework.boot:spring-boot-starter-web")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
