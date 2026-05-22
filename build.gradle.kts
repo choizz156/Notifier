@@ -37,6 +37,8 @@ subprojects {
         testAnnotationProcessor("org.projectlombok:lombok")
         testRuntimeOnly("org.junit.platform:junit-platform-launcher")
         annotationProcessor("org.projectlombok:lombok")
+        implementation("org.springframework.boot:spring-boot-starter")
+        testImplementation("org.springframework.boot:spring-boot-starter-test")
     }
 
     tasks.withType<Test> {

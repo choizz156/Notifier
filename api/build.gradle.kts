@@ -11,8 +11,8 @@ tasks.named<Jar>("jar") {
 
 dependencies {
     implementation(project(":support:logging"))
+    implementation(project(":core"))
     implementation(project(":infrastructure:persistence:jpa"))
 
     implementation("org.springframework.boot:spring-boot-starter-web")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
