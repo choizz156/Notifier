@@ -14,7 +14,6 @@ public record NotificationRequestedEvent(
 	String channel,
 	Map<String, String> metadata
 ) {
-
 	public static NotificationRequestedEvent of(Notification notification, NotificationContext context) {
 		return NotificationRequestedEvent.builder()
 			.notificationId(notification.id())

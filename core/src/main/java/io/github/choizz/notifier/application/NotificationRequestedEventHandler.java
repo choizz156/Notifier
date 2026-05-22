@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 public class NotificationRequestedEventHandler {
 
 	private final NotificationEventLogPersistencePort eventLogPersistencePort;
+	private final NotifierFacade notifierFacade;
 
 	@TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
 	public void saveEvent(NotificationRequestedEvent event) {
@@ -38,7 +39,7 @@ public class NotificationRequestedEventHandler {
 	@Async
 	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
 	public void publishNotification(NotificationRequestedEvent event) {
-		// 계층 있어야돼 이걸 구별할
+		notifierFacade.publish(event);
 	}
 }
 
