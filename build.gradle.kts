@@ -39,6 +39,7 @@ subprojects {
         annotationProcessor("org.projectlombok:lombok")
         implementation("org.springframework.boot:spring-boot-starter")
         testImplementation("org.springframework.boot:spring-boot-starter-test")
+        implementation("com.fasterxml.jackson.core:jackson-databind")
     }
 
     tasks.withType<Test> {

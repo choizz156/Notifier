@@ -1,10 +1,15 @@
 package io.github.choizz.notifier.application.dto;
 
-import io.github.choizz.notifier.domain.model.AlarmType;
-import io.github.choizz.notifier.domain.model.Channel;
-
 import java.util.Map;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.github.choizz.notifier.domain.model.AlarmType;
+import io.github.choizz.notifier.domain.model.Channel;
+import lombok.Builder;
+
+@Builder
 public record AlarmContext(
 	long subscriberId,
 	AlarmType alarmType,
@@ -12,16 +17,28 @@ public record AlarmContext(
 	Map<String, String> metadata
 ) {
 
+	private static final ObjectMapper objectMapper = new ObjectMapper();
+
 	public AlarmContext(Long subscriberId, String alarmType, String channel, Map<String, String> metadata) {
+
 		this(
 			validateSubscriberId(subscriberId),
-            parseAlarmType(alarmType),
-            parseChannel(channel),
+			parseAlarmType(alarmType),
+			parseChannel(channel),
 			metadata == null ? Map.of() : Map.copyOf(metadata)
 		);
 	}
 
+	public String metadataToJson() {
+		try {
+			return objectMapper.writeValueAsString(metadata);
+		} catch (JsonProcessingException e) {
+			return "{}";
+		}
+	}
+
 	private static long validateSubscriberId(Long subscriberId) {
+
 		if (subscriberId == null) {
 			throw new IllegalArgumentException("subscriberId가 필요합니다.");
 		}
@@ -29,6 +46,7 @@ public record AlarmContext(
 	}
 
 	private static AlarmType parseAlarmType(String alarmType) {
+
 		if (alarmType == null) {
 			throw new IllegalArgumentException("alarmType가 필요합니다.");
 		}
@@ -40,6 +58,7 @@ public record AlarmContext(
 	}
 
 	private static Channel parseChannel(String channel) {
+
 		if (channel == null) {
 			throw new IllegalArgumentException("channel이 필요합니다.");
 		}
