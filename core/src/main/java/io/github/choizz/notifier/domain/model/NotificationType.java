@@ -1,6 +1,6 @@
 package io.github.choizz.notifier.domain.model;
 
-public enum AlarmType {
+public enum NotificationType {
 	ENROLLMENT_COMPLETED,
 	PAYMENT_CONFIRMED,
 	COURSE_START_REMINDER,

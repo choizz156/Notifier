@@ -2,9 +2,9 @@ package io.github.choizz.notifier.api.dto;
 
 import java.util.Map;
 
-public record AlarmCreateWebRequest(
+public record NotificationCreateWebRequest(
 	Long subscriberId,
-	String alarmType,
+	String NotificationType,
 	String channel,
 	Map<String, String> metadata
 ) {

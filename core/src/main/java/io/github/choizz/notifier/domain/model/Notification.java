@@ -2,7 +2,7 @@ package io.github.choizz.notifier.domain.model;
 
 import java.time.LocalDateTime;
 
-import io.github.choizz.notifier.application.dto.AlarmContext;
+import io.github.choizz.notifier.application.dto.NotificationContext;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -13,26 +13,26 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode
 @Getter
 @Accessors(fluent = true)
-public class Alarm {
+public class Notification {
 
 	private final Long id;
 	private final Long subscriberId;
-	private final AlarmType alarmType;
+	private final NotificationType notificationType;
 	private final Channel channel;
 	private final String metadata;
-	private AlarmStatus status;
+	private NotificationStatus status;
 	private String message;
 	private final LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
 
 	@Builder
-	private Alarm(
+	private Notification(
 		Long id,
 		Long subscriberId,
-		AlarmType alarmType,
+		NotificationType notificationType,
 		Channel channel,
 		String metadata,
-		AlarmStatus status,
+		NotificationStatus status,
 		String message,
 		LocalDateTime createdAt,
 		LocalDateTime updatedAt
@@ -40,49 +40,48 @@ public class Alarm {
 
 		this.id = id;
 		this.subscriberId = subscriberId;
-		this.alarmType = alarmType;
+		this.notificationType = notificationType;
 		this.channel = channel;
 		this.metadata = metadata;
-		this.status = status != null ? status : AlarmStatus.PENDING;
+		this.status = status != null ? status : NotificationStatus.PENDING;
 		this.message = null;
 		this.createdAt = createdAt != null ? createdAt : LocalDateTime.now();
 		this.updatedAt = updatedAt != null ? updatedAt : LocalDateTime.now();
 	}
 
-	public static Alarm from(AlarmContext context) {
-		return Alarm.builder()
+	public static Notification from(NotificationContext context) {
+		return Notification.builder()
 			.subscriberId(context.subscriberId())
-			.alarmType(context.alarmType())
+			.notificationType(context.notificationType())
 			.channel(context.channel())
-			.status(AlarmStatus.PENDING)
+			.status(NotificationStatus.PENDING)
 			.metadata(context.metadataToJson())
 			.build();
 	}
 
 	public void markAsCompleted() {
-		this.status = AlarmStatus.COMPLETED;
+		this.status = NotificationStatus.COMPLETED;
 	}
 
 	public void markAsFailed() {
-		if (this.status != AlarmStatus.COMPLETED) {
+		if (this.status == NotificationStatus.COMPLETED) {
 			throw new IllegalStateException("COMPLETED 상태에서는 FAILED이 될 수 없습니다.");
 		}
-		this.status = AlarmStatus.FAILED;
+		this.status = NotificationStatus.FAILED;
 	}
 
 	public void markAsRetrying() {
-		if (this.status != AlarmStatus.FAILED) {
+		if (this.status != NotificationStatus.FAILED) {
 			throw new IllegalStateException("FAILED 상태에서만 RETRYING으로 전환 가능합니다.");
 		}
-		this.status = AlarmStatus.RETRYING;
+		this.status = NotificationStatus.RETRYING;
 	}
 
 	public void markAsSending() {
-		this.status = AlarmStatus.SENDING;
+		this.status = NotificationStatus.SENDING;
 	}
 
 	public void applyMessage(String message){
 		this.message = message;
 	}
-
 }

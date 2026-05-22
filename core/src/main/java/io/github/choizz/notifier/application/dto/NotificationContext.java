@@ -5,25 +5,26 @@ import java.util.Map;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.github.choizz.notifier.domain.model.AlarmType;
+
 import io.github.choizz.notifier.domain.model.Channel;
+import io.github.choizz.notifier.domain.model.NotificationType;
 import lombok.Builder;
 
 @Builder
-public record AlarmContext(
+public record NotificationContext(
 	long subscriberId,
-	AlarmType alarmType,
+	NotificationType notificationType,
 	Channel channel,
 	Map<String, String> metadata
 ) {
 
 	private static final ObjectMapper objectMapper = new ObjectMapper();
 
-	public AlarmContext(Long subscriberId, String alarmType, String channel, Map<String, String> metadata) {
+	public NotificationContext(Long subscriberId, String NotificationType, String channel, Map<String, String> metadata) {
 
 		this(
 			validateSubscriberId(subscriberId),
-			parseAlarmType(alarmType),
+			parseNotificationType(NotificationType),
 			parseChannel(channel),
 			metadata == null ? Map.of() : Map.copyOf(metadata)
 		);
@@ -45,15 +46,15 @@ public record AlarmContext(
 		return subscriberId;
 	}
 
-	private static AlarmType parseAlarmType(String alarmType) {
+	private static NotificationType parseNotificationType(String notificationType) {
 
-		if (alarmType == null) {
-			throw new IllegalArgumentException("alarmType가 필요합니다.");
+		if (notificationType == null) {
+			throw new IllegalArgumentException("NotificationType가 필요합니다.");
 		}
 		try {
-			return AlarmType.valueOf(alarmType.toUpperCase());
+			return NotificationType.valueOf(notificationType);
 		} catch (IllegalArgumentException e) {
-			throw new IllegalArgumentException("지원하지 않는 알람 타입입니다: " + alarmType);
+			throw new IllegalArgumentException("지원하지 않는 알람 타입입니다: " + notificationType);
 		}
 	}
 

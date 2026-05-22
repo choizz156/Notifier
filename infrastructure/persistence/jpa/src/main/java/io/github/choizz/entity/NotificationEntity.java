@@ -1,7 +1,7 @@
 package io.github.choizz.entity;
 
-import io.github.choizz.notifier.domain.model.AlarmStatus;
-import io.github.choizz.notifier.domain.model.AlarmType;
+import io.github.choizz.notifier.domain.model.NotificationStatus;
+import io.github.choizz.notifier.domain.model.NotificationType;
 import io.github.choizz.notifier.domain.model.Channel;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,18 +14,18 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 @Entity
-@Table(name = "alarms")
+@Table(name = "Notifications")
 @Getter
 @NoArgsConstructor
 @Accessors(fluent = true)
-public class AlarmEntity extends BaseEntity {
+public class NotificationEntity extends BaseEntity {
 
 	@Column(nullable = false)
 	private Long subscriberId;
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
-	private AlarmType alarmType;
+	private NotificationType notificationType;
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
@@ -36,22 +36,22 @@ public class AlarmEntity extends BaseEntity {
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
-	private AlarmStatus status;
+	private NotificationStatus status;
 
 	private String message;
 
 	@Builder
-	public AlarmEntity(
+	public NotificationEntity(
 		Long subscriberId,
-		AlarmType alarmType,
+		NotificationType notificationType,
 		Channel channel,
 		String metadata,
-		AlarmStatus status,
+		NotificationStatus status,
 		String message
 	) {
 
 		this.subscriberId = subscriberId;
-		this.alarmType = alarmType;
+		this.notificationType = notificationType;
 		this.channel = channel;
 		this.metadata = metadata;
 		this.status = status;
