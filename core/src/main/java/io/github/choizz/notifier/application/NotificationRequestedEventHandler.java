@@ -6,13 +6,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.github.choizz.notifier.application.port.out.NotificationEventLogPersistencePort;
 import io.github.choizz.notifier.application.port.out.NotificationEventPublisher;
 import io.github.choizz.notifier.domain.event.NotificationRequestedEvent;
-import io.github.choizz.notifier.domain.event.PushCommandEvent;
+import io.github.choizz.notifier.domain.event.PublishCommandEvent;
 import io.github.choizz.notifier.domain.model.Channel;
 import io.github.choizz.notifier.domain.model.NotificationEventLog;
 import lombok.RequiredArgsConstructor;
@@ -22,11 +19,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Component
 public class NotificationRequestedEventHandler {
-
-	private final ObjectMapper objectMapper;
 	private final NotificationEventLogPersistencePort eventLogPersistencePort;
 	private final NotificationEventPublisher notificationEventPublisher;
-	private final NotifierFacade notifierFacade;
 
 	@TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
 	public void saveEvent(NotificationRequestedEvent event) {
@@ -46,8 +40,8 @@ public class NotificationRequestedEventHandler {
 	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
 	public void publishNotification(NotificationRequestedEvent event) {
 
-		PushCommandEvent pushCommandEvent = PushCommandEvent.of(event, getMetadataToString(event));
-		notificationEventPublisher.publish(pushCommandEvent);
+		PublishCommandEvent publishCommandEvent = PublishCommandEvent.of(event, event.metadata());
+		notificationEventPublisher.publish(publishCommandEvent);
 		// try {
 		// 	notifierFacade.publish(event);
 		// } catch (Exception e) {
@@ -57,11 +51,7 @@ public class NotificationRequestedEventHandler {
 	}
 
 	private @Nullable String getMetadataToString(NotificationRequestedEvent event){
-		try {
-			return event.metadata() != null ? objectMapper.writeValueAsString(event.metadata()) : null;
-		} catch (JsonProcessingException e) {
-			throw new RuntimeException(e);
-		}
+		return io.github.choizz.notifier.domain.util.JsonUtils.toJson(event.metadata());
 	}
 
 	// private void handleFailure(NotificationRequestedEvent event, String error) {

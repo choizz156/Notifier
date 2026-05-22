@@ -1,8 +1,8 @@
 package io.github.choizz.notifier.application.port.out;
 
-import io.github.choizz.notifier.domain.event.PushCommandEvent;
+import io.github.choizz.notifier.domain.event.PublishCommandEvent;
 
 public interface NotificationEventPublisher {
 
-	void publish(PushCommandEvent event);
+	void publish(PublishCommandEvent event);
 }

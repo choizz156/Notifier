@@ -14,13 +14,15 @@ public record NotificationRequestedEvent(
 	String channel,
 	Map<String, String> metadata
 ) {
+
 	public static NotificationRequestedEvent of(Notification notification, NotificationContext context) {
+
 		return NotificationRequestedEvent.builder()
 			.notificationId(notification.id())
 			.subscriberId(context.subscriberId())
 			.notificationType(context.notificationType().name())
 			.channel(context.channel().name())
-			.metadata(context.metadata())
+			.metadata(Map.copyOf(context.metadata()))
 			.build();
 	}
 }

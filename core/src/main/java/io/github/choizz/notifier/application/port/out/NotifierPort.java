@@ -1,10 +1,10 @@
 package io.github.choizz.notifier.application.port.out;
 
-import io.github.choizz.notifier.domain.event.NotificationRequestedEvent;
+import io.github.choizz.notifier.domain.event.PublishCommandEvent;
 
 public interface NotifierPort {
 
 	boolean supports(String channel);
 
-	void publish(NotificationRequestedEvent event);
+	void publish(PublishCommandEvent event);
 }

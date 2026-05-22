@@ -12,7 +12,7 @@ public class NotificationMapper {
 			.channel(notification.channel())
 			.metadata(notification.metadata())
 			.status(notification.status())
-			.message(notification.message())
+			.message(notification.failMessage())
 			.retryCount(notification.retryCount())
 			.isRead(notification.isRead())
 			.build();
@@ -28,7 +28,7 @@ public class NotificationMapper {
 			.channel(entity.channel())
 			.metadata(entity.metadata())
 			.status(entity.status())
-			.message(entity.message())
+			.failMessage(entity.message())
 			.retryCount(entity.retryCount())
 			.isRead(entity.isRead())
 			.createdAt(entity.createdAt())

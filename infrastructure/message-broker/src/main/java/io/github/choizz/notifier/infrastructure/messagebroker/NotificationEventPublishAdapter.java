@@ -1,23 +1,26 @@
-package io.github.choizz.notifier.application;
+package io.github.choizz.notifier.infrastructure.messagebroker;
 
 import java.util.List;
 
 import org.springframework.stereotype.Component;
 
+import io.github.choizz.notifier.application.port.out.NotificationEventLogPersistencePort;
 import io.github.choizz.notifier.application.port.out.NotificationEventPublisher;
+import io.github.choizz.notifier.domain.event.PublishCommandEvent;
 import io.github.choizz.notifier.application.port.out.NotifierPort;
-import io.github.choizz.notifier.domain.event.NotificationRequestedEvent;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Component
-public class NotifierFacade {
+public class NotificationEventPublishAdapter implements NotificationEventPublisher {
 
 	private final List<NotifierPort> notifierPorts;
+	private final NotificationEventLogPersistencePort notificationEventLogPersistencePort;
 
-	public void publish(NotificationRequestedEvent event){
-		NotifierPort notifier = findNotifier(event.channel());
-		notifier.publish(event);
+	@Override
+	public void publish(PublishCommandEvent event) {
+		NotifierPort notifierPort = findNotifier(event.channel());
+		notifierPort.publish(event);
 	}
 
 	private NotifierPort findNotifier(String channel) {

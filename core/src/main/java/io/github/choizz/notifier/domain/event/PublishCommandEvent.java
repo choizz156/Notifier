@@ -1,19 +1,21 @@
 package io.github.choizz.notifier.domain.event;
 
+import java.util.Map;
+
 import lombok.Builder;
 
 @Builder
-public record PushCommandEvent(
+public record PublishCommandEvent(
 	long notificationId,
 	long subscriberId,
 	String notificationType,
 	String channel,
-	String metadata
+	Map<String, String> metadata
 ) {
 
-	public static PushCommandEvent of(NotificationRequestedEvent event, String metadata) {
+	public static PublishCommandEvent of(NotificationRequestedEvent event, Map<String, String> metadata) {
 
-		return PushCommandEvent.builder()
+		return PublishCommandEvent.builder()
 			.channel(event.channel())
 			.metadata(metadata)
 			.notificationType(event.notificationType())

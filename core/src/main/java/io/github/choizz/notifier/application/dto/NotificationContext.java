@@ -2,12 +2,9 @@ package io.github.choizz.notifier.application.dto;
 
 import java.util.Map;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-
 import io.github.choizz.notifier.domain.model.Channel;
 import io.github.choizz.notifier.domain.model.NotificationType;
+import io.github.choizz.notifier.domain.util.JsonUtils;
 import lombok.Builder;
 
 @Builder
@@ -46,6 +43,10 @@ public record NotificationContext(
 		} catch (IllegalArgumentException e) {
 			throw new IllegalArgumentException("지원하지 않는 알람 타입입니다: " + notificationType);
 		}
+	}
+
+	public String metadataToJson() {
+		return JsonUtils.toJson(this.metadata);
 	}
 
 	private static Channel parseChannel(String channel) {

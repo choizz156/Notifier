@@ -21,7 +21,7 @@ public class Notification {
 	private final Channel channel;
 	private final String metadata;
 	private NotificationStatus status;
-	private String message;
+	private String failMessage;
 	private int retryCount;
 	private boolean isRead;
 	private final LocalDateTime createdAt;
@@ -35,7 +35,7 @@ public class Notification {
 		Channel channel,
 		String metadata,
 		NotificationStatus status,
-		String message,
+		String failMessage,
 		int retryCount,
 		boolean isRead,
 		LocalDateTime createdAt,
@@ -48,7 +48,7 @@ public class Notification {
 		this.channel = channel;
 		this.metadata = metadata;
 		this.status = status != null ? status : NotificationStatus.PENDING;
-		this.message = null;
+		this.failMessage = null;
 		this.retryCount = retryCount;
 		this.isRead = isRead;
 		this.createdAt = createdAt != null ? createdAt : LocalDateTime.now();
@@ -98,7 +98,7 @@ public class Notification {
 	}
 
 	public void applyMessage(String message){
-		this.message = message;
+		this.failMessage = message;
 	}
 
 	public void markAsRead() {

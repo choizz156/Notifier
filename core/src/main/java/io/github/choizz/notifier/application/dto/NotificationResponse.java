@@ -24,7 +24,7 @@ public record NotificationResponse(
 			notification.notificationType(),
 			notification.channel(),
 			notification.status(),
-			notification.message(),
+			notification.failMessage(),
 			notification.isRead(),
 			notification.createdAt()
 		);
