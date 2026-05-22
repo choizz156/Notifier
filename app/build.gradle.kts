@@ -13,6 +13,8 @@ dependencies {
     implementation(project(":api"))
     implementation(project(":core"))
     implementation(project(":infrastructure:persistence:jpa"))
+    implementation(project(":infrastructure:notifier:email"))
+    implementation(project(":infrastructure:notifier:in_app"))
     implementation(project(":support:logging"))
     
     implementation("org.springframework.boot:spring-boot-starter-web")
