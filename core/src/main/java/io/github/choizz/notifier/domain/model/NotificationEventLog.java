@@ -44,7 +44,7 @@ public class NotificationEventLog {
 		this.createdAt = createdAt != null ? createdAt : LocalDateTime.now();
 	}
 
-	public static NotificationEventLog success(Long notificationId, EventType eventType) {
+	public static NotificationEventLog request(Long notificationId, EventType eventType) {
 		return NotificationEventLog.builder()
 			.notificationId(notificationId)
 			.eventType(eventType)
