@@ -44,19 +44,17 @@ public class Alarm {
 		this.channel = channel;
 		this.metadata = metadata;
 		this.status = status != null ? status : AlarmStatus.PENDING;
-		this.message = message;
+		this.message = null;
 		this.createdAt = createdAt != null ? createdAt : LocalDateTime.now();
 		this.updatedAt = updatedAt != null ? updatedAt : LocalDateTime.now();
 	}
 
 	public static Alarm from(AlarmContext context) {
-		String message = AlarmMessage.generate(context.alarmType(), context.channel(), context.metadata());
 		return Alarm.builder()
 			.subscriberId(context.subscriberId())
 			.alarmType(context.alarmType())
 			.channel(context.channel())
 			.status(AlarmStatus.PENDING)
-			.message(message)
 			.metadata(context.metadataToJson())
 			.build();
 	}
@@ -66,15 +64,25 @@ public class Alarm {
 	}
 
 	public void markAsFailed() {
+		if (this.status != AlarmStatus.COMPLETED) {
+			throw new IllegalStateException("COMPLETED 상태에서는 FAILED이 될 수 없습니다.");
+		}
 		this.status = AlarmStatus.FAILED;
 	}
 
 	public void markAsRetrying() {
+		if (this.status != AlarmStatus.FAILED) {
+			throw new IllegalStateException("FAILED 상태에서만 RETRYING으로 전환 가능합니다.");
+		}
 		this.status = AlarmStatus.RETRYING;
 	}
 
 	public void markAsSending() {
 		this.status = AlarmStatus.SENDING;
+	}
+
+	public void applyMessage(String message){
+		this.message = message;
 	}
 
 }
