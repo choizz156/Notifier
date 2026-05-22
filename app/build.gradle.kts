@@ -1,17 +1,19 @@
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 tasks.named<BootJar>("bootJar") {
-    enabled = false
+    enabled = true
     mainClass.set("io.github.choizz.notifier.NotifierApplication")
 }
 
 tasks.named<Jar>("jar") {
-    enabled = true
+    enabled = false
 }
 
 dependencies {
-    implementation(project(":support:logging"))
+    implementation(project(":api"))
     implementation(project(":core"))
-
+    implementation(project(":infrastructure:persistence:jpa"))
+    implementation(project(":support:logging"))
+    
     implementation("org.springframework.boot:spring-boot-starter-web")
 }
