@@ -21,11 +21,18 @@ public class NotificationEventLogPersistenceAdapter implements NotificationEvent
 	@Override
 	public NotificationEventLog save(NotificationEventLog eventLog) {
 		log.info("알림 이벤트 이력 저장 - notificationId={}, eventType={}, eventStatus={}",
-			eventLog.notificationId(), eventLog.eventType(), eventLog.eventStatus());
+			eventLog.notificationId(), eventLog.channelType(), eventLog.eventStatus());
 
 		NotificationEventLogEntity entity = NotificationEventLogMapper.toEntity(eventLog);
 		NotificationEventLogEntity savedEntity = eventLogJpaRepository.save(entity);
 
 		return NotificationEventLogMapper.toDomain(savedEntity);
+	}
+
+	@Override
+	public NotificationEventLog findLatestByNotificationId(Long notificationId) {
+		return eventLogJpaRepository.findFirstByNotificationIdOrderByCreatedAtDesc(notificationId)
+			.map(NotificationEventLogMapper::toDomain)
+			.orElse(null);
 	}
 }

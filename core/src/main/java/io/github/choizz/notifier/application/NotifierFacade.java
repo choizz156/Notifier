@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
+import io.github.choizz.notifier.application.port.out.NotificationEventPublisher;
 import io.github.choizz.notifier.application.port.out.NotifierPort;
 import io.github.choizz.notifier.domain.event.NotificationRequestedEvent;
 import lombok.RequiredArgsConstructor;
@@ -25,5 +26,4 @@ public class NotifierFacade {
 			.findAny()
 			.orElseThrow(() -> new IllegalArgumentException("알림 발송 채널을 찾을 수 없습니다."));
 	}
-
 }

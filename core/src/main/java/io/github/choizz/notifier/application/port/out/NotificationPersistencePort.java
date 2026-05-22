@@ -16,4 +16,6 @@ public interface NotificationPersistencePort {
 	Notification findBySubscriberId(Long subscriberId);
 
 	boolean existsDuplicate(Long subscriberId, NotificationType notificationType, Channel channel);
+
+	io.github.choizz.notifier.application.dto.PageResult<Notification> findAllBySubscriberId(Long subscriberId, Boolean isRead, int page, int size);
 }

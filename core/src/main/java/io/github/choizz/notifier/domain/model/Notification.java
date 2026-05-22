@@ -22,6 +22,8 @@ public class Notification {
 	private final String metadata;
 	private NotificationStatus status;
 	private String message;
+	private int retryCount;
+	private boolean isRead;
 	private final LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
 
@@ -34,6 +36,8 @@ public class Notification {
 		String metadata,
 		NotificationStatus status,
 		String message,
+		int retryCount,
+		boolean isRead,
 		LocalDateTime createdAt,
 		LocalDateTime updatedAt
 	) {
@@ -45,6 +49,8 @@ public class Notification {
 		this.metadata = metadata;
 		this.status = status != null ? status : NotificationStatus.PENDING;
 		this.message = null;
+		this.retryCount = retryCount;
+		this.isRead = isRead;
 		this.createdAt = createdAt != null ? createdAt : LocalDateTime.now();
 		this.updatedAt = updatedAt != null ? updatedAt : LocalDateTime.now();
 	}
@@ -56,11 +62,14 @@ public class Notification {
 			.channel(context.channel())
 			.status(NotificationStatus.PENDING)
 			.metadata(context.metadataToJson())
+			.retryCount(0)
+			.isRead(false)
 			.build();
 	}
 
 	public void markAsCompleted() {
 		this.status = NotificationStatus.COMPLETED;
+		this.updatedAt = LocalDateTime.now();
 	}
 
 	public void markAsFailed() {
@@ -68,13 +77,20 @@ public class Notification {
 			throw new IllegalStateException("COMPLETED 상태에서는 FAILED이 될 수 없습니다.");
 		}
 		this.status = NotificationStatus.FAILED;
+		this.updatedAt = LocalDateTime.now();
 	}
 
 	public void markAsRetrying() {
-		if (this.status != NotificationStatus.FAILED) {
-			throw new IllegalStateException("FAILED 상태에서만 RETRYING으로 전환 가능합니다.");
-		}
 		this.status = NotificationStatus.RETRYING;
+		this.updatedAt = LocalDateTime.now();
+	}
+
+	public void incrementRetryCount() {
+		this.retryCount++;
+	}
+
+	public boolean canRetry(int maxRetries) {
+		return this.retryCount < maxRetries;
 	}
 
 	public void markAsSending() {
@@ -83,5 +99,9 @@ public class Notification {
 
 	public void applyMessage(String message){
 		this.message = message;
+	}
+
+	public void markAsRead() {
+		this.isRead = true;
 	}
 }

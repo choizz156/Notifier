@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import io.github.choizz.notifier.application.dto.NotificationContext;
 import io.github.choizz.notifier.application.port.in.NotificationPushUseCase;
+import io.github.choizz.notifier.application.port.in.NotificationReadUseCase;
 import io.github.choizz.notifier.application.port.out.NotificationPersistencePort;
 import io.github.choizz.notifier.domain.event.NotificationRequestedEvent;
 import io.github.choizz.notifier.domain.model.Notification;
@@ -16,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Transactional
 @Service
-public class NotificationApplicationService implements NotificationPushUseCase {
+public class NotificationApplicationService implements NotificationPushUseCase, NotificationReadUseCase {
 
 	private final ApplicationEventPublisher applicationEventPublisher;
 	private final NotificationPersistencePort NotificationPersistencePort;
@@ -40,5 +41,12 @@ public class NotificationApplicationService implements NotificationPushUseCase {
 		Notification savedNotification = NotificationPersistencePort.save(notification);
 
 		applicationEventPublisher.publishEvent(NotificationRequestedEvent.of(savedNotification, NotificationContext));
+	}
+
+	@Override
+	public void markAsRead(Long notificationId) {
+		Notification notification = NotificationPersistencePort.findById(notificationId);
+		notification.markAsRead();
+		NotificationPersistencePort.save(notification);
 	}
 }

@@ -5,4 +5,6 @@ import io.github.choizz.notifier.domain.model.NotificationEventLog;
 public interface NotificationEventLogPersistencePort {
 
 	NotificationEventLog save(NotificationEventLog eventLog);
+
+	NotificationEventLog findLatestByNotificationId(Long notificationId);
 }

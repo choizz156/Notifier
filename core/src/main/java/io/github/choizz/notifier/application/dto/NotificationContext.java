@@ -18,8 +18,6 @@ public record NotificationContext(
 	Map<String, String> metadata
 ) {
 
-	private static final ObjectMapper objectMapper = new ObjectMapper();
-
 	public NotificationContext(Long subscriberId, String NotificationType, String channel, Map<String, String> metadata) {
 
 		this(
@@ -28,14 +26,6 @@ public record NotificationContext(
 			parseChannel(channel),
 			metadata == null ? Map.of() : Map.copyOf(metadata)
 		);
-	}
-
-	public String metadataToJson() {
-		try {
-			return objectMapper.writeValueAsString(metadata);
-		} catch (JsonProcessingException e) {
-			return "{}";
-		}
 	}
 
 	private static long validateSubscriberId(Long subscriberId) {

@@ -20,4 +20,15 @@ public interface NotificationJpaRepository extends JpaRepository<NotificationEnt
 		Channel channel,
 		List<NotificationStatus> statuses
 	);
+
+	org.springframework.data.domain.Page<NotificationEntity> findBySubscriberId(
+		Long subscriberId, 
+		org.springframework.data.domain.Pageable pageable
+	);
+
+	org.springframework.data.domain.Page<NotificationEntity> findBySubscriberIdAndIsRead(
+		Long subscriberId, 
+		boolean isRead, 
+		org.springframework.data.domain.Pageable pageable
+	);
 }

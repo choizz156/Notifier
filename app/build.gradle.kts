@@ -15,6 +15,7 @@ dependencies {
     implementation(project(":infrastructure:persistence:jpa"))
     implementation(project(":infrastructure:notifier:email"))
     implementation(project(":infrastructure:notifier:in_app"))
+    implementation(project(":infrastructure:message-broker:rdb"))
     implementation(project(":support:logging"))
     
     implementation("org.springframework.boot:spring-boot-starter-web")

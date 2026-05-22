@@ -8,9 +8,10 @@ public class NotificationEventLogMapper {
 	public static NotificationEventLogEntity toEntity(NotificationEventLog eventLog) {
 		return NotificationEventLogEntity.builder()
 			.notificationId(eventLog.notificationId())
-			.eventType(eventLog.eventType())
+			.channelType(eventLog.channelType())
 			.eventStatus(eventLog.eventStatus())
 			.failReason(eventLog.failReason())
+			.retryCount(eventLog.retryCount())
 			.published(eventLog.published())
 			.publishedAt(eventLog.publishedAt())
 			.build();
@@ -20,9 +21,10 @@ public class NotificationEventLogMapper {
 		return NotificationEventLog.builder()
 			.id(entity.id())
 			.notificationId(entity.notificationId())
-			.eventType(entity.eventType())
+			.channelType(entity.channelType())
 			.eventStatus(entity.eventStatus())
 			.failReason(entity.failReason())
+			.retryCount(entity.retryCount())
 			.published(entity.published())
 			.publishedAt(entity.publishedAt())
 			.createdAt(entity.createdAt())

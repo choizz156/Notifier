@@ -3,7 +3,7 @@ package io.github.choizz.entity;
 import java.time.LocalDateTime;
 
 import io.github.choizz.notifier.domain.model.EventStatus;
-import io.github.choizz.notifier.domain.model.EventType;
+import io.github.choizz.notifier.domain.model.Channel;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -26,13 +26,15 @@ public class NotificationEventLogEntity extends BaseEntity {
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
-	private EventType eventType;
+	private Channel channelType;
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	private EventStatus eventStatus;
 
 	private String failReason;
+
+	private int retryCount;
 
 	private boolean published;
 
@@ -41,16 +43,18 @@ public class NotificationEventLogEntity extends BaseEntity {
 	@Builder
 	private NotificationEventLogEntity(
 		Long notificationId,
-		EventType eventType,
+		Channel channelType,
 		EventStatus eventStatus,
 		String failReason,
+		int retryCount,
 		boolean published,
 		LocalDateTime publishedAt
 	) {
 		this.notificationId = notificationId;
-		this.eventType = eventType;
+		this.channelType = channelType;
 		this.eventStatus = eventStatus;
 		this.failReason = failReason;
+		this.retryCount = retryCount;
 		this.published = published;
 		this.publishedAt = publishedAt;
 	}

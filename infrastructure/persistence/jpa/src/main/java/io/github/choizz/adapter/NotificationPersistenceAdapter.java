@@ -87,5 +87,29 @@ public class NotificationPersistenceAdapter implements NotificationPersistencePo
 			ACTIVE_STATUSES
 		);
 	}
+
+	@Override
+	public io.github.choizz.notifier.application.dto.PageResult<Notification> findAllBySubscriberId(Long subscriberId, Boolean isRead, int page, int size) {
+		org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(page, size);
+		org.springframework.data.domain.Page<NotificationEntity> entityPage;
+		
+		if (isRead == null) {
+			entityPage = notificationJpaRepository.findBySubscriberId(subscriberId, pageable);
+		} else {
+			entityPage = notificationJpaRepository.findBySubscriberIdAndIsRead(subscriberId, isRead, pageable);
+		}
+
+		List<Notification> notifications = entityPage.getContent().stream()
+			.map(NotificationMapper::toDomain)
+			.toList();
+
+		return new io.github.choizz.notifier.application.dto.PageResult<>(
+			notifications,
+			entityPage.getNumber(),
+			entityPage.getSize(),
+			entityPage.getTotalElements(),
+			entityPage.getTotalPages()
+		);
+	}
 }
 

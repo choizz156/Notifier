@@ -6,14 +6,18 @@ import io.github.choizz.notifier.domain.model.Notification;
 public class NotificationMapper {
 
 	public static NotificationEntity toEntity(Notification notification) {
-		return NotificationEntity.builder()
+		NotificationEntity entity = NotificationEntity.builder()
 			.subscriberId(notification.subscriberId())
 			.notificationType(notification.notificationType())
 			.channel(notification.channel())
 			.metadata(notification.metadata())
 			.status(notification.status())
 			.message(notification.message())
+			.retryCount(notification.retryCount())
+			.isRead(notification.isRead())
 			.build();
+		entity.id(notification.id());
+		return entity;
 	}
 
 	public static Notification toDomain(NotificationEntity entity) {
@@ -25,6 +29,8 @@ public class NotificationMapper {
 			.metadata(entity.metadata())
 			.status(entity.status())
 			.message(entity.message())
+			.retryCount(entity.retryCount())
+			.isRead(entity.isRead())
 			.createdAt(entity.createdAt())
 			.updatedAt(entity.updatedAt())
 			.build();

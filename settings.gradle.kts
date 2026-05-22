@@ -14,10 +14,14 @@ include(
     "app",
     "api",
     "core",
+
     "infrastructure:persistence",
     "infrastructure:persistence:jpa",
     "infrastructure:notifier",
     "infrastructure:notifier:email",
     "infrastructure:notifier:in_app",
+    "infrastructure:message-broker",
+    "infrastructure:message-broker:rdb",
+
     "support:logging"
 )

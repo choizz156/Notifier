@@ -4,7 +4,7 @@ import io.github.choizz.notifier.domain.event.NotificationRequestedEvent;
 
 public interface NotifierPort {
 
-	void publish(NotificationRequestedEvent event);
-
 	boolean supports(String channel);
+
+	void publish(NotificationRequestedEvent event);
 }
