@@ -1,0 +1,51 @@
+spring:
+  jpa:
+    open-in-view: false
+  datasource:
+    hikari:
+      connection-timeout: 3000
+
+---
+spring.config.activate.on-profile: local
+
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:test_db;DB_CLOSE_DELAY=-1;MODE=MySQL
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        show-sql: true
+        format_sql: true
+  h2:
+    console:
+      enabled: true
+
+---
+spring.config.activate.on-profile: dev
+
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:dev_db;DB_CLOSE_DELAY=-1;MODE=MySQL
+    username: sa
+    password:
+    hikari:
+      maximum-pool-size: 30
+      minimum-idle: 10
+      connection-timeout: 5000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      leak-detection-threshold: 60000
+      auto-commit: false
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+  h2:
+    console:
+      enabled: true
