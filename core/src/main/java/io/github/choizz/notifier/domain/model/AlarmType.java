@@ -1,4 +1,4 @@
-package io.github.choizz.notifier.domain;
+package io.github.choizz.notifier.domain.model;
 
 public enum AlarmType {
 	ENROLLMENT_COMPLETED,

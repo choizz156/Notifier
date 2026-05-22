@@ -1,7 +1,7 @@
 package io.github.choizz.notifier.application.dto;
 
-import io.github.choizz.notifier.domain.AlarmType;
-import io.github.choizz.notifier.domain.Channel;
+import io.github.choizz.notifier.domain.model.AlarmType;
+import io.github.choizz.notifier.domain.model.Channel;
 
 import java.util.Map;
 
