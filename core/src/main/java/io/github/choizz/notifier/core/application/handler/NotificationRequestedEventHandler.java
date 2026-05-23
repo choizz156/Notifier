@@ -50,24 +50,4 @@ public class NotificationRequestedEventHandler {
 
 		return JsonUtils.toJson(event.metadata());
 	}
-
-	// private void handleFailure(NotificationRequestedEvent event, String error) {
-	// 	NotificationEventLog latestLog = eventLogPersistencePort.findLatestByNotificationId(event.notificationId());
-	// 	int nextRetryCount = (latestLog != null) ? latestLog.retryCount() + 1 : 1;
-	//
-	// 	NotificationEventLog failLog = NotificationEventLog.fail(
-	// 		event.notificationId(),
-	// 		EventType.FAILED,
-	// 		error,
-	// 		nextRetryCount
-	// 	);
-	// 	eventLogPersistencePort.save(failLog);
-	//
-	// 	if (retryPolicy.canRetry(failLog)) {
-	// 		log.info("알림 재시도 시도 - notificationId={}, retryCount={}", event.notificationId(), nextRetryCount);
-	// 		eventPublisher.publishEvent(event);
-	// 	} else {
-	// 		log.warn("알림 재시도 횟수 초과 - notificationId={}", event.notificationId());
-	// 	}
-	// }
 }
