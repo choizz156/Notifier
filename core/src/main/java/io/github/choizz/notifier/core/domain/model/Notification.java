@@ -70,14 +70,18 @@ public class Notification {
 
 	public void markAsCompleted() {
 
-		verifyTransition(NotificationStatus.COMPLETED);
+		if (this.status == NotificationStatus.FAILED) {
+			throw new IllegalStateException("실패한 알림은 완료할 수 없습니다.");
+		}
 		this.status = NotificationStatus.COMPLETED;
 		updateDate();
 	}
 
 	public void markAsFailed(String failReason) {
 
-		verifyTransition(NotificationStatus.FAILED);
+		if (this.status == NotificationStatus.FAILED) {
+			throw new IllegalStateException("이미 실패한 알림입니다.");
+		}
 		this.status = NotificationStatus.FAILED;
 		this.failMessage = failReason;
 		updateDate();
@@ -85,14 +89,19 @@ public class Notification {
 
 	public void markAsRetrying() {
 
-		verifyTransition(NotificationStatus.RETRYING);
+		if (this.status == NotificationStatus.COMPLETED || this.status == NotificationStatus.FAILED) {
+			throw new IllegalStateException("재시도는 준비 중 이거나 재시도 중인 알림에 대해서만 가능합니다.");
+		}
 		this.status = NotificationStatus.RETRYING;
 		updateDate();
 	}
 
 	public void markAsPendingForManualRetry() {
 
-		verifyTransition(NotificationStatus.PENDING);
+		if (this.status != NotificationStatus.FAILED) {
+			throw new IllegalStateException("수동 재시도는 실패한 알림에 대해서만 가능합니다.");
+		}
+
 		this.status = NotificationStatus.PENDING;
 		this.failMessage = null;
 		this.manualRetryCount++;
@@ -100,6 +109,7 @@ public class Notification {
 	}
 
 	public void applyFailMessage(String failMessage) {
+
 		this.failMessage = failMessage;
 		updateDate();
 	}
@@ -113,21 +123,5 @@ public class Notification {
 	private void updateDate() {
 
 		this.updatedAt = LocalDateTime.now();
-	}
-
-	private void verifyTransition(NotificationStatus nextStatus) {
-
-		if (this.status == nextStatus) {
-			return;
-		}
-		if (this.status == NotificationStatus.COMPLETED) {
-			throw new IllegalStateException("이미 전송 완료된 알림의 상태는 변경할 수 없습니다.");
-		}
-		if (this.status == NotificationStatus.FAILED && nextStatus != NotificationStatus.PENDING) {
-			throw new IllegalStateException("실패한 알림은 수동 재시도만 가능합니다.");
-		}
-		if (nextStatus == NotificationStatus.PENDING && this.status != NotificationStatus.FAILED) {
-			throw new IllegalStateException("수동 재시도는 실패한 알림에 대해서만 가능합니다.");
-		}
 	}
 }
