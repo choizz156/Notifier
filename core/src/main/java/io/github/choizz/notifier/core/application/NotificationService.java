@@ -7,14 +7,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.github.choizz.notifier.core.application.dto.NotificationContext;
+import io.github.choizz.notifier.core.application.dto.NotificationDetailResponse;
 import io.github.choizz.notifier.core.application.dto.NotificationResponse;
 import io.github.choizz.notifier.core.application.dto.NotificationStatusResponse;
 import io.github.choizz.notifier.core.application.dto.PageResult;
 import io.github.choizz.notifier.core.application.port.in.NotificationUseCase;
 import io.github.choizz.notifier.core.application.port.out.NotificationPersistencePort;
+import io.github.choizz.notifier.core.application.port.out.TemplateRendererPort;
 import io.github.choizz.notifier.core.domain.event.NotificationRequestedEvent;
 import io.github.choizz.notifier.core.domain.model.Notification;
 import io.github.choizz.notifier.core.domain.model.NotificationStatus;
+import io.github.choizz.notifier.core.domain.util.JsonUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,6 +29,7 @@ public class NotificationService implements NotificationUseCase {
 
 	private final ApplicationEventPublisher applicationEventPublisher;
 	private final NotificationPersistencePort NotificationPersistencePort;
+	private final TemplateRendererPort templateRendererPort;
 
 	@Override
 	public void push(NotificationContext NotificationContext) {
@@ -92,5 +96,17 @@ public class NotificationService implements NotificationUseCase {
 			pageResult.totalElements(),
 			pageResult.totalPages()
 		);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public NotificationDetailResponse getNotificationDetail(Long notificationId) {
+		Notification notification = NotificationPersistencePort.findById(notificationId);
+		String content = templateRendererPort.render(
+			notification.channel(), 
+			notification.notificationType(),
+			JsonUtils.toMap(notification.metadata())
+		);
+		return NotificationDetailResponse.of(notification, content);
 	}
 }

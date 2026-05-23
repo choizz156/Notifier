@@ -5,9 +5,15 @@ import org.springframework.stereotype.Component;
 import io.github.choizz.notifier.adapter.AbstractNotifierAdapter;
 import lombok.extern.slf4j.Slf4j;
 
+import io.github.choizz.notifier.core.application.port.out.TemplateRendererPort;
+
 @Slf4j
 @Component
 public class InMemoryEmailNotifierAdapter extends AbstractNotifierAdapter {
+
+	public InMemoryEmailNotifierAdapter(TemplateRendererPort templateRendererPort) {
+		super(templateRendererPort);
+	}
 
 	@Override
 	protected String getChannelName() {

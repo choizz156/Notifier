@@ -7,32 +7,25 @@ import org.springframework.core.io.ClassPathResource;
 
 import io.github.choizz.notifier.core.application.port.out.NotifierPort;
 import io.github.choizz.notifier.core.domain.event.PublishCommandEvent;
+import io.github.choizz.notifier.core.application.port.out.TemplateRendererPort;
+import io.github.choizz.notifier.core.domain.model.Channel;
+import io.github.choizz.notifier.core.domain.model.NotificationType;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@RequiredArgsConstructor
 public abstract class AbstractNotifierAdapter implements NotifierPort {
+
+	private final TemplateRendererPort templateRendererPort;
 
 	@Override
 	public void publish(PublishCommandEvent event) {
 
 		try {
-			String templatePath = "templates/%s.%s".formatted(event.notificationType(), getTemplateExtension());
-			ClassPathResource resource = new ClassPathResource(templatePath);
-
-			if (!resource.exists()) {
-				log.error("[{}] 템플릿을 찾을 수 없습니다: {}", getChannelName(), templatePath);
-				throw new IllegalArgumentException("템플릿을 찾을 수 없습니다. id = %s, type = %s"
-					.formatted(event.notificationType(), event.notificationType()));
-			}
-
-			String content = new String(resource.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
-
-			content = content.replace("{notificationId}", String.valueOf(event.notificationId()));
-			
-			for (Map.Entry<String, String> entry : event.metadata().entrySet()) {
-				content = content.replace("{" + entry.getKey() + "}", entry.getValue());
-			}
-
+			Channel channel = Channel.valueOf(getChannelName().toUpperCase());
+			NotificationType type = NotificationType.valueOf(event.notificationType());
+			String content = templateRendererPort.render(channel, type, event.metadata());
 			doSend(event.subscriberId(), content);
 		} catch (Exception e) {
 			log.error("[{}] 템플릿 처리 중 오류 발생", getChannelName(), e);

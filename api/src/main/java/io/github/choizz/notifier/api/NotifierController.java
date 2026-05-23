@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.github.choizz.notifier.api.dto.NotificationCreateWebRequest;
 import io.github.choizz.notifier.core.application.dto.NotificationContext;
+import io.github.choizz.notifier.core.application.dto.NotificationDetailResponse;
 import io.github.choizz.notifier.core.application.dto.NotificationResponse;
 import io.github.choizz.notifier.core.application.dto.NotificationStatusResponse;
 import io.github.choizz.notifier.core.application.dto.PageResult;
@@ -56,6 +57,13 @@ public class NotifierController {
 		@RequestParam(value = "size", defaultValue = "20") int size
 	) {
 		return notificationUseCase.getNotifications(subscriberId, isRead, page, size);
+	}
+
+	@GetMapping("/{id}")
+	public NotificationDetailResponse getNotificationDetail(
+		@PathVariable("id") Long id
+	) {
+		return notificationUseCase.getNotificationDetail(id);
 	}
 
 	@ResponseStatus(HttpStatus.NO_CONTENT)
