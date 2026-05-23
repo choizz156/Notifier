@@ -52,6 +52,9 @@ public class NotificationEntity extends BaseEntity {
 	@Column(nullable = false)
 	private boolean isRead;
 
+	@Column(nullable = false)
+	private int manualRetryCount;
+
 	@Builder
 	public NotificationEntity(
 		Long subscriberId,
@@ -60,7 +63,8 @@ public class NotificationEntity extends BaseEntity {
 		String metadata,
 		NotificationStatus status,
 		String message,
-		boolean isRead
+		boolean isRead,
+		int manualRetryCount
 	) {
 
 		this.subscriberId = subscriberId;
@@ -70,5 +74,6 @@ public class NotificationEntity extends BaseEntity {
 		this.status = status;
 		this.message = message;
 		this.isRead = isRead;
+		this.manualRetryCount = manualRetryCount;
 	}
 }

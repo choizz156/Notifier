@@ -114,4 +114,19 @@ public class NotificationService implements NotificationUseCase {
 		notification.markAsFailed(failReason);
 		notificationPersistencePort.save(notification);
 	}
+
+	@Override
+	public void retry(Long notificationId) {
+		Notification notification = notificationPersistencePort.findById(notificationId);
+		notification.markAsPendingForManualRetry();
+		Notification savedNotification = notificationPersistencePort.save(notification);
+		
+		NotificationContext context = new NotificationContext(
+			savedNotification.subscriberId(),
+			savedNotification.notificationType().name(),
+			savedNotification.channel().name(),
+			JsonUtils.toMap(savedNotification.metadata())
+		);
+		applicationEventPublisher.publishEvent(NotificationRequestedEvent.of(savedNotification, context));
+	}
 }

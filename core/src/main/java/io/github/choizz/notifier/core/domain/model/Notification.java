@@ -25,6 +25,7 @@ public class Notification {
 	private boolean isRead;
 	private final LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
+	private int manualRetryCount;
 
 	@Builder
 	private Notification(
@@ -37,7 +38,8 @@ public class Notification {
 		String failMessage,
 		boolean isRead,
 		LocalDateTime createdAt,
-		LocalDateTime updatedAt
+		LocalDateTime updatedAt,
+		int manualRetryCount
 	) {
 
 		this.id = id;
@@ -50,6 +52,7 @@ public class Notification {
 		this.isRead = isRead;
 		this.createdAt = createdAt != null ? createdAt : LocalDateTime.now();
 		this.updatedAt = updatedAt != null ? updatedAt : LocalDateTime.now();
+		this.manualRetryCount = manualRetryCount;
 	}
 
 	public static Notification from(NotificationContext context) {
@@ -61,6 +64,7 @@ public class Notification {
 			.status(NotificationStatus.PENDING)
 			.metadata(context.metadataToJson())
 			.isRead(false)
+			.manualRetryCount(0)
 			.build();
 	}
 
@@ -91,6 +95,7 @@ public class Notification {
 		verifyTransition(NotificationStatus.PENDING);
 		this.status = NotificationStatus.PENDING;
 		this.failMessage = null;
+		this.manualRetryCount++;
 		updateDate();
 	}
 

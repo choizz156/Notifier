@@ -15,7 +15,8 @@ public record NotificationResponse(
 	NotificationStatus status,
 	String title,
 	boolean isRead,
-	LocalDateTime createdAt
+	LocalDateTime createdAt,
+	int manualRetryCount
 ) {
 	public static NotificationResponse from(Notification notification) {
 		return new NotificationResponse(
@@ -26,7 +27,8 @@ public record NotificationResponse(
 			notification.status(),
 			notification.notificationType().getTitle(),
 			notification.isRead(),
-			notification.createdAt()
+			notification.createdAt(),
+			notification.manualRetryCount()
 		);
 	}
 }

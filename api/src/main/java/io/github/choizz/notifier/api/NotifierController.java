@@ -82,6 +82,12 @@ public class NotifierController {
 			.location(homepageUri)
 			.build();
 	}
+
+	@ResponseStatus(HttpStatus.ACCEPTED)
+	@PostMapping("/{id}/retry")
+	public void retryNotification(@PathVariable("id") Long id) {
+		notificationUseCase.retry(id);
+	}
 }
 
 

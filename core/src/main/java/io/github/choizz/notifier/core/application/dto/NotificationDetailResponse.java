@@ -16,7 +16,8 @@ public record NotificationDetailResponse(
 	String title,
 	String content,
 	boolean isRead,
-	LocalDateTime createdAt
+	LocalDateTime createdAt,
+	int manualRetryCount
 ) {
 	public static NotificationDetailResponse of(Notification notification, String content) {
 		return new NotificationDetailResponse(
@@ -28,7 +29,8 @@ public record NotificationDetailResponse(
 			notification.notificationType().getTitle(),
 			content,
 			notification.isRead(),
-			notification.createdAt()
+			notification.createdAt(),
+			notification.manualRetryCount()
 		);
 	}
 }
