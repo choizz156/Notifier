@@ -21,7 +21,7 @@ public interface NotificationUseCase {
 
 	NotificationDetailResponse getNotificationDetail(Long notificationId);
 	
-	void retry(Long notificationId);
+	void retry();
 	
 	void fail(Long notificationId, String failReason );
 }

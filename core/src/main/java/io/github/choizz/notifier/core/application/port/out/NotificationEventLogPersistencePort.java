@@ -9,5 +9,5 @@ public interface NotificationEventLogPersistencePort {
 
 	void save(NotificationEventLog eventLog);
 	NotificationEventLog findLatestByNotificationId(Long notificationId);
-	List<Long> findUnprocessedNotificationIds(List<EventStatus> statuses);
+	List<Long> findUnprocessedNotificationIds(List<EventStatus> statuses, long lastId, int chunkSize);
 }

@@ -46,6 +46,7 @@ public class NotifierController {
 
 	@GetMapping("/{id}/status")
 	public NotificationStatusResponse getStatus(@PathVariable("id") Long id) {
+
 		return notificationUseCase.getStatus(id);
 	}
 
@@ -56,6 +57,7 @@ public class NotifierController {
 		@RequestParam(value = "page", defaultValue = "0") int page,
 		@RequestParam(value = "size", defaultValue = "20") int size
 	) {
+
 		return notificationUseCase.getNotifications(subscriberId, isRead, page, size);
 	}
 
@@ -63,30 +65,33 @@ public class NotifierController {
 	public NotificationDetailResponse getNotificationDetail(
 		@PathVariable("id") Long id
 	) {
+
 		return notificationUseCase.getNotificationDetail(id);
 	}
 
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@PatchMapping("/{id}/read")
 	public void markAsReadFromApp(@PathVariable("id") Long id) {
+
 		notificationUseCase.markAsRead(id);
 	}
 
 	@GetMapping("/{id}/read")
 	public ResponseEntity<Void> markAsReadFromEmail(@PathVariable("id") Long id) {
+
 		notificationUseCase.markAsRead(id);
-		
+
 		URI homepageUri = URI.create("http://localhost:8080/");
-		
+
 		return ResponseEntity.status(HttpStatus.FOUND)
 			.location(homepageUri)
 			.build();
 	}
 
 	@ResponseStatus(HttpStatus.ACCEPTED)
-	@PostMapping("/{id}/retry")
-	public void retryNotification(@PathVariable("id") Long id) {
-		notificationUseCase.retry(id);
+	@PostMapping("/retry")
+	public void retryNotification() {
+		notificationUseCase.retry();
 	}
 }
 

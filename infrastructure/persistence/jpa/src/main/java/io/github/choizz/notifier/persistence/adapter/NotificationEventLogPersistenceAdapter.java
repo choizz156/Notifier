@@ -3,6 +3,7 @@ package io.github.choizz.notifier.persistence.adapter;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.springframework.data.domain.Limit;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,7 +43,7 @@ public class NotificationEventLogPersistenceAdapter implements NotificationEvent
 	}
 
 	@Override
-	public List<Long> findUnprocessedNotificationIds(List<EventStatus> statuses) {
-		return eventLogJpaRepository.findUnprocessedNotificationIds(statuses);
+	public List<Long> findUnprocessedNotificationIds(List<EventStatus> statuses, long lastId, int chunkSize) {
+		return eventLogJpaRepository.findUnprocessedNotificationIds(statuses, lastId, Limit.of(chunkSize));
 	}
 }

@@ -1,5 +1,7 @@
 package io.github.choizz.notifier.core.application;
 
+import java.util.List;
+
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,10 @@ import lombok.extern.slf4j.Slf4j;
 @Transactional
 @Service
 public class NotificationEventLogService implements NotificationEventLogUseCase {
+
+	public static final List<EventStatus> targetStatuses = List.of(
+		EventStatus.REQUESTED, EventStatus.RETRIED, EventStatus.PROCESSING
+	);
 
 	private final ApplicationEventPublisher applicationEventPublisher;
 	private final NotificationEventLogPersistencePort notificationEventLogPersistencePort;
@@ -54,5 +60,13 @@ public class NotificationEventLogService implements NotificationEventLogUseCase 
 		} catch (OptimisticLockingFailureException e) {
 			return false;
 		}
+	}
+
+	@Override
+	public List<Long> findUnprocessedNotificationIds(long lastId,  int chunkSize) {
+
+		return notificationEventLogPersistencePort.findUnprocessedNotificationIds(
+			targetStatuses, lastId, chunkSize
+		);
 	}
 }
