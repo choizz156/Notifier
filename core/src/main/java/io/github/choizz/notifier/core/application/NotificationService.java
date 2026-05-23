@@ -57,10 +57,7 @@ public class NotificationService implements NotificationUseCase {
 
 	@Override
 	public void markAsRead(Long notificationId) {
-
-		Notification notification = notificationPersistencePort.findById(notificationId);
-		notification.markAsRead();
-		notificationPersistencePort.save(notification);
+		notificationPersistencePort.markAsRead(notificationId);
 	}
 
 	@Override

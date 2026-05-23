@@ -15,6 +15,10 @@ public interface NotificationJpaRepository extends JpaRepository<NotificationEnt
 
 	Optional<NotificationEntity> findBySubscriberId(Long subscriberId);
 
+	@org.springframework.data.jpa.repository.Modifying(clearAutomatically = true)
+	@org.springframework.data.jpa.repository.Query("UPDATE NotificationEntity n SET n.isRead = true WHERE n.id = :id AND n.isRead = false")
+	int markAsRead(@org.springframework.data.repository.query.Param("id") Long id);
+
 	boolean existsBySubscriberIdAndNotificationTypeAndChannelAndStatus(
 		Long subscriberId,
 		NotificationType notificationType,

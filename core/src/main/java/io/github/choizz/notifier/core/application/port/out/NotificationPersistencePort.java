@@ -9,6 +9,8 @@ import io.github.choizz.notifier.core.domain.model.Channel;
 public interface NotificationPersistencePort {
 
 	Notification save(Notification notification);
+	
+	void markAsRead(Long id);
 
 	Notification findById(Long id);
 

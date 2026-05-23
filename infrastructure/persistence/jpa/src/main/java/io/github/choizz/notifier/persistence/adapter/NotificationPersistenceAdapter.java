@@ -35,6 +35,15 @@ public class NotificationPersistenceAdapter implements NotificationPersistencePo
 		return NotificationMapper.toDomain(NotificationEntity);
 	}
 
+	@Transactional
+	@Override
+	public void markAsRead(Long id) {
+		int updatedCount = notificationJpaRepository.markAsRead(id);
+		if (updatedCount == 0) {
+			log.info("알림(ID: {})은 이미 읽음 처리되었거나 존재하지 않습니다.", id);
+		}
+	}
+
 	@Override
 	public Notification findById(Long id) {
 
