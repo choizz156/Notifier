@@ -37,7 +37,7 @@ public class NotificationEventLogFactory {
 				context.metadata(),
 				context.retryCount()
 			);
-			case REQUESTED -> throw new IllegalStateException("변경할 이벤트 로그는 REQUESTED 상태가 아니어야합니다.");
+			case REQUESTED, PROCESSING -> throw new IllegalStateException("변경할 이벤트 로그는 REQUESTED 또는 PROCESSING 상태가 아니어야합니다.");
 		};
 	}
 }

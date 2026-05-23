@@ -38,4 +38,9 @@ public class NotificationEventLogPersistenceAdapter implements NotificationEvent
 			.map(NotificationEventLogMapper::toDomain)
 			.orElseThrow(() -> new NoSuchElementException("존재하지 않는 알림 정보 입니다. %s".formatted(notificationId)));
 	}
+
+	@Override
+	public java.util.List<Long> findUnprocessedNotificationIds(java.util.List<io.github.choizz.notifier.core.domain.model.EventStatus> statuses) {
+		return eventLogJpaRepository.findUnprocessedNotificationIds(statuses);
+	}
 }
