@@ -2,31 +2,39 @@ package io.github.choizz.notifier.rdb.adapter;
 
 import org.springframework.stereotype.Component;
 
-import io.github.choizz.notifier.core.application.dto.PublicationFailContext;
+import io.github.choizz.notifier.core.application.dto.PublicationContext;
 import io.github.choizz.notifier.core.application.port.in.NotificationEventLogUseCase;
 import io.github.choizz.notifier.core.application.port.out.NotificationEventLogPersistencePort;
 import io.github.choizz.notifier.core.application.port.out.NotifierPort;
 import io.github.choizz.notifier.core.domain.model.EventStatus;
 import io.github.choizz.notifier.core.domain.model.NotificationEventLog;
+import io.github.choizz.notifier.infrastructure.messagebroker.NotificationDispatcher;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Component
 public class EventPublishFallbackProcessor {
 
+	private static final int MAX_RETRY_COUNT = 5;
+
+	private final NotificationDispatcher notificationDispatcher;
 	private final NotificationEventLogPersistencePort notificationEventLogPersistencePort;
 	private final NotificationEventLogUseCase notificationEventLogUseCase;
 
-	public void handle(NotifierPort notifierPort, PublicationFailContext context) {
+	public void handle(NotifierPort notifierPort, PublicationContext context) {
 
-		NotificationEventLog eventLog = notificationEventLogPersistencePort.findLatestByNotificationId(
-			context.publishCommandEvent().notificationId()
+		NotificationEventLog eventLog = notificationEventLogPersistencePort.findRetryingEventLogByNotificationId(
+			context.notificationId()
 		);
 
 		context.increaseRetryCount(eventLog.retryCount());
 
-		notificationEventLogUseCase.recordEventLog(context, EventStatus.RETRIED);
+		if(context.retryCount() >= MAX_RETRY_COUNT){
+			notificationEventLogUseCase.saveEventLog(context.notificationId(), EventStatus.FAILED, context);
+			return;
+		}
+		notificationEventLogUseCase.saveEventLog(context.notificationId(), EventStatus.RETRIED, context);
 
-		//TODO: 재발행...
+		notificationDispatcher.dispatch(notifierPort, context);
 	}
 }

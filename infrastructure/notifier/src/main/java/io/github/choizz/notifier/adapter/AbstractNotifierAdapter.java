@@ -1,15 +1,11 @@
 package io.github.choizz.notifier.adapter;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Map;
-
-import org.springframework.core.io.ClassPathResource;
-
+import io.github.choizz.notifier.core.application.dto.PublicationContext;
 import io.github.choizz.notifier.core.application.port.out.NotifierPort;
-import io.github.choizz.notifier.core.domain.event.PublishCommandEvent;
 import io.github.choizz.notifier.core.application.port.out.TemplateRendererPort;
 import io.github.choizz.notifier.core.domain.model.Channel;
 import io.github.choizz.notifier.core.domain.model.NotificationType;
+import io.github.choizz.notifier.core.domain.util.JsonUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -20,13 +16,13 @@ public abstract class AbstractNotifierAdapter implements NotifierPort {
 	private final TemplateRendererPort templateRendererPort;
 
 	@Override
-	public void publish(PublishCommandEvent event) {
+	public void publish(PublicationContext context) {
 
 		try {
 			Channel channel = Channel.valueOf(getChannelName().toUpperCase());
-			NotificationType type = NotificationType.valueOf(event.notificationType());
-			String content = templateRendererPort.render(channel, type, event.metadata());
-			doSend(event.subscriberId(), content);
+			NotificationType type = NotificationType.valueOf(context.notificationType());
+			String content = templateRendererPort.render(channel, type, JsonUtils.toMap(context.metadata()));
+			doSend(context.subscriberId(), content);
 		} catch (Exception e) {
 			log.error("[{}] 템플릿 처리 중 오류 발생", getChannelName(), e);
 			throw new IllegalStateException(e);
@@ -42,6 +38,7 @@ public abstract class AbstractNotifierAdapter implements NotifierPort {
 	protected abstract String getChannelName();
 
 	protected String getTemplateExtension() {
+
 		return "txt";
 	}
 
