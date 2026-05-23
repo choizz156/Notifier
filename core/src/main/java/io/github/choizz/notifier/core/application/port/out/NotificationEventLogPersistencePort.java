@@ -7,4 +7,5 @@ public interface NotificationEventLogPersistencePort {
 	void save(NotificationEventLog eventLog);
 
 	NotificationEventLog findLatestByNotificationId(Long notificationId);
+	NotificationEventLog findRetryingEventLogByNotificationId(Long notificationId);
 }

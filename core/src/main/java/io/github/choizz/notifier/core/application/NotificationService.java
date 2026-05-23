@@ -28,13 +28,13 @@ import lombok.extern.slf4j.Slf4j;
 public class NotificationService implements NotificationUseCase {
 
 	private final ApplicationEventPublisher applicationEventPublisher;
-	private final NotificationPersistencePort NotificationPersistencePort;
+	private final NotificationPersistencePort notificationPersistencePort;
 	private final TemplateRendererPort templateRendererPort;
 
 	@Override
 	public void push(NotificationContext NotificationContext) {
 
-		boolean isDuplicate = NotificationPersistencePort.existsDuplicate(
+		boolean isDuplicate = notificationPersistencePort.existsDuplicate(
 			NotificationContext.subscriberId(),
 			NotificationContext.notificationType(),
 			NotificationContext.channel()
@@ -47,42 +47,41 @@ public class NotificationService implements NotificationUseCase {
 		}
 
 		Notification notification = Notification.from(NotificationContext);
-		Notification savedNotification = NotificationPersistencePort.save(notification);
+		Notification savedNotification = notificationPersistencePort.save(notification);
 
 		applicationEventPublisher.publishEvent(NotificationRequestedEvent.of(savedNotification, NotificationContext));
 	}
 
 	@Override
 	public void markAsRead(Long notificationId) {
-		Notification notification = NotificationPersistencePort.findById(notificationId);
+		Notification notification = notificationPersistencePort.findById(notificationId);
 		notification.markAsRead();
-		NotificationPersistencePort.save(notification);
+		notificationPersistencePort.save(notification);
 	}
 
 	@Override
 	public void updateStatus(Long notificationId, NotificationStatus status) {
-		Notification notification = NotificationPersistencePort.findById(notificationId);
+		Notification notification = notificationPersistencePort.findById(notificationId);
 		
 		switch (status) {
 			case COMPLETED -> notification.markAsCompleted();
-			case FAILED -> notification.markAsFailed();
 			case RETRYING -> notification.markAsRetrying();
 		}
 		
-		NotificationPersistencePort.save(notification);
+		notificationPersistencePort.save(notification);
 	}
 
 	@Transactional(readOnly = true)
 	@Override
 	public NotificationStatusResponse getStatus(Long notificationId) {
-		Notification notification = NotificationPersistencePort.findById(notificationId);
+		Notification notification = notificationPersistencePort.findById(notificationId);
 		return new NotificationStatusResponse(notification.id(), notification.status());
 	}
 
 	@Transactional(readOnly = true)
 	@Override
 	public PageResult<NotificationResponse> getNotifications(Long subscriberId, Boolean isRead, int page, int size) {
-		PageResult<Notification> pageResult = NotificationPersistencePort.findAllBySubscriberId(subscriberId, isRead, page, size);
+		PageResult<Notification> pageResult = notificationPersistencePort.findAllBySubscriberId(subscriberId, isRead, page, size);
 		
 		List<NotificationResponse> responses = pageResult.content().stream()
 			.map(NotificationResponse::from)
@@ -97,15 +96,22 @@ public class NotificationService implements NotificationUseCase {
 		);
 	}
 
-	@Override
 	@Transactional(readOnly = true)
+	@Override
 	public NotificationDetailResponse getNotificationDetail(Long notificationId) {
-		Notification notification = NotificationPersistencePort.findById(notificationId);
+		Notification notification = notificationPersistencePort.findById(notificationId);
 		String content = templateRendererPort.render(
 			notification.channel(), 
 			notification.notificationType(),
 			JsonUtils.toMap(notification.metadata())
 		);
 		return NotificationDetailResponse.of(notification, content);
+	}
+
+	@Override
+	public void fail(Long notificationId, String failReason) {
+		Notification notification = notificationPersistencePort.findById(notificationId);
+		notification.markAsFailed(failReason);
+		notificationPersistencePort.save(notification);
 	}
 }

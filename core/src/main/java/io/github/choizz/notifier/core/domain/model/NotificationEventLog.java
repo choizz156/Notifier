@@ -105,6 +105,26 @@ public class NotificationEventLog {
 			.build();
 	}
 
+	public static NotificationEventLog failed(
+		Long notificationId,
+		Channel channelType,
+		String failReason,
+		String metadata,
+		int retryCount
+	) {
+
+		return NotificationEventLog.builder()
+			.notificationId(notificationId)
+			.channelType(channelType)
+			.eventStatus(EventStatus.FAILED)
+			.failReason(failReason)
+			.retryCount(retryCount)
+			.metadata(metadata)
+			.published(false)
+			.updatedAt(LocalDateTime.now())
+			.build();
+	}
+
 
 	public boolean canRetry(int maxRetries) {
 		return this.retryCount < maxRetries;

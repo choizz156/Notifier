@@ -20,4 +20,5 @@ public interface NotificationUseCase {
 	PageResult<NotificationResponse> getNotifications(Long subscriberId, Boolean isRead, int page, int size);
 
 	NotificationDetailResponse getNotificationDetail(Long notificationId);
+	void fail(Long notificationId, String failReason );
 }

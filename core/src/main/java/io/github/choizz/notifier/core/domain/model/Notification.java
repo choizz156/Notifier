@@ -22,7 +22,6 @@ public class Notification {
 	private final String metadata;
 	private NotificationStatus status;
 	private String failMessage;
-	private int retryCount;
 	private boolean isRead;
 	private final LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
@@ -36,7 +35,6 @@ public class Notification {
 		String metadata,
 		NotificationStatus status,
 		String failMessage,
-		int retryCount,
 		boolean isRead,
 		LocalDateTime createdAt,
 		LocalDateTime updatedAt
@@ -49,7 +47,6 @@ public class Notification {
 		this.metadata = metadata;
 		this.status = status != null ? status : NotificationStatus.PENDING;
 		this.failMessage = null;
-		this.retryCount = retryCount;
 		this.isRead = isRead;
 		this.createdAt = createdAt != null ? createdAt : LocalDateTime.now();
 		this.updatedAt = updatedAt != null ? updatedAt : LocalDateTime.now();
@@ -62,7 +59,6 @@ public class Notification {
 			.channel(context.channel())
 			.status(NotificationStatus.PENDING)
 			.metadata(context.metadataToJson())
-			.retryCount(0)
 			.isRead(false)
 			.build();
 	}
@@ -72,11 +68,9 @@ public class Notification {
 		updateDate();
 	}
 
-	public void markAsFailed() {
-		if (this.status == NotificationStatus.COMPLETED) {
-			throw new IllegalStateException("COMPLETED 상태에서는 FAILED이 될 수 없습니다.");
-		}
+	public void markAsFailed(String failReason) {
 		this.status = NotificationStatus.FAILED;
+		this.failMessage = failReason;
 		updateDate();
 	}
 
