@@ -25,7 +25,7 @@ public record NotificationResponse(
 			notification.notificationType(),
 			notification.channel(),
 			notification.status(),
-			notification.notificationType().getTitle(),
+			notification.notificationType().title(),
 			notification.isRead(),
 			notification.createdAt(),
 			notification.manualRetryCount()

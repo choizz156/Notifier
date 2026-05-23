@@ -26,7 +26,7 @@ public record NotificationDetailResponse(
 			notification.notificationType(),
 			notification.channel(),
 			notification.status(),
-			notification.notificationType().getTitle(),
+			notification.notificationType().title(),
 			content,
 			notification.isRead(),
 			notification.createdAt(),
