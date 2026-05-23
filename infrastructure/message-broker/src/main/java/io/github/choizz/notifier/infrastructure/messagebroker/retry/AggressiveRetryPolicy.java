@@ -11,11 +11,14 @@ public class AggressiveRetryPolicy implements RetryPolicy {
 
 	@Override
 	public boolean support(NotificationType type) {
+
 		return type.retryLevel() == NotificationType.RetryLevel.AGGRESSIVE;
 	}
 
 	@Override
 	public int getMaxRetryCount() {
+
 		return MAX_RETRY_COUNT;
 	}
+
 }

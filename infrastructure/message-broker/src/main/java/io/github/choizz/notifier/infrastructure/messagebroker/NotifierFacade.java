@@ -14,6 +14,7 @@ public class NotifierFacade {
 	private final List<NotifierPort> notifierPorts;
 
 	public NotifierPort getNotifierPort(String channel) {
+
 		return findNotifier(channel);
 	}
 

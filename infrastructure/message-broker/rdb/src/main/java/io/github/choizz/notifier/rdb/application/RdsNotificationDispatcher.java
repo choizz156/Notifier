@@ -1,4 +1,4 @@
-package io.github.choizz.notifier.rdb;
+package io.github.choizz.notifier.rdb.application;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class RdsNotificationDispatcher implements NotificationDispatcher {
 
-	private final EventPublishFallbackProcessor eventPublishFallbackProcessor;
+	private final PublishFallbackProcessor publishFallbackProcessor;
 	private final ApplicationEventPublisher applicationEventPublisher;
 
 	@Override
@@ -26,7 +26,7 @@ public class RdsNotificationDispatcher implements NotificationDispatcher {
 			applicationEventPublisher.publishEvent(new PublishCompletedEvent(context));
 		} catch (Exception e) {
 			log.info("메시지 발행 실패, id = {}, type = {}", context.notificationId(), context.notificationType());
-			eventPublishFallbackProcessor.handle(notifierPort, context.notSent(e.getMessage()));
+			publishFallbackProcessor.handle(notifierPort, context.notSent(e.getMessage()));
 		}
 	}
 }

@@ -1,4 +1,4 @@
-package io.github.choizz.notifier.rdb;
+package io.github.choizz.notifier.rdb.application;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Component
-public class EventPublishFallbackProcessor {
+public class PublishFallbackProcessor {
 
 	private final List<RetryPolicy> retryPolicies;
 	private final NotificationDispatcher notificationDispatcher;

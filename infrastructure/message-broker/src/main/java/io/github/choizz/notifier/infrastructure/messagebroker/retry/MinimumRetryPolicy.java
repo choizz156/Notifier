@@ -11,11 +11,13 @@ public class MinimumRetryPolicy implements RetryPolicy {
 
 	@Override
 	public boolean support(NotificationType type) {
-		return  type.retryLevel() == NotificationType.RetryLevel.MINIMUM;
+
+		return type.retryLevel() == NotificationType.RetryLevel.MINIMUM;
 	}
 
 	@Override
 	public int getMaxRetryCount() {
+
 		return MAX_RETRY_COUNT;
 	}
 }
