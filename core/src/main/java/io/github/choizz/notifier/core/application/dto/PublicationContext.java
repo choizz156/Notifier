@@ -68,7 +68,7 @@ public final class PublicationContext {
 			.build();
 	}
 
-	public void increaseRetryCount(int retryCount) {
+	public void updateRetryCount(int retryCount) {
 		this.retryCount = retryCount + 1;
 	}
 }
