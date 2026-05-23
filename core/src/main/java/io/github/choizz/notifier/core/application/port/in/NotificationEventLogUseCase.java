@@ -5,4 +5,6 @@ import io.github.choizz.notifier.core.domain.model.EventStatus;
 
 public interface NotificationEventLogUseCase {
 	void saveEventLog(Long notificationId, EventStatus eventStatus, PublicationContext context);
+
+	boolean tryClaim(Long notificationId);
 }

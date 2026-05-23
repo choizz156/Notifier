@@ -125,8 +125,8 @@ public class NotificationEventLog {
 			.build();
 	}
 
-
-	public boolean canRetry(int maxRetries) {
-		return this.retryCount < maxRetries;
+	public void markAdProcessing() {
+		this.eventStatus = EventStatus.PROCESSING;
+		this.updatedAt = LocalDateTime.now();
 	}
 }

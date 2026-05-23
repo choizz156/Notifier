@@ -1,6 +1,7 @@
 package io.github.choizz.notifier.core.application;
 
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +33,26 @@ public class NotificationEventLogService implements NotificationEventLogUseCase 
 
 		if (eventStatus == EventStatus.FAILED) {
 			applicationEventPublisher.publishEvent(new PublishFailedEvent(notificationId, context.failReason()));
+		}
+	}
+
+	@Override
+	public boolean tryClaim(Long notificationId) {
+
+		NotificationEventLog eventLog =
+			notificationEventLogPersistencePort.findLatestByNotificationId(notificationId);
+
+		if (eventLog.eventStatus() != EventStatus.REQUESTED && eventLog.eventStatus() != EventStatus.RETRIED) {
+			return false;
+		}
+
+		eventLog.markAdProcessing();
+
+		try {
+			notificationEventLogPersistencePort.save(eventLog);
+			return true;
+		} catch (OptimisticLockingFailureException e) {
+			return false;
 		}
 	}
 }
