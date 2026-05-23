@@ -13,7 +13,6 @@ public class NotificationMapper {
 			.metadata(notification.metadata())
 			.status(notification.status())
 			.message(notification.failMessage())
-			.retryCount(notification.retryCount())
 			.isRead(notification.isRead())
 			.build();
 		entity.id(notification.id());
@@ -23,14 +22,13 @@ public class NotificationMapper {
 
 	public static Notification toDomain(NotificationEntity entity) {
 		return Notification.builder()
-			.id(entity.id() != null ? Long.valueOf(entity.id()) : null)
+			.id(entity.id() != null ? entity.id() : null)
 			.subscriberId(entity.subscriberId())
 			.notificationType(entity.notificationType())
 			.channel(entity.channel())
 			.metadata(entity.metadata())
 			.status(entity.status())
 			.failMessage(entity.message())
-			.retryCount(entity.retryCount())
 			.isRead(entity.isRead())
 			.createdAt(entity.createdAt())
 			.updatedAt(entity.updatedAt())

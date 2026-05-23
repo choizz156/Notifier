@@ -8,13 +8,22 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 @Entity
-@Table(name = "Notifications")
+@Table(
+	name = "notifications",
+	uniqueConstraints = {
+		@UniqueConstraint(
+			name = "uk_notification_duplicate",
+			columnNames = {"subscriber_id", "notification_type", "channel"}
+		)
+	}
+)
 @Getter
 @NoArgsConstructor
 @Accessors(fluent = true)
@@ -40,8 +49,6 @@ public class NotificationEntity extends BaseEntity {
 
 	private String message;
 
-	private int retryCount;
-
 	@Column(nullable = false)
 	private boolean isRead;
 
@@ -53,7 +60,6 @@ public class NotificationEntity extends BaseEntity {
 		String metadata,
 		NotificationStatus status,
 		String message,
-		int retryCount,
 		boolean isRead
 	) {
 
@@ -63,7 +69,6 @@ public class NotificationEntity extends BaseEntity {
 		this.metadata = metadata;
 		this.status = status;
 		this.message = message;
-		this.retryCount = retryCount;
 		this.isRead = isRead;
 	}
 }

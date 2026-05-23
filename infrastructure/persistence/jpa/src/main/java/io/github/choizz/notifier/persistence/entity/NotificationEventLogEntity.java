@@ -9,6 +9,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,7 +18,15 @@ import lombok.experimental.Accessors;
 @Getter
 @NoArgsConstructor
 @Accessors(fluent = true)
-@Table(name = "notification_event_logs")
+@Table(
+	name = "notification_event_logs",
+	uniqueConstraints = {
+		@UniqueConstraint(
+			name = "uk_notification_event_logs_duplicate",
+			columnNames = {"notification_Id", "retry_count"}
+		)
+	}
+)
 @Entity
 public class NotificationEventLogEntity extends BaseEntity {
 
