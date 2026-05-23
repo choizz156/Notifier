@@ -20,7 +20,7 @@ import lombok.experimental.Accessors;
 	uniqueConstraints = {
 		@UniqueConstraint(
 			name = "uk_notification_duplicate",
-			columnNames = {"subscriber_id", "notification_type", "channel"}
+			columnNames = {"subscriber_id", "notification_type", "channel", "status"}
 		)
 	}
 )
