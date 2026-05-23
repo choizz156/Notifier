@@ -4,8 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import io.github.choizz.notifier.domain.event.NotificationRequestedEvent;
-import io.github.choizz.notifier.application.port.out.NotifierPort;
+import io.github.choizz.notifier.core.application.port.out.NotifierPort;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor

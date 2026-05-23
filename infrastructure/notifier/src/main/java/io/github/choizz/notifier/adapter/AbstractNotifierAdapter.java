@@ -5,8 +5,8 @@ import java.util.Map;
 
 import org.springframework.core.io.ClassPathResource;
 
-import io.github.choizz.notifier.domain.event.PublishCommandEvent;
-import io.github.choizz.notifier.application.port.out.NotifierPort;
+import io.github.choizz.notifier.core.domain.event.PublishCommandEvent;
+import io.github.choizz.notifier.core.application.port.out.NotifierPort;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -34,7 +34,7 @@ public abstract class AbstractNotifierAdapter implements NotifierPort {
 			doSend(event.subscriberId(), content);
 		} catch (Exception e) {
 			log.error("[{}] 템플릿 처리 중 오류 발생", getChannelName(), e);
-			throw new RuntimeException(e);
+			throw new IllegalStateException(e);
 		}
 	}
 

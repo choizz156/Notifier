@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.github.choizz.notifier.api.dto.NotificationCreateWebRequest;
-import io.github.choizz.notifier.application.dto.NotificationContext;
-import io.github.choizz.notifier.application.dto.NotificationResponse;
-import io.github.choizz.notifier.application.dto.NotificationStatusResponse;
-import io.github.choizz.notifier.application.dto.PageResult;
-import io.github.choizz.notifier.application.port.in.NotificationPushUseCase;
-import io.github.choizz.notifier.application.port.in.NotificationQueryUseCase;
-import io.github.choizz.notifier.application.port.in.NotificationReadUseCase;
+import io.github.choizz.notifier.core.application.dto.NotificationContext;
+import io.github.choizz.notifier.core.application.dto.NotificationResponse;
+import io.github.choizz.notifier.core.application.dto.NotificationStatusResponse;
+import io.github.choizz.notifier.core.application.dto.PageResult;
+import io.github.choizz.notifier.core.application.port.in.NotificationPushUseCase;
+import io.github.choizz.notifier.core.application.port.in.NotificationQueryUseCase;
+import io.github.choizz.notifier.core.application.port.in.NotificationReadUseCase;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor

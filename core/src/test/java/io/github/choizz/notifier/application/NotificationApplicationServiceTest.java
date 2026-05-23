@@ -17,12 +17,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 
-import io.github.choizz.notifier.application.dto.NotificationContext;
-import io.github.choizz.notifier.application.port.out.NotificationPersistencePort;
-import io.github.choizz.notifier.domain.event.NotificationRequestedEvent;
-import io.github.choizz.notifier.domain.model.Channel;
-import io.github.choizz.notifier.domain.model.Notification;
-import io.github.choizz.notifier.domain.model.NotificationType;
+import io.github.choizz.notifier.core.application.NotificationApplicationService;
+import io.github.choizz.notifier.core.application.dto.NotificationContext;
+import io.github.choizz.notifier.core.application.port.out.NotificationPersistencePort;
+import io.github.choizz.notifier.core.domain.event.NotificationRequestedEvent;
+import io.github.choizz.notifier.core.domain.model.Channel;
+import io.github.choizz.notifier.core.domain.model.Notification;
+import io.github.choizz.notifier.core.domain.model.NotificationType;
 
 @ExtendWith(MockitoExtension.class)
 class NotificationApplicationServiceTest {

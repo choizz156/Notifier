@@ -13,15 +13,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import io.github.choizz.notifier.application.dto.NotificationContext;
-import io.github.choizz.notifier.application.dto.NotificationResponse;
-import io.github.choizz.notifier.application.dto.NotificationStatusResponse;
-import io.github.choizz.notifier.application.dto.PageResult;
-import io.github.choizz.notifier.application.port.out.NotificationPersistencePort;
-import io.github.choizz.notifier.domain.model.Channel;
-import io.github.choizz.notifier.domain.model.Notification;
-import io.github.choizz.notifier.domain.model.NotificationStatus;
-import io.github.choizz.notifier.domain.model.NotificationType;
+import io.github.choizz.notifier.core.application.NotificationQueryService;
+import io.github.choizz.notifier.core.application.dto.NotificationContext;
+import io.github.choizz.notifier.core.application.dto.NotificationResponse;
+import io.github.choizz.notifier.core.application.dto.NotificationStatusResponse;
+import io.github.choizz.notifier.core.application.dto.PageResult;
+import io.github.choizz.notifier.core.application.port.out.NotificationPersistencePort;
+import io.github.choizz.notifier.core.domain.model.Channel;
+import io.github.choizz.notifier.core.domain.model.Notification;
+import io.github.choizz.notifier.core.domain.model.NotificationStatus;
+import io.github.choizz.notifier.core.domain.model.NotificationType;
 
 @ExtendWith(MockitoExtension.class)
 class NotificationQueryServiceTest {
