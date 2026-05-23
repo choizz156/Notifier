@@ -108,18 +108,6 @@ public class Notification {
 		updateDate();
 	}
 
-	public void applyFailMessage(String failMessage) {
-
-		this.failMessage = failMessage;
-		updateDate();
-	}
-
-	public void markAsRead() {
-
-		this.isRead = true;
-		updateDate();
-	}
-
 	private void updateDate() {
 
 		this.updatedAt = LocalDateTime.now();

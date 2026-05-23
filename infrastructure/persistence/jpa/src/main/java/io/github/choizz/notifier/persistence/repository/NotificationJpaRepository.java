@@ -5,6 +5,9 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import io.github.choizz.notifier.core.domain.model.Channel;
 import io.github.choizz.notifier.core.domain.model.NotificationStatus;
@@ -15,9 +18,9 @@ public interface NotificationJpaRepository extends JpaRepository<NotificationEnt
 
 	Optional<NotificationEntity> findBySubscriberId(Long subscriberId);
 
-	@org.springframework.data.jpa.repository.Modifying(clearAutomatically = true)
-	@org.springframework.data.jpa.repository.Query("UPDATE NotificationEntity n SET n.isRead = true WHERE n.id = :id AND n.isRead = false")
-	int markAsRead(@org.springframework.data.repository.query.Param("id") Long id);
+	@Modifying(clearAutomatically = true)
+	@Query("UPDATE NotificationEntity n SET n.isRead = true WHERE n.id = :id AND n.isRead = false")
+	int markAsRead(@Param("id") Long id);
 
 	boolean existsBySubscriberIdAndNotificationTypeAndChannelAndStatus(
 		Long subscriberId,
