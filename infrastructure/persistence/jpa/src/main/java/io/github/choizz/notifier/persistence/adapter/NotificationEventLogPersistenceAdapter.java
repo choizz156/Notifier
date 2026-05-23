@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.github.choizz.notifier.core.application.port.out.NotificationEventLogPersistencePort;
-import io.github.choizz.notifier.core.domain.model.EventStatus;
 import io.github.choizz.notifier.core.domain.model.NotificationEventLog;
 import io.github.choizz.notifier.persistence.entity.NotificationEventLogEntity;
 import io.github.choizz.notifier.persistence.repository.NotificationEventLogJpaRepository;
