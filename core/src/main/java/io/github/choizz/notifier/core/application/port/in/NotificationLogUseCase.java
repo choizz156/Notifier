@@ -5,5 +5,5 @@ import io.github.choizz.notifier.core.domain.model.NotificationEventLog;
 
 public interface NotificationLogUseCase {
 
-	NotificationEventLog updateStatus(NotificationEventLog notificationEventLog, EventStatus eventStatus);
+	void updateStatus(NotificationEventLog notificationEventLog, EventStatus eventStatus);
 }

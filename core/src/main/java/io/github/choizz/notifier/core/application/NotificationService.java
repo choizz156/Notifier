@@ -14,6 +14,7 @@ import io.github.choizz.notifier.core.application.port.in.NotificationUseCase;
 import io.github.choizz.notifier.core.application.port.out.NotificationPersistencePort;
 import io.github.choizz.notifier.core.domain.event.NotificationRequestedEvent;
 import io.github.choizz.notifier.core.domain.model.Notification;
+import io.github.choizz.notifier.core.domain.model.NotificationStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -51,6 +52,20 @@ public class NotificationService implements NotificationUseCase {
 	public void markAsRead(Long notificationId) {
 		Notification notification = NotificationPersistencePort.findById(notificationId);
 		notification.markAsRead();
+		NotificationPersistencePort.save(notification);
+	}
+
+	@Override
+	public void updateStatus(Long notificationId, NotificationStatus status) {
+		Notification notification = NotificationPersistencePort.findById(notificationId);
+		
+		switch (status) {
+			case COMPLETED -> notification.markAsCompleted();
+			case FAILED -> notification.markAsFailed();
+			case RETRYING -> notification.markAsRetrying();
+			case SENDING -> notification.markAsSending();
+		}
+		
 		NotificationPersistencePort.save(notification);
 	}
 

@@ -21,8 +21,9 @@ public class EventPublishFallbackProcessor {
 		NotificationEventLog eventLog =
 			notificationEventLogPersistencePort.findLatestByNotificationId(notificationId);
 
-		NotificationEventLog updatedEventLog = notificationLogUseCase.updateStatus(eventLog, EventStatus.RETRIED);
+		 notificationLogUseCase.updateStatus(eventLog, EventStatus.RETRIED);
 
-		notificationEventLogPersistencePort.save(updatedEventLog);
+
+		//TODO: 재발행...
 	}
 }
