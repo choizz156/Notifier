@@ -53,6 +53,7 @@ public class Notification {
 	}
 
 	public static Notification from(NotificationContext context) {
+
 		return Notification.builder()
 			.subscriberId(context.subscriberId())
 			.notificationType(context.notificationType())
@@ -64,27 +65,42 @@ public class Notification {
 	}
 
 	public void markAsCompleted() {
+
+		verifyTransition(NotificationStatus.COMPLETED);
 		this.status = NotificationStatus.COMPLETED;
 		updateDate();
 	}
 
 	public void markAsFailed(String failReason) {
+
+		verifyTransition(NotificationStatus.FAILED);
 		this.status = NotificationStatus.FAILED;
 		this.failMessage = failReason;
 		updateDate();
 	}
 
 	public void markAsRetrying() {
+
+		verifyTransition(NotificationStatus.RETRYING);
 		this.status = NotificationStatus.RETRYING;
 		updateDate();
 	}
 
-	public void applyMessage(String message){
-		this.failMessage = message;
+	public void markAsPendingForManualRetry() {
+
+		verifyTransition(NotificationStatus.PENDING);
+		this.status = NotificationStatus.PENDING;
+		this.failMessage = null;
+		updateDate();
+	}
+
+	public void applyFailMessage(String failMessage) {
+		this.failMessage = failMessage;
 		updateDate();
 	}
 
 	public void markAsRead() {
+
 		this.isRead = true;
 		updateDate();
 	}
@@ -92,5 +108,21 @@ public class Notification {
 	private void updateDate() {
 
 		this.updatedAt = LocalDateTime.now();
+	}
+
+	private void verifyTransition(NotificationStatus nextStatus) {
+
+		if (this.status == nextStatus) {
+			return;
+		}
+		if (this.status == NotificationStatus.COMPLETED) {
+			throw new IllegalStateException("이미 전송 완료된 알림의 상태는 변경할 수 없습니다.");
+		}
+		if (this.status == NotificationStatus.FAILED && nextStatus != NotificationStatus.PENDING) {
+			throw new IllegalStateException("실패한 알림은 수동 재시도만 가능합니다.");
+		}
+		if (nextStatus == NotificationStatus.PENDING && this.status != NotificationStatus.FAILED) {
+			throw new IllegalStateException("수동 재시도는 실패한 알림에 대해서만 가능합니다.");
+		}
 	}
 }
