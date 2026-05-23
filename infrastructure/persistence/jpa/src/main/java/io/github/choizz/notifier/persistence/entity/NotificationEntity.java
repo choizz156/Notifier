@@ -14,7 +14,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
-@Entity
+@Getter
+@NoArgsConstructor
+@Accessors(fluent = true)
 @Table(
 	name = "notifications",
 	uniqueConstraints = {
@@ -24,9 +26,7 @@ import lombok.experimental.Accessors;
 		)
 	}
 )
-@Getter
-@NoArgsConstructor
-@Accessors(fluent = true)
+@Entity
 public class NotificationEntity extends BaseEntity {
 
 	@Column(nullable = false)

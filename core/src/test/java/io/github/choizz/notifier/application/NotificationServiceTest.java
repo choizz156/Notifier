@@ -17,7 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 
-import io.github.choizz.notifier.core.application.NotificationApplicationService;
+import io.github.choizz.notifier.core.application.NotificationService;
 import io.github.choizz.notifier.core.application.dto.NotificationContext;
 import io.github.choizz.notifier.core.application.port.out.NotificationPersistencePort;
 import io.github.choizz.notifier.core.domain.event.NotificationRequestedEvent;
@@ -26,7 +26,7 @@ import io.github.choizz.notifier.core.domain.model.Notification;
 import io.github.choizz.notifier.core.domain.model.NotificationType;
 
 @ExtendWith(MockitoExtension.class)
-class NotificationApplicationServiceTest {
+class NotificationServiceTest {
 
 	@Mock
 	private ApplicationEventPublisher eventPublisher;
@@ -35,7 +35,7 @@ class NotificationApplicationServiceTest {
 	private NotificationPersistencePort persistencePort;
 
 	@InjectMocks
-	private NotificationApplicationService sut;
+	private NotificationService sut;
 
 	@Test
 	@DisplayName("새로운 알림 푸시 요청 시 중복이 아니면 저장 후 이벤트를 발행한다.")

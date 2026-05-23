@@ -13,7 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import io.github.choizz.notifier.core.application.NotificationQueryService;
+import io.github.choizz.notifier.core.application.NotificationService;
 import io.github.choizz.notifier.core.application.dto.NotificationContext;
 import io.github.choizz.notifier.core.application.dto.NotificationResponse;
 import io.github.choizz.notifier.core.application.dto.NotificationStatusResponse;
@@ -31,7 +31,7 @@ class NotificationQueryServiceTest {
 	private NotificationPersistencePort persistencePort;
 
 	@InjectMocks
-	private NotificationQueryService sut;
+	private NotificationService sut;
 
 	@Test
 	@DisplayName("특정 알림의 상태를 조회할 수 있다.")

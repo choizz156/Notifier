@@ -16,7 +16,7 @@ public abstract class AbstractNotifierAdapter implements NotifierPort {
 	public void publish(PublishCommandEvent event) {
 
 		try {
-			String templatePath = "templates/%s.txt".formatted(event.notificationType());
+			String templatePath = "templates/%s.%s".formatted(event.notificationType(), getTemplateExtension());
 			ClassPathResource resource = new ClassPathResource(templatePath);
 
 			if (!resource.exists()) {
@@ -27,6 +27,8 @@ public abstract class AbstractNotifierAdapter implements NotifierPort {
 
 			String content = new String(resource.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
 
+			content = content.replace("{notificationId}", String.valueOf(event.notificationId()));
+			
 			for (Map.Entry<String, String> entry : event.metadata().entrySet()) {
 				content = content.replace("{" + entry.getKey() + "}", entry.getValue());
 			}
@@ -45,6 +47,10 @@ public abstract class AbstractNotifierAdapter implements NotifierPort {
 	}
 
 	protected abstract String getChannelName();
+
+	protected String getTemplateExtension() {
+		return "txt";
+	}
 
 	protected abstract void doSend(Long subscriberId, String content);
 }

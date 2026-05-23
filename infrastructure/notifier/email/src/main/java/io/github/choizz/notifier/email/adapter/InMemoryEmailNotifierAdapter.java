@@ -15,6 +15,11 @@ public class InMemoryEmailNotifierAdapter extends AbstractNotifierAdapter {
 	}
 
 	@Override
+	protected String getTemplateExtension() {
+		return "html";
+	}
+
+	@Override
 	protected void doSend(Long subscriberId, String content) {
 		log.info("[Mock Email] 수신자: {}, 메시지: {}", subscriberId, content);
 	}
