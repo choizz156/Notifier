@@ -63,29 +63,45 @@ public class NotificationEventLog {
 			.retryCount(0)
 			.published(false)
 			.metadata(metadata)
+			.build();
+	}
+
+	public static NotificationEventLog retried(
+		Long notificationId,
+		Channel channelType,
+		String failReason,
+		String metadata,
+		int retryCount
+	) {
+
+		return NotificationEventLog.builder()
+			.notificationId(notificationId)
+			.channelType(channelType)
+			.eventStatus(EventStatus.RETRIED)
+			.failReason(failReason)
+			.retryCount(retryCount)
+			.metadata(metadata)
+			.published(false)
 			.updatedAt(LocalDateTime.now())
 			.build();
 	}
 
-	public void markAsPublished() {
-		this.published = true;
-		this.eventStatus = EventStatus.SENT;
-		this.publishedAt = LocalDateTime.now();
-		updateDate();
-	}
+	public static NotificationEventLog sent(
+		Long notificationId,
+		Channel channelType,
+		String metadata,
+		int retryCount
+	) {
 
-	public void markAsRetried() {
-		this.eventStatus = EventStatus.RETRIED;
-		this.retryCount++;
-		updateDate();
-	}
-
-	public void markAsFailed() {
-		this.eventStatus = EventStatus.FAILED;
-		updateDate();
-	}
-
-	private void updateDate() {
-		this.updatedAt = LocalDateTime.now();
+		return NotificationEventLog.builder()
+			.notificationId(notificationId)
+			.channelType(channelType)
+			.eventStatus(EventStatus.SENT)
+			.retryCount(retryCount)
+			.metadata(metadata)
+			.published(true)
+			.publishedAt(LocalDateTime.now())
+			.updatedAt(LocalDateTime.now())
+			.build();
 	}
 }

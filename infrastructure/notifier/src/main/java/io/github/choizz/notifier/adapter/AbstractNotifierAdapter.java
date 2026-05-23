@@ -5,8 +5,8 @@ import java.util.Map;
 
 import org.springframework.core.io.ClassPathResource;
 
-import io.github.choizz.notifier.core.domain.event.PublishCommandEvent;
 import io.github.choizz.notifier.core.application.port.out.NotifierPort;
+import io.github.choizz.notifier.core.domain.event.PublishCommandEvent;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

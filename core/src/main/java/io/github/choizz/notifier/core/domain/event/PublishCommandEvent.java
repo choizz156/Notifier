@@ -17,7 +17,7 @@ public record PublishCommandEvent(
 
 		return PublishCommandEvent.builder()
 			.channel(event.channel())
-			.metadata(metadata)
+			.metadata(Map.copyOf(metadata))
 			.notificationType(event.notificationType())
 			.notificationId(event.notificationId())
 			.subscriberId(event.subscriberId())

@@ -21,7 +21,7 @@ import lombok.experimental.Accessors;
 @Entity
 public class NotificationEventLogEntity extends BaseEntity {
 
-	@Column(nullable = false)
+	@Column(nullable = false, unique = true)
 	private Long notificationId;
 
 	@Enumerated(EnumType.STRING)

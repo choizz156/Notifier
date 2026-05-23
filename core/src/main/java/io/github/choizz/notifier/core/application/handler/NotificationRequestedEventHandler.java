@@ -1,4 +1,4 @@
-package io.github.choizz.notifier.core.application;
+package io.github.choizz.notifier.core.application.handler;
 
 import org.jspecify.annotations.Nullable;
 import org.springframework.scheduling.annotation.Async;
@@ -11,6 +11,7 @@ import io.github.choizz.notifier.core.application.port.out.NotificationEventPubl
 import io.github.choizz.notifier.core.domain.event.NotificationRequestedEvent;
 import io.github.choizz.notifier.core.domain.event.PublishCommandEvent;
 import io.github.choizz.notifier.core.domain.model.Channel;
+import io.github.choizz.notifier.core.domain.model.EventType;
 import io.github.choizz.notifier.core.domain.model.NotificationEventLog;
 import io.github.choizz.notifier.core.domain.util.JsonUtils;
 import lombok.RequiredArgsConstructor;
@@ -43,12 +44,6 @@ public class NotificationRequestedEventHandler {
 
 		PublishCommandEvent publishCommandEvent = PublishCommandEvent.of(event, event.metadata());
 		notificationEventPublisher.publish(publishCommandEvent);
-		// try {
-		// 	notifierFacade.publish(event);
-		// } catch (Exception e) {
-		// 	log.error("알림 발송 실패 - notificationId={}, error={}", event.notificationId(), e.getMessage());
-		// 	handleFailure(event, e.getMessage());
-		// }
 	}
 
 	private @Nullable String getMetadataToString(NotificationRequestedEvent event){
