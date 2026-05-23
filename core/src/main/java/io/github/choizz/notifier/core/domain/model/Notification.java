@@ -69,7 +69,7 @@ public class Notification {
 
 	public void markAsCompleted() {
 		this.status = NotificationStatus.COMPLETED;
-		this.updatedAt = LocalDateTime.now();
+		updateDate();
 	}
 
 	public void markAsFailed() {
@@ -77,31 +77,26 @@ public class Notification {
 			throw new IllegalStateException("COMPLETED 상태에서는 FAILED이 될 수 없습니다.");
 		}
 		this.status = NotificationStatus.FAILED;
-		this.updatedAt = LocalDateTime.now();
+		updateDate();
 	}
 
 	public void markAsRetrying() {
 		this.status = NotificationStatus.RETRYING;
-		this.updatedAt = LocalDateTime.now();
-	}
-
-	public void incrementRetryCount() {
-		this.retryCount++;
-	}
-
-	public boolean canRetry(int maxRetries) {
-		return this.retryCount < maxRetries;
-	}
-
-	public void markAsSending() {
-		this.status = NotificationStatus.SENDING;
+		updateDate();
 	}
 
 	public void applyMessage(String message){
 		this.failMessage = message;
+		updateDate();
 	}
 
 	public void markAsRead() {
 		this.isRead = true;
+		updateDate();
+	}
+
+	private void updateDate() {
+
+		this.updatedAt = LocalDateTime.now();
 	}
 }

@@ -104,4 +104,9 @@ public class NotificationEventLog {
 			.updatedAt(LocalDateTime.now())
 			.build();
 	}
+
+
+	public boolean canRetry(int maxRetries) {
+		return this.retryCount < maxRetries;
+	}
 }

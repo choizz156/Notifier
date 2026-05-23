@@ -67,7 +67,6 @@ public class NotificationService implements NotificationUseCase {
 			case COMPLETED -> notification.markAsCompleted();
 			case FAILED -> notification.markAsFailed();
 			case RETRYING -> notification.markAsRetrying();
-			case SENDING -> notification.markAsSending();
 		}
 		
 		NotificationPersistencePort.save(notification);

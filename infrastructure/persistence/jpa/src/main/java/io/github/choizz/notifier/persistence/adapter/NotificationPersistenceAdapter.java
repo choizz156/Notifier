@@ -23,11 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 @Repository
 public class NotificationPersistenceAdapter implements NotificationPersistencePort {
 
-	private static final List<NotificationStatus> ACTIVE_STATUSES = List.of(
-		NotificationStatus.PENDING,
-		NotificationStatus.SENDING
-	);
-
 	private final NotificationJpaRepository notificationJpaRepository;
 
 	@Transactional
@@ -64,11 +59,11 @@ public class NotificationPersistenceAdapter implements NotificationPersistencePo
 	@Override
 	public boolean existsDuplicate(Long subscriberId, NotificationType notificationType, Channel channel) {
 
-		return notificationJpaRepository.existsBySubscriberIdAndNotificationTypeAndChannelAndStatusIn(
+		return notificationJpaRepository.existsBySubscriberIdAndNotificationTypeAndChannelAndStatus(
 			subscriberId,
 			notificationType,
 			channel,
-			ACTIVE_STATUSES
+			NotificationStatus.PENDING
 		);
 	}
 
