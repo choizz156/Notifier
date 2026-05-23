@@ -23,5 +23,4 @@ public record PublishCommandEvent(
 			.subscriberId(event.subscriberId())
 			.build();
 	}
-
 }

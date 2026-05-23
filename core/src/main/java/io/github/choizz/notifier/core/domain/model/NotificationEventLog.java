@@ -17,12 +17,12 @@ public class NotificationEventLog {
 	private final Long id;
 	private final Long notificationId;
 	private final Channel channelType;
-	private final EventStatus eventStatus;
-	private final String failReason;
-	private final int retryCount;
 	private final LocalDateTime createdAt;
 	private final String metadata;
+	private int retryCount;
 	private boolean published;
+	private EventStatus eventStatus;
+	private String failReason;
 	private LocalDateTime publishedAt;
 
 	@Builder
@@ -37,6 +37,7 @@ public class NotificationEventLog {
 		LocalDateTime publishedAt,
 		LocalDateTime createdAt, String metadata
 	) {
+
 		this.id = id;
 		this.notificationId = notificationId;
 		this.channelType = channelType;
@@ -50,6 +51,7 @@ public class NotificationEventLog {
 	}
 
 	public static NotificationEventLog request(Long notificationId, Channel channelType, String metadata) {
+
 		return NotificationEventLog.builder()
 			.notificationId(notificationId)
 			.channelType(channelType)
@@ -60,7 +62,13 @@ public class NotificationEventLog {
 			.build();
 	}
 
-	public static NotificationEventLog fail(Long notificationId, Channel channelType, String failReason, int retryCount) {
+	public static NotificationEventLog fail(
+		Long notificationId,
+		Channel channelType,
+		String failReason,
+		int retryCount
+	) {
+
 		return NotificationEventLog.builder()
 			.notificationId(notificationId)
 			.channelType(channelType)
@@ -73,6 +81,16 @@ public class NotificationEventLog {
 
 	public void markAsPublished() {
 		this.published = true;
+		this.eventStatus = EventStatus.SENT;
 		this.publishedAt = LocalDateTime.now();
+	}
+
+	public void markAsRetried() {
+		this.eventStatus = EventStatus.RETRIED;
+		this.retryCount++;
+	}
+
+	public void markAsFailed() {
+		this.eventStatus = EventStatus.FAILED;
 	}
 }

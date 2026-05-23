@@ -1,12 +1,16 @@
 package io.github.choizz.notifier.core.application;
 
+import java.util.List;
+
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.github.choizz.notifier.core.application.dto.NotificationContext;
-import io.github.choizz.notifier.core.application.port.in.NotificationPushUseCase;
-import io.github.choizz.notifier.core.application.port.in.NotificationReadUseCase;
+import io.github.choizz.notifier.core.application.dto.NotificationResponse;
+import io.github.choizz.notifier.core.application.dto.NotificationStatusResponse;
+import io.github.choizz.notifier.core.application.dto.PageResult;
+import io.github.choizz.notifier.core.application.port.in.NotificationUseCase;
 import io.github.choizz.notifier.core.application.port.out.NotificationPersistencePort;
 import io.github.choizz.notifier.core.domain.event.NotificationRequestedEvent;
 import io.github.choizz.notifier.core.domain.model.Notification;
@@ -17,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Transactional
 @Service
-public class NotificationApplicationService implements NotificationPushUseCase, NotificationReadUseCase {
+public class NotificationService implements NotificationUseCase {
 
 	private final ApplicationEventPublisher applicationEventPublisher;
 	private final NotificationPersistencePort NotificationPersistencePort;
@@ -48,5 +52,30 @@ public class NotificationApplicationService implements NotificationPushUseCase, 
 		Notification notification = NotificationPersistencePort.findById(notificationId);
 		notification.markAsRead();
 		NotificationPersistencePort.save(notification);
+	}
+
+	@Transactional(readOnly = true)
+	@Override
+	public NotificationStatusResponse getStatus(Long notificationId) {
+		Notification notification = NotificationPersistencePort.findById(notificationId);
+		return new NotificationStatusResponse(notification.id(), notification.status());
+	}
+
+	@Transactional(readOnly = true)
+	@Override
+	public PageResult<NotificationResponse> getNotifications(Long subscriberId, Boolean isRead, int page, int size) {
+		PageResult<Notification> pageResult = NotificationPersistencePort.findAllBySubscriberId(subscriberId, isRead, page, size);
+		
+		List<NotificationResponse> responses = pageResult.content().stream()
+			.map(NotificationResponse::from)
+			.toList();
+			
+		return new PageResult<>(
+			responses,
+			pageResult.page(),
+			pageResult.size(),
+			pageResult.totalElements(),
+			pageResult.totalPages()
+		);
 	}
 }

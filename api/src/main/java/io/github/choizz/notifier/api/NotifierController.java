@@ -16,9 +16,7 @@ import io.github.choizz.notifier.core.application.dto.NotificationContext;
 import io.github.choizz.notifier.core.application.dto.NotificationResponse;
 import io.github.choizz.notifier.core.application.dto.NotificationStatusResponse;
 import io.github.choizz.notifier.core.application.dto.PageResult;
-import io.github.choizz.notifier.core.application.port.in.NotificationPushUseCase;
-import io.github.choizz.notifier.core.application.port.in.NotificationQueryUseCase;
-import io.github.choizz.notifier.core.application.port.in.NotificationReadUseCase;
+import io.github.choizz.notifier.core.application.port.in.NotificationUseCase;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -26,9 +24,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/v1/Notification")
 public class NotifierController {
 
-	private final NotificationPushUseCase notificationPushUseCase;
-	private final NotificationQueryUseCase notificationQueryUseCase;
-	private final NotificationReadUseCase notificationReadUseCase;
+	private final NotificationUseCase notificationUseCase;
 
 	@ResponseStatus(HttpStatus.ACCEPTED)
 	@PostMapping
@@ -41,12 +37,12 @@ public class NotifierController {
 			request.metadata()
 		);
 
-		notificationPushUseCase.push(context);
+		notificationUseCase.push(context);
 	}
 
 	@GetMapping("/{id}/status")
 	public NotificationStatusResponse getStatus(@PathVariable("id") Long id) {
-		return notificationQueryUseCase.getStatus(id);
+		return notificationUseCase.getStatus(id);
 	}
 
 	@GetMapping("/subscribers/{subscriberId}")
@@ -56,12 +52,12 @@ public class NotifierController {
 		@RequestParam(value = "page", defaultValue = "0") int page,
 		@RequestParam(value = "size", defaultValue = "20") int size
 	) {
-		return notificationQueryUseCase.getNotifications(subscriberId, isRead, page, size);
+		return notificationUseCase.getNotifications(subscriberId, isRead, page, size);
 	}
 
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@PatchMapping("/{id}/read")
 	public void markAsRead(@PathVariable("id") Long id) {
-		notificationReadUseCase.markAsRead(id);
+		notificationUseCase.markAsRead(id);
 	}
 }

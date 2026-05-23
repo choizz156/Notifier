@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 public class RdsEventPublishAdapter implements NotificationEventPublisher {
 
 	private final NotifierFacade notifierFacade;
+	private final EventPublishFallbackProcessor eventPublishFallbackProcessor;
 
 	@Override
 	public void publish(PublishCommandEvent event) {
@@ -25,7 +26,7 @@ public class RdsEventPublishAdapter implements NotificationEventPublisher {
 			notifierPort.publish(event);
 		} catch (Exception e) {
 			log.info("메시지 발행 실패, id = {}, type = {}", event.notificationId(), event.notificationType());
-
+			eventPublishFallbackProcessor.handle(notifierPort, event.notificationId());
 		}
 	}
 }
