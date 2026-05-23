@@ -5,6 +5,7 @@ import java.util.NoSuchElementException;
 import org.springframework.stereotype.Repository;
 
 import io.github.choizz.notifier.core.application.port.out.NotificationEventLogPersistencePort;
+import io.github.choizz.notifier.core.domain.model.EventStatus;
 import io.github.choizz.notifier.core.domain.model.NotificationEventLog;
 import io.github.choizz.notifier.persistence.entity.NotificationEventLogEntity;
 import io.github.choizz.notifier.persistence.repository.NotificationEventLogJpaRepository;
@@ -34,6 +35,17 @@ public class NotificationEventLogPersistenceAdapter implements NotificationEvent
 	public NotificationEventLog findLatestByNotificationId(Long notificationId) {
 
 		return eventLogJpaRepository.findFirstByNotificationIdOrderByCreatedAtDesc(notificationId)
+			.map(NotificationEventLogMapper::toDomain)
+			.orElseThrow(() -> new NoSuchElementException("존재하지 않는 알림 정보 입니다. %s".formatted(notificationId)));
+	}
+
+	@Override
+	public NotificationEventLog findRetryingEventLogByNotificationId(Long notificationId) {
+
+		return eventLogJpaRepository.findFirstByNotificationIdAndEventStatusIsNotOrderByCreatedAtDesc(
+				notificationId,
+				EventStatus.FAILED
+			)
 			.map(NotificationEventLogMapper::toDomain)
 			.orElseThrow(() -> new NoSuchElementException("존재하지 않는 알림 정보 입니다. %s".formatted(notificationId)));
 	}

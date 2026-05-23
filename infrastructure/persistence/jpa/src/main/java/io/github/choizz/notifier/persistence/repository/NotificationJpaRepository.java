@@ -2,6 +2,8 @@ package io.github.choizz.notifier.persistence.repository;
 
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import io.github.choizz.notifier.core.domain.model.Channel;
@@ -20,14 +22,14 @@ public interface NotificationJpaRepository extends JpaRepository<NotificationEnt
 		NotificationStatus statuses
 	);
 
-	org.springframework.data.domain.Page<NotificationEntity> findBySubscriberId(
+	Page<NotificationEntity> findBySubscriberId(
 		Long subscriberId,
-		org.springframework.data.domain.Pageable pageable
+		Pageable pageable
 	);
 
-	org.springframework.data.domain.Page<NotificationEntity> findBySubscriberIdAndIsRead(
+	Page<NotificationEntity> findBySubscriberIdAndIsRead(
 		Long subscriberId,
 		boolean isRead,
-		org.springframework.data.domain.Pageable pageable
+		Pageable pageable
 	);
 }
