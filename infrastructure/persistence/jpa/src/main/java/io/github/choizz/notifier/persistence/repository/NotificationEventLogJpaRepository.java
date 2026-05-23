@@ -14,7 +14,6 @@ import io.github.choizz.notifier.persistence.entity.NotificationEventLogEntity;
 public interface NotificationEventLogJpaRepository extends JpaRepository<NotificationEventLogEntity, Long> {
 
 	Optional<NotificationEventLogEntity> findFirstByNotificationIdOrderByCreatedAtDesc(Long notificationId);
-	Optional<NotificationEventLogEntity> findFirstByNotificationIdAndEventStatusIsNotOrderByCreatedAtDesc(Long notificationId, EventStatus eventStatus);
 
 	@Query("""
         SELECT e.notificationId 
