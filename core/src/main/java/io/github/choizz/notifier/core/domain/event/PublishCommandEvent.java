@@ -6,8 +6,8 @@ import lombok.Builder;
 
 @Builder
 public record PublishCommandEvent(
-	long notificationId,
-	long subscriberId,
+	Long notificationId,
+	Long subscriberId,
 	String notificationType,
 	String channel,
 	Map<String, String> metadata
