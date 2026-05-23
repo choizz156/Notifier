@@ -11,7 +11,6 @@ import io.github.choizz.notifier.core.application.port.out.NotificationEventPubl
 import io.github.choizz.notifier.core.domain.event.NotificationRequestedEvent;
 import io.github.choizz.notifier.core.domain.event.PublishCommandEvent;
 import io.github.choizz.notifier.core.domain.model.Channel;
-import io.github.choizz.notifier.core.domain.model.EventType;
 import io.github.choizz.notifier.core.domain.model.NotificationEventLog;
 import io.github.choizz.notifier.core.domain.util.JsonUtils;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Component
 public class NotificationRequestedEventHandler {
+
 	private final NotificationEventLogPersistencePort eventLogPersistencePort;
 	private final NotificationEventPublisher notificationEventPublisher;
 
@@ -46,7 +46,8 @@ public class NotificationRequestedEventHandler {
 		notificationEventPublisher.publish(publishCommandEvent);
 	}
 
-	private @Nullable String getMetadataToString(NotificationRequestedEvent event){
+	private @Nullable String getMetadataToString(NotificationRequestedEvent event) {
+
 		return JsonUtils.toJson(event.metadata());
 	}
 

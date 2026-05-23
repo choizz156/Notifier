@@ -1,4 +1,4 @@
-package io.github.choizz.notifier.rdb.adapter;
+package io.github.choizz.notifier.rdb;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;

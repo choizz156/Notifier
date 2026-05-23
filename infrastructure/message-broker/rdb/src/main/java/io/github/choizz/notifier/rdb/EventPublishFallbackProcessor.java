@@ -1,4 +1,4 @@
-package io.github.choizz.notifier.rdb.adapter;
+package io.github.choizz.notifier.rdb;
 
 import org.springframework.stereotype.Component;
 
@@ -27,12 +27,12 @@ public class EventPublishFallbackProcessor {
 			context.notificationId()
 		);
 
-		context.increaseRetryCount(eventLog.retryCount());
-
 		if(context.retryCount() >= MAX_RETRY_COUNT){
 			notificationEventLogUseCase.saveEventLog(context.notificationId(), EventStatus.FAILED, context);
 			return;
 		}
+		context.increaseRetryCount(eventLog.retryCount());
+
 		notificationEventLogUseCase.saveEventLog(context.notificationId(), EventStatus.RETRIED, context);
 
 		notificationDispatcher.dispatch(notifierPort, context);
