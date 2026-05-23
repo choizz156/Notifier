@@ -10,8 +10,6 @@ public interface NotificationPersistencePort {
 
 	Notification save(Notification notification);
 
-	void updateStatus(long id, NotificationStatus notificationStatus);
-
 	Notification findById(Long id);
 
 	Notification findBySubscriberId(Long subscriberId);

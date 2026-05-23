@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import io.github.choizz.notifier.core.application.dto.PageResult;
 import io.github.choizz.notifier.persistence.entity.NotificationEntity;
@@ -13,13 +14,12 @@ import io.github.choizz.notifier.core.domain.model.NotificationStatus;
 import io.github.choizz.notifier.core.domain.model.NotificationType;
 import io.github.choizz.notifier.core.domain.model.Channel;
 import io.github.choizz.notifier.persistence.repository.NotificationJpaRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 @Repository
 public class NotificationPersistenceAdapter implements NotificationPersistencePort {
 
@@ -30,6 +30,7 @@ public class NotificationPersistenceAdapter implements NotificationPersistencePo
 
 	private final NotificationJpaRepository notificationJpaRepository;
 
+	@Transactional
 	@Override
 	public Notification save(Notification notification) {
 
@@ -37,24 +38,6 @@ public class NotificationPersistenceAdapter implements NotificationPersistencePo
 		NotificationEntity NotificationEntity = notificationJpaRepository.save(entity);
 
 		return NotificationMapper.toDomain(NotificationEntity);
-	}
-
-	@Override
-	public void updateStatus(long id, NotificationStatus notificationStatus) {
-
-		NotificationEntity entity = notificationJpaRepository.findById(id).orElseThrow();
-		Notification notification = NotificationMapper.toDomain(entity);
-
-		switch (notificationStatus) {
-			case COMPLETED -> notification.markAsCompleted();
-			case FAILED -> notification.markAsFailed();
-			case RETRYING -> notification.markAsRetrying();
-			case SENDING -> notification.markAsSending();
-		}
-
-		NotificationEntity updatedEntity = NotificationMapper.toEntity(notification);
-		updatedEntity.id(entity.id());
-		notificationJpaRepository.save(updatedEntity);
 	}
 
 	@Override
