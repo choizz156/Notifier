@@ -1,8 +1,11 @@
 package io.github.choizz.notifier.persistence.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import io.github.choizz.notifier.core.domain.model.EventStatus;
 import io.github.choizz.notifier.persistence.entity.NotificationEventLogEntity;
@@ -12,7 +15,7 @@ public interface NotificationEventLogJpaRepository extends JpaRepository<Notific
 	Optional<NotificationEventLogEntity> findFirstByNotificationIdOrderByCreatedAtDesc(Long notificationId);
 	Optional<NotificationEventLogEntity> findFirstByNotificationIdAndEventStatusIsNotOrderByCreatedAtDesc(Long notificationId, EventStatus eventStatus);
 
-	@org.springframework.data.jpa.repository.Query("""
+	@Query("""
 		SELECT e.notificationId 
 		FROM NotificationEventLogEntity e
 		WHERE e.id IN (
@@ -22,5 +25,5 @@ public interface NotificationEventLogJpaRepository extends JpaRepository<Notific
 		)
 		AND e.eventStatus IN :statuses
 	""")
-	java.util.List<Long> findUnprocessedNotificationIds(@org.springframework.data.repository.query.Param("statuses") java.util.List<EventStatus> statuses);
+	List<Long> findUnprocessedNotificationIds(@Param("statuses") List<EventStatus> statuses);
 }

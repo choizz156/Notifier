@@ -1,7 +1,6 @@
 package io.github.choizz.notifier.app.runner;
 
 import java.util.List;
-import java.util.concurrent.Executors;
 
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -20,21 +19,22 @@ public class UnprocessedNotificationRecoveryRunner {
 
 	private final NotificationEventLogPersistencePort notificationEventLogPersistencePort;
 	private final NotificationUseCase notificationUseCase;
+	private final @org.springframework.beans.factory.annotation.Qualifier("taskExecutor") java.util.concurrent.Executor taskExecutor;
 
 	@EventListener(ApplicationReadyEvent.class)
 	public void recoverUnprocessedNotifications() {
 		log.info("미처리 알림 복구 작업을 시작합니다.");
 
-		try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
+		try {
 			List<EventStatus> targetStatuses = List.of(EventStatus.REQUESTED, EventStatus.RETRIED, EventStatus.PROCESSING);
 			List<Long> notificationIds = notificationEventLogPersistencePort.findUnprocessedNotificationIds(targetStatuses);
 
 			log.info("총 {} 개의 미처리 알림이 발견되었습니다.", notificationIds.size());
 
 			for (Long id : notificationIds) {
-				executor.submit(() -> {
+				taskExecutor.execute(() -> {
 					try {
-						log.info("가상스레드를 사용하여 미처리 알림(ID: {}) 재처리를 시도합니다.", id);
+						log.info("가상스레드(taskExecutor)를 사용하여 미처리 알림(ID: {}) 재처리를 시도합니다.", id);
 						notificationUseCase.retry(id);
 					} catch (Exception e) {
 						log.error("알림(ID: {}) 재처리 중 오류 발생", id, e);

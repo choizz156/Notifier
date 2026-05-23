@@ -4,8 +4,7 @@ import java.util.concurrent.Executor;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.task.VirtualThreadTaskExecutor;
-import org.springframework.core.task.support.TaskExecutorAdapter;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.scheduling.annotation.EnableAsync;
 
 @EnableAsync
@@ -14,8 +13,9 @@ public class AsyncConfig {
 
 	@Bean(name = "taskExecutor")
 	public Executor taskExecutor() {
-		return new TaskExecutorAdapter(
-			new VirtualThreadTaskExecutor("publish-async-")
-		);
+
+		SimpleAsyncTaskExecutor executor = new SimpleAsyncTaskExecutor("publish-async-");
+		executor.setVirtualThreads(true);
+		return executor;
 	}
 }
