@@ -24,6 +24,7 @@ public class NotificationEventLog {
 	private EventStatus eventStatus;
 	private String failReason;
 	private LocalDateTime publishedAt;
+	private LocalDateTime updatedAt;
 
 	@Builder
 	private NotificationEventLog(
@@ -35,7 +36,9 @@ public class NotificationEventLog {
 		int retryCount,
 		boolean published,
 		LocalDateTime publishedAt,
-		LocalDateTime createdAt, String metadata
+		LocalDateTime createdAt,
+		String metadata,
+		LocalDateTime updatedAt
 	) {
 
 		this.id = id;
@@ -48,6 +51,7 @@ public class NotificationEventLog {
 		this.publishedAt = publishedAt;
 		this.createdAt = createdAt != null ? createdAt : LocalDateTime.now();
 		this.metadata = metadata;
+		this.updatedAt = updatedAt;
 	}
 
 	public static NotificationEventLog request(Long notificationId, Channel channelType, String metadata) {
@@ -59,23 +63,7 @@ public class NotificationEventLog {
 			.retryCount(0)
 			.published(false)
 			.metadata(metadata)
-			.build();
-	}
-
-	public static NotificationEventLog fail(
-		Long notificationId,
-		Channel channelType,
-		String failReason,
-		int retryCount
-	) {
-
-		return NotificationEventLog.builder()
-			.notificationId(notificationId)
-			.channelType(channelType)
-			.eventStatus(EventStatus.FAILED)
-			.failReason(failReason)
-			.retryCount(retryCount)
-			.published(false)
+			.updatedAt(LocalDateTime.now())
 			.build();
 	}
 
@@ -83,14 +71,21 @@ public class NotificationEventLog {
 		this.published = true;
 		this.eventStatus = EventStatus.SENT;
 		this.publishedAt = LocalDateTime.now();
+		updateDate();
 	}
 
 	public void markAsRetried() {
 		this.eventStatus = EventStatus.RETRIED;
 		this.retryCount++;
+		updateDate();
 	}
 
 	public void markAsFailed() {
 		this.eventStatus = EventStatus.FAILED;
+		updateDate();
+	}
+
+	private void updateDate() {
+		this.updatedAt = LocalDateTime.now();
 	}
 }

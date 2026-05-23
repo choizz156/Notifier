@@ -38,6 +38,10 @@ public abstract class BaseEntity {
 		this.id = id;
 	}
 
+	public void updatedAt(LocalDateTime updatedAt) {
+		this.updatedAt = updatedAt;
+	}
+
 	@Override
 	public final boolean equals(Object o) {
 

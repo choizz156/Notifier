@@ -6,7 +6,8 @@ import io.github.choizz.notifier.core.domain.model.NotificationEventLog;
 public class NotificationEventLogMapper {
 
 	public static NotificationEventLogEntity toEntity(NotificationEventLog eventLog) {
-		return NotificationEventLogEntity.builder()
+
+		NotificationEventLogEntity entity = NotificationEventLogEntity.builder()
 			.notificationId(eventLog.notificationId())
 			.channelType(eventLog.channelType())
 			.eventStatus(eventLog.eventStatus())
@@ -15,6 +16,10 @@ public class NotificationEventLogMapper {
 			.published(eventLog.published())
 			.publishedAt(eventLog.publishedAt())
 			.build();
+
+		entity.id(eventLog.id());
+		entity.updatedAt(eventLog.updatedAt());
+		return entity;
 	}
 
 	public static NotificationEventLog toDomain(NotificationEventLogEntity entity) {
@@ -28,6 +33,7 @@ public class NotificationEventLogMapper {
 			.published(entity.published())
 			.publishedAt(entity.publishedAt())
 			.createdAt(entity.createdAt())
+			.updatedAt(entity.updatedAt())
 			.build();
 	}
 }

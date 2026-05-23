@@ -17,6 +17,7 @@ public class NotificationMapper {
 			.isRead(notification.isRead())
 			.build();
 		entity.id(notification.id());
+		entity.updatedAt(notification.updatedAt());
 		return entity;
 	}
 
