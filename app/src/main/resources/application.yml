@@ -10,6 +10,7 @@ spring:
       - logging.yml
       - db.yml
       - rdb-retry.yml
+      - scheduler.yml
 
   threads:
     virtual:

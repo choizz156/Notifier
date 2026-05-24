@@ -21,7 +21,7 @@ public interface NotificationPersistencePort {
 
 	PageResult<Notification> findAllBySubscriberId(Long subscriberId, Boolean isRead, int page, int size);
 
-	List<Notification> findAllByIds(java.util.List<Long> ids);
+	List<Notification> findAllByIds(List<Long> ids);
 
 	void saveAll(List<Notification> notifications);
 }

@@ -1,0 +1,5 @@
+scheduler:
+  stuck-event:
+    cron: "0 */5 * * * *" # 5분
+  reservation:
+    cron: "0 0 * * * *" # 1시간

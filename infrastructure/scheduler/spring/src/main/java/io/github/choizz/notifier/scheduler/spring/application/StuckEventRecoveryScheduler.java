@@ -14,7 +14,7 @@ public class StuckEventRecoveryScheduler {
 
 	private final StuckEventRecoveryUseCase stuckEventRecoveryUseCase;
 
-	@Scheduled(cron = "0 */5 * * * *") // 5분마다 실행
+	@Scheduled(cron = "${scheduler.stuck-event.cron}") // 5분마다 실행
 	@SchedulerLock(name = "stuck_event_recovery_lock", lockAtLeastFor = "30s", lockAtMostFor = "5m")
 	public void recover() {
 		stuckEventRecoveryUseCase.recoverStuckEvents();
