@@ -15,7 +15,7 @@ public interface NotificationUseCase {
 
 	void updateStatus(Long notificationId, NotificationStatus status);
 
-	NotificationStatusResponse getStatus(Long notificationId);
+	NotificationStatusResponse findStatus(Long notificationId);
 
 	PageResult<NotificationResponse> getNotifications(Long subscriberId, Boolean isRead, int page, int size);
 

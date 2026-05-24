@@ -47,7 +47,7 @@ public class NotifierController {
 	@GetMapping("/{id}/status")
 	public NotificationStatusResponse getStatus(@PathVariable("id") Long id) {
 
-		return notificationUseCase.getStatus(id);
+		return notificationUseCase.findStatus(id);
 	}
 
 	@GetMapping("/subscribers/{subscriberId}")

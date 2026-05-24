@@ -1,4 +1,4 @@
-package io.github.choizz.notifier.core.application;
+package io.github.choizz.notifier.core.application.handler;
 
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;

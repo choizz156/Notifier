@@ -16,6 +16,7 @@ import io.github.choizz.notifier.core.application.port.in.NotificationUseCase;
 import io.github.choizz.notifier.core.application.port.out.NotificationPersistencePort;
 import io.github.choizz.notifier.core.application.port.out.TemplateRendererPort;
 import io.github.choizz.notifier.core.application.support.ChunkExecutor;
+import io.github.choizz.notifier.core.application.support.PublishProcessor;
 import io.github.choizz.notifier.core.domain.event.NotificationRequestedEvent;
 import io.github.choizz.notifier.core.domain.model.Notification;
 import io.github.choizz.notifier.core.domain.model.NotificationStatus;
@@ -33,6 +34,7 @@ public class NotificationService implements NotificationUseCase {
 	private final NotificationPersistencePort notificationPersistencePort;
 	private final NotificationEventLogUseCase notificationEventLogUseCase;
 	private final TemplateRendererPort templateRendererPort;
+	private final PublishProcessor<Long> notificationRetryProcessor;
 
 	@Override
 	public void push(NotificationContext NotificationContext) {
@@ -85,7 +87,6 @@ public class NotificationService implements NotificationUseCase {
 
 	@Override
 	public void retry() {
-
 		ChunkExecutor.execute(
 			0L,
 			id -> id,
@@ -94,26 +95,9 @@ public class NotificationService implements NotificationUseCase {
 		);
 	}
 
-	private void publish(List<Long> notificationIds) {
-
-		for (Long id : notificationIds) {
-			Notification notification = notificationPersistencePort.findById(id);
-			notification.markAsPendingForManualRetry();
-			Notification savedNotification = notificationPersistencePort.save(notification);
-
-			NotificationContext context = new NotificationContext(
-				savedNotification.subscriberId(),
-				savedNotification.notificationType().name(),
-				savedNotification.channel().name(),
-				JsonUtils.toMap(savedNotification.metadata())
-			);
-			applicationEventPublisher.publishEvent(NotificationRequestedEvent.of(savedNotification, context));
-		}
-	}
-
 	@Override
 	@Transactional(readOnly = true)
-	public NotificationStatusResponse getStatus(Long notificationId) {
+	public NotificationStatusResponse findStatus(Long notificationId) {
 
 		Notification notification = notificationPersistencePort.findById(notificationId);
 		return new NotificationStatusResponse(notification.id(), notification.status());
@@ -152,7 +136,13 @@ public class NotificationService implements NotificationUseCase {
 		return NotificationDetailResponse.of(notification, content);
 	}
 
-	private void process(Long id) {
-
+	private void publish(List<Long> notificationIds) {
+		for (Long id : notificationIds) {
+			try {
+				notificationRetryProcessor.process(id);
+			} catch (Exception e) {
+				log.warn("알림 재시도 처리 실패: id={}", id, e);
+			}
+		}
 	}
 }
