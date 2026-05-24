@@ -9,6 +9,8 @@ public interface ReservationNotificationPersistencePort {
 
 	ReservationInformation save(ReservationInformation reservationInformation);
 
+	void saveAll(List<ReservationInformation> reservationInformations);
+
 	List<ReservationInformation> findUnpublishedNotificationsBefore(LocalDateTime time, Long lastId, int chunkSize);
 
 	void markAsPublished(List<Long> ids);

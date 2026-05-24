@@ -26,6 +26,14 @@ public class ReservationNotificationPersistenceAdapter implements ReservationNot
 	}
 
 	@Override
+	public void saveAll(List<ReservationInformation> reservationInformations) {
+		List<ReservationNotificationEntity> entities = reservationInformations.stream()
+			.map(ReservationNotificationMapper::toEntity)
+			.toList();
+		reservationNotificationJpaRepository.saveAll(entities);
+	}
+
+	@Override
 	public List<ReservationInformation> findUnpublishedNotificationsBefore(LocalDateTime time, Long lastId, int chunkSize) {
 		return reservationNotificationJpaRepository.findUnpublishedBefore(time, lastId, Limit.of(chunkSize))
 			.stream()

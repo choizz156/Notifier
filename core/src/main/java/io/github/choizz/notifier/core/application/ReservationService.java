@@ -37,11 +37,11 @@ public class ReservationService implements ReservationUseCase {
 			reservationTime
 		);
 
-		for (Long subscriberId : subscriberIds) {
-			ReservationInformation reservationInformation =
-				ReservationInformation.of(subscriberId, type, reservationTime);
-			reservationNotificationPersistencePort.save(reservationInformation);
-		}
+		List<ReservationInformation> reservationInformations = subscriberIds.stream()
+			.map(subscriberId -> ReservationInformation.of(subscriberId, type, reservationTime))
+			.toList();
+
+		reservationNotificationPersistencePort.saveAll(reservationInformations);
 	}
 
 	@Override
