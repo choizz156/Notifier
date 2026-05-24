@@ -45,7 +45,8 @@ public abstract class AbstractRetryProcessor implements RetryProcessor {
 		);
 	}
 
-	protected abstract NotificationType.RetryLevel getRetryLevel();
+	@Override
+	public abstract NotificationType.RetryLevel getRetryLevel();
 
 	private void send(NotifierPort notifierPort, PublicationContext context) {
 

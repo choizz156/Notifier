@@ -9,4 +9,6 @@ public interface RetryProcessor {
 	boolean support(NotificationType type);
 
 	void handle(NotifierPort notifierPort, PublicationContext context);
+
+	NotificationType.RetryLevel getRetryLevel();
 }
