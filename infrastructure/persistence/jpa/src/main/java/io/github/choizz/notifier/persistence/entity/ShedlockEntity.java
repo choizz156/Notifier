@@ -31,4 +31,10 @@ public class ShedlockEntity {
 	@Column(name = "locked_by", nullable = false)
 	private String lockedBy;
 
+	public ShedlockEntity(String name, LocalDateTime lockUntil, LocalDateTime lockedAt, String lockedBy) {
+		this.name = name;
+		this.lockUntil = lockUntil;
+		this.lockedAt = lockedAt;
+		this.lockedBy = lockedBy;
+	}
 }
