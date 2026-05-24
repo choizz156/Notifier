@@ -52,7 +52,7 @@ public class NotificationEventLogService implements NotificationEventLogUseCase 
 			return false;
 		}
 
-		eventLog.markAdProcessing();
+		eventLog.markAsProcessing();
 
 		try {
 			notificationEventLogPersistencePort.save(eventLog);

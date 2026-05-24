@@ -46,4 +46,12 @@ public class NotificationEventLogPersistenceAdapter implements NotificationEvent
 	public List<Long> findUnprocessedNotificationIds(List<EventStatus> statuses, long lastId, int chunkSize) {
 		return eventLogJpaRepository.findUnprocessedNotificationIds(statuses, lastId, Limit.of(chunkSize));
 	}
+
+	@Override
+	public List<NotificationEventLog> findAllByEventStatus(EventStatus eventStatus) {
+		return eventLogJpaRepository.findAllByEventStatus(eventStatus)
+			.stream()
+			.map(NotificationEventLogMapper::toDomain)
+			.toList();
+	}
 }

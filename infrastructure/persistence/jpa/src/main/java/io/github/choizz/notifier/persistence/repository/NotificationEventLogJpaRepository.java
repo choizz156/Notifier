@@ -32,4 +32,6 @@ public interface NotificationEventLogJpaRepository extends JpaRepository<Notific
 		@Param("lastNotificationId") Long lastNotificationId,
 		Limit limit
 	);
+
+	List<NotificationEventLogEntity> findAllByEventStatus(EventStatus eventStatus);
 }

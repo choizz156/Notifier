@@ -125,8 +125,22 @@ public class NotificationEventLog {
 			.build();
 	}
 
-	public void markAdProcessing() {
+	public void markAsProcessing() {
 		this.eventStatus = EventStatus.PROCESSING;
+		this.updatedAt = LocalDateTime.now();
+	}
+
+	public void markAsRetried(String reason, int newRetryCount) {
+		this.eventStatus = EventStatus.RETRIED;
+		this.failReason = reason;
+		this.retryCount = newRetryCount;
+		this.updatedAt = LocalDateTime.now();
+	}
+
+	public void markAsFailed(String reason, int newRetryCount) {
+		this.eventStatus = EventStatus.FAILED;
+		this.failReason = reason;
+		this.retryCount = newRetryCount;
 		this.updatedAt = LocalDateTime.now();
 	}
 }
