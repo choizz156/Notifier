@@ -25,16 +25,6 @@ public class NotificationRetryProcessor {
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void process(Long id) {
 
-		Notification notification = notificationPersistencePort.findById(id);
-		notification.markAsPendingForManualRetry();
-		Notification savedNotification = notificationPersistencePort.save(notification);
 
-		NotificationContext context = new NotificationContext(
-			savedNotification.subscriberId(),
-			savedNotification.notificationType().name(),
-			savedNotification.channel().name(),
-			JsonUtils.toMap(savedNotification.metadata())
-		);
-		applicationEventPublisher.publishEvent(NotificationRequestedEvent.of(savedNotification, context));
 	}
 }

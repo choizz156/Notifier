@@ -17,9 +17,9 @@ public interface NotificationUseCase {
 
 	NotificationStatusResponse findStatus(Long notificationId);
 
-	PageResult<NotificationResponse> getNotifications(Long subscriberId, Boolean isRead, int page, int size);
+	PageResult<NotificationResponse> findNotifications(Long subscriberId, Boolean isRead, int page, int size);
 
-	NotificationDetailResponse getNotificationDetail(Long notificationId);
+	NotificationDetailResponse findNotificationDetail(Long notificationId);
 	
 	void retry();
 	

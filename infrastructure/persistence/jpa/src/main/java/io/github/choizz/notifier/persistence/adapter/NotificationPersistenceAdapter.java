@@ -99,5 +99,21 @@ public class NotificationPersistenceAdapter implements NotificationPersistencePo
 			entityPage.getTotalPages()
 		);
 	}
+
+	@Override
+	public List<Notification> findAllByIds(List<Long> ids) {
+		return notificationJpaRepository.findAllById(ids).stream()
+			.map(NotificationMapper::toDomain)
+			.toList();
+	}
+
+	@Override
+	@Transactional
+	public void saveAll(List<Notification> notifications) {
+		List<NotificationEntity> entities = notifications.stream()
+			.map(NotificationMapper::toEntity)
+			.toList();
+		notificationJpaRepository.saveAll(entities);
+	}
 }
 

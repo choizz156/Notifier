@@ -58,7 +58,7 @@ public class NotifierController {
 		@RequestParam(value = "size", defaultValue = "20") int size
 	) {
 
-		return notificationUseCase.getNotifications(subscriberId, isRead, page, size);
+		return notificationUseCase.findNotifications(subscriberId, isRead, page, size);
 	}
 
 	@GetMapping("/{id}")
@@ -66,7 +66,7 @@ public class NotifierController {
 		@PathVariable("id") Long id
 	) {
 
-		return notificationUseCase.getNotificationDetail(id);
+		return notificationUseCase.findNotificationDetail(id);
 	}
 
 	@ResponseStatus(HttpStatus.NO_CONTENT)

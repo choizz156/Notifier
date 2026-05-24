@@ -1,5 +1,6 @@
 package io.github.choizz.notifier.core.application;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.context.ApplicationEventPublisher;
@@ -26,7 +27,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
-@Transactional
 @Service
 public class NotificationService implements NotificationUseCase {
 
@@ -37,6 +37,7 @@ public class NotificationService implements NotificationUseCase {
 	private final NotificationRetryProcessor notificationRetryProcessor;
 
 	@Override
+	@Transactional
 	public void push(NotificationContext NotificationContext) {
 
 		boolean isDuplicate = notificationPersistencePort.existsDuplicate(
@@ -59,12 +60,14 @@ public class NotificationService implements NotificationUseCase {
 	}
 
 	@Override
+	@Transactional
 	public void markAsRead(Long notificationId) {
 
 		notificationPersistencePort.markAsRead(notificationId);
 	}
 
 	@Override
+	@Transactional
 	public void updateStatus(Long notificationId, NotificationStatus status) {
 
 		Notification notification = notificationPersistencePort.findById(notificationId);
@@ -78,6 +81,7 @@ public class NotificationService implements NotificationUseCase {
 	}
 
 	@Override
+	@Transactional
 	public void fail(Long notificationId, String failReason) {
 
 		Notification notification = notificationPersistencePort.findById(notificationId);
@@ -87,6 +91,7 @@ public class NotificationService implements NotificationUseCase {
 
 	@Override
 	public void retry() {
+
 		ChunkExecutor.execute(
 			0L,
 			id -> id,
@@ -105,7 +110,7 @@ public class NotificationService implements NotificationUseCase {
 
 	@Override
 	@Transactional(readOnly = true)
-	public PageResult<NotificationResponse> getNotifications(Long subscriberId, Boolean isRead, int page, int size) {
+	public PageResult<NotificationResponse> findNotifications(Long subscriberId, Boolean isRead, int page, int size) {
 
 		PageResult<Notification> pageResult = notificationPersistencePort.findAllBySubscriberId(subscriberId, isRead,
 			page, size);
@@ -125,7 +130,7 @@ public class NotificationService implements NotificationUseCase {
 
 	@Override
 	@Transactional(readOnly = true)
-	public NotificationDetailResponse getNotificationDetail(Long notificationId) {
+	public NotificationDetailResponse findNotificationDetail(Long notificationId) {
 
 		Notification notification = notificationPersistencePort.findById(notificationId);
 		String content = templateRendererPort.render(
@@ -137,12 +142,29 @@ public class NotificationService implements NotificationUseCase {
 	}
 
 	private void publish(List<Long> notificationIds) {
-		for (Long id : notificationIds) {
+
+		List<Notification> notifications = notificationPersistencePort.findAllByIds(notificationIds);
+		List<Notification> successfulNotifications = new ArrayList<>();
+
+		for (Notification notification : notifications) {
 			try {
-				notificationRetryProcessor.process(id);
+				notification.markAsPendingForManualRetry();
+
+				NotificationContext context = new NotificationContext(
+					notification.subscriberId(),
+					notification.notificationType().name(),
+					notification.channel().name(),
+					JsonUtils.toMap(notification.metadata())
+				);
+				applicationEventPublisher.publishEvent(NotificationRequestedEvent.of(notification, context));
+				successfulNotifications.add(notification);
 			} catch (Exception e) {
-				log.warn("알림 재시도 처리 실패: id={}", id, e);
+				log.warn("알림 재시도 처리 실패: id={}", notification.id(), e);
 			}
+		}
+
+		if (!successfulNotifications.isEmpty()) {
+			notificationPersistencePort.saveAll(successfulNotifications);
 		}
 	}
 }
