@@ -12,6 +12,7 @@ import io.github.choizz.notifier.core.domain.event.NotificationRequestedEvent;
 import io.github.choizz.notifier.core.domain.event.PublishCommandEvent;
 import io.github.choizz.notifier.core.domain.model.Channel;
 import io.github.choizz.notifier.core.domain.model.NotificationEventLog;
+import io.github.choizz.notifier.core.domain.model.NotificationType;
 import io.github.choizz.notifier.core.domain.util.JsonUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +30,7 @@ public class NotificationRequestedEventHandler {
 
 		NotificationEventLog eventLog = NotificationEventLog.request(
 			event.notificationId(),
+			NotificationType.valueOf(event.notificationType()),
 			Channel.valueOf(event.channel()),
 			getMetadataToString(event)
 		);

@@ -6,6 +6,7 @@ import io.github.choizz.notifier.core.application.dto.PublicationContext;
 import io.github.choizz.notifier.core.domain.model.Channel;
 import io.github.choizz.notifier.core.domain.model.EventStatus;
 import io.github.choizz.notifier.core.domain.model.NotificationEventLog;
+import io.github.choizz.notifier.core.domain.model.NotificationType;
 import io.github.choizz.notifier.core.domain.util.JsonUtils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -19,12 +20,14 @@ public class NotificationEventLogFactory {
 		return switch (eventStatus) {
 			case SENT -> NotificationEventLog.sent(
 				context.notificationId(),
+				NotificationType.valueOf(context.notificationType()),
 				Channel.valueOf(context.channel()),
 				context.metadata(),
 				context.retryCount()
 			);
 			case RETRIED -> NotificationEventLog.retried(
 				context.notificationId(),
+				NotificationType.valueOf(context.notificationType()),
 				Channel.valueOf(context.channel()),
 				context.failReason(),
 				context.metadata(),
@@ -32,6 +35,7 @@ public class NotificationEventLogFactory {
 			);
 			case FAILED -> NotificationEventLog.failed(
 				context.notificationId(),
+				NotificationType.valueOf(context.notificationType()),
 				Channel.valueOf(context.channel()),
 				context.failReason(),
 				context.metadata(),

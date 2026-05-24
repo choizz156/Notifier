@@ -9,6 +9,7 @@ public class NotificationEventLogMapper {
 
 		NotificationEventLogEntity entity = NotificationEventLogEntity.builder()
 			.notificationId(eventLog.notificationId())
+			.notificationType(eventLog.notificationType())
 			.channelType(eventLog.channelType())
 			.eventStatus(eventLog.eventStatus())
 			.failReason(eventLog.failReason())
@@ -26,6 +27,7 @@ public class NotificationEventLogMapper {
 		return NotificationEventLog.builder()
 			.id(entity.id())
 			.notificationId(entity.notificationId())
+			.notificationType(entity.notificationType())
 			.channelType(entity.channelType())
 			.eventStatus(entity.eventStatus())
 			.failReason(entity.failReason())

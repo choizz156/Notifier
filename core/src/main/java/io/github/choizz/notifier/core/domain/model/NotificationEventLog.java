@@ -16,6 +16,7 @@ public class NotificationEventLog {
 
 	private final Long id;
 	private final Long notificationId;
+	private final NotificationType notificationType;
 	private final Channel channelType;
 	private final LocalDateTime createdAt;
 	private final String metadata;
@@ -30,6 +31,7 @@ public class NotificationEventLog {
 	private NotificationEventLog(
 		Long id,
 		Long notificationId,
+		NotificationType notificationType,
 		Channel channelType,
 		EventStatus eventStatus,
 		String failReason,
@@ -43,6 +45,7 @@ public class NotificationEventLog {
 
 		this.id = id;
 		this.notificationId = notificationId;
+		this.notificationType = notificationType;
 		this.channelType = channelType;
 		this.eventStatus = eventStatus;
 		this.failReason = failReason;
@@ -54,10 +57,11 @@ public class NotificationEventLog {
 		this.updatedAt = updatedAt;
 	}
 
-	public static NotificationEventLog request(Long notificationId, Channel channelType, String metadata) {
+	public static NotificationEventLog request(Long notificationId, NotificationType notificationType, Channel channelType, String metadata) {
 
 		return NotificationEventLog.builder()
 			.notificationId(notificationId)
+			.notificationType(notificationType)
 			.channelType(channelType)
 			.eventStatus(EventStatus.REQUESTED)
 			.retryCount(0)
@@ -68,6 +72,7 @@ public class NotificationEventLog {
 
 	public static NotificationEventLog retried(
 		Long notificationId,
+		NotificationType notificationType,
 		Channel channelType,
 		String failReason,
 		String metadata,
@@ -76,6 +81,7 @@ public class NotificationEventLog {
 
 		return NotificationEventLog.builder()
 			.notificationId(notificationId)
+			.notificationType(notificationType)
 			.channelType(channelType)
 			.eventStatus(EventStatus.RETRIED)
 			.failReason(failReason)
@@ -88,6 +94,7 @@ public class NotificationEventLog {
 
 	public static NotificationEventLog sent(
 		Long notificationId,
+		NotificationType notificationType,
 		Channel channelType,
 		String metadata,
 		int retryCount
@@ -95,6 +102,7 @@ public class NotificationEventLog {
 
 		return NotificationEventLog.builder()
 			.notificationId(notificationId)
+			.notificationType(notificationType)
 			.channelType(channelType)
 			.eventStatus(EventStatus.SENT)
 			.retryCount(retryCount)
@@ -107,6 +115,7 @@ public class NotificationEventLog {
 
 	public static NotificationEventLog failed(
 		Long notificationId,
+		NotificationType notificationType,
 		Channel channelType,
 		String failReason,
 		String metadata,
@@ -115,6 +124,7 @@ public class NotificationEventLog {
 
 		return NotificationEventLog.builder()
 			.notificationId(notificationId)
+			.notificationType(notificationType)
 			.channelType(channelType)
 			.eventStatus(EventStatus.FAILED)
 			.failReason(failReason)
