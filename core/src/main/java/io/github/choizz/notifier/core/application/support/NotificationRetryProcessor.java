@@ -1,5 +1,8 @@
 package io.github.choizz.notifier.core.application.support;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
@@ -22,11 +25,11 @@ public class NotificationRetryProcessor {
 	private final ApplicationEventPublisher applicationEventPublisher;
 
 
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public void processChunk(java.util.List<Long> notificationIds) {
+	@Transactional
+	public void processChunk(List<Long> notificationIds) {
 
-		java.util.List<Notification> notifications = notificationPersistencePort.findAllByIds(notificationIds);
-		java.util.List<Notification> successfulNotifications = new java.util.ArrayList<>();
+		List<Notification> notifications = notificationPersistencePort.findAllByIds(notificationIds);
+		List<Notification> successfulNotifications = new ArrayList<>();
 
 		for (Notification notification : notifications) {
 			try {
