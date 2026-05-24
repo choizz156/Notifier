@@ -1,5 +1,7 @@
 package io.github.choizz.notifier.core.application.port.in;
 
+import java.util.List;
+
 import io.github.choizz.notifier.core.application.dto.NotificationContext;
 import io.github.choizz.notifier.core.application.dto.NotificationDetailResponse;
 import io.github.choizz.notifier.core.application.dto.NotificationResponse;
@@ -22,6 +24,8 @@ public interface NotificationUseCase {
 	NotificationDetailResponse findNotificationDetail(Long notificationId);
 	
 	void retry();
+
+	void retryStuckNotification(List<Long> notificationId);
 	
 	void fail(Long notificationId, String failReason );
 }

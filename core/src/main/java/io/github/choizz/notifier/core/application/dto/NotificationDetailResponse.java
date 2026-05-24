@@ -30,7 +30,7 @@ public record NotificationDetailResponse(
 			content,
 			notification.isRead(),
 			notification.createdAt(),
-			notification.manualRetryCount()
+			notification.recoverCount()
 		);
 	}
 }

@@ -23,8 +23,30 @@ public class NotificationRetryProcessor {
 
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public void process(Long id) {
+	public void processChunk(java.util.List<Long> notificationIds) {
 
+		java.util.List<Notification> notifications = notificationPersistencePort.findAllByIds(notificationIds);
+		java.util.List<Notification> successfulNotifications = new java.util.ArrayList<>();
 
+		for (Notification notification : notifications) {
+			try {
+				notification.markAsPendingForRecover();
+
+				NotificationContext context = new NotificationContext(
+					notification.subscriberId(),
+					notification.notificationType().name(),
+					notification.channel().name(),
+					JsonUtils.toMap(notification.metadata())
+				);
+				applicationEventPublisher.publishEvent(NotificationRequestedEvent.of(notification, context));
+				successfulNotifications.add(notification);
+			} catch (Exception e) {
+				log.warn("알림 재시도 처리 실패: id={}", notification.id(), e);
+			}
+		}
+
+		if (!successfulNotifications.isEmpty()) {
+			notificationPersistencePort.saveAll(successfulNotifications);
+		}
 	}
 }

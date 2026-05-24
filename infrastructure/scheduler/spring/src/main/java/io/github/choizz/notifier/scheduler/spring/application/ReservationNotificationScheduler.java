@@ -14,7 +14,7 @@ public class ReservationNotificationScheduler {
 
 	private final ReservationUseCase reservationUseCase;
 
-	@Scheduled(fixedDelayString = "${scheduler.reservation.fixed-delay}")
+	@Scheduled(cron = "0 0 * * * *")//1 시간마다 실행
 	@SchedulerLock(name = "publishReservationNotification", lockAtLeastFor = "30s", lockAtMostFor = "5m")
 	public void publishReservationNotification() {
 		reservationUseCase.publishReservationNotification();

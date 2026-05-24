@@ -1,5 +1,0 @@
-scheduler:
-  reservation:
-    fixed-delay: '3600000'
-  stuck-event-recovery:
-      fixed-delay: '300000'

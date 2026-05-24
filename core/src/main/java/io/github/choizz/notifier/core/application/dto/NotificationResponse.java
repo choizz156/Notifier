@@ -28,7 +28,7 @@ public record NotificationResponse(
 			notification.notificationType().title(),
 			notification.isRead(),
 			notification.createdAt(),
-			notification.manualRetryCount()
+			notification.recoverCount()
 		);
 	}
 }

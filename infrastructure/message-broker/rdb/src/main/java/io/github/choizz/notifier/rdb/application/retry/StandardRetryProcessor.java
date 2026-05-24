@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import io.github.choizz.notifier.core.application.dto.PublicationContext;
 import io.github.choizz.notifier.core.application.port.in.NotificationEventLogUseCase;
 import io.github.choizz.notifier.core.application.port.out.NotifierPort;
-import io.github.choizz.notifier.core.domain.model.NotificationType;
+import io.github.choizz.notifier.core.domain.model.RetryLevel;
 
 @Component
 public class StandardRetryProcessor extends AbstractRetryProcessor {
@@ -20,9 +20,9 @@ public class StandardRetryProcessor extends AbstractRetryProcessor {
 	}
 
 	@Override
-	public RdbRetryLevel getRdbRetryLevel() {
+	public RetryLevel getRdbRetryLevel() {
 
-		return RdbRetryLevel.STANDARD;
+		return RetryLevel.STANDARD;
 	}
 
 	@Override

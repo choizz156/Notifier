@@ -25,7 +25,7 @@ public class Notification {
 	private boolean isRead;
 	private final LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
-	private int manualRetryCount;
+	private int recoverCount;
 
 	@Builder
 	private Notification(
@@ -39,7 +39,7 @@ public class Notification {
 		boolean isRead,
 		LocalDateTime createdAt,
 		LocalDateTime updatedAt,
-		int manualRetryCount
+		int recoverCount
 	) {
 
 		this.id = id;
@@ -52,7 +52,7 @@ public class Notification {
 		this.isRead = isRead;
 		this.createdAt = createdAt != null ? createdAt : LocalDateTime.now();
 		this.updatedAt = updatedAt != null ? updatedAt : LocalDateTime.now();
-		this.manualRetryCount = manualRetryCount;
+		this.recoverCount = recoverCount;
 	}
 
 	public static Notification from(NotificationContext context) {
@@ -64,7 +64,7 @@ public class Notification {
 			.status(NotificationStatus.PENDING)
 			.metadata(context.metadataToJson())
 			.isRead(false)
-			.manualRetryCount(0)
+			.recoverCount(0)
 			.build();
 	}
 
@@ -96,15 +96,15 @@ public class Notification {
 		updateDate();
 	}
 
-	public void markAsPendingForManualRetry() {
+	public void markAsPendingForRecover() {
 
-		if (this.status != NotificationStatus.FAILED) {
-			throw new IllegalStateException("수동 재시도는 실패한 알림에 대해서만 가능합니다.");
+		if (this.status == NotificationStatus.COMPLETED) {
+			throw new IllegalStateException("완료된 알림은 재시도할 수 없습니다.");
 		}
 
 		this.status = NotificationStatus.PENDING;
 		this.failMessage = null;
-		this.manualRetryCount++;
+		this.recoverCount++;
 		updateDate();
 	}
 

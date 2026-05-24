@@ -1,15 +1,16 @@
-package io.github.choizz.notifier.rdb.application.retry;
+package io.github.choizz.notifier.core.domain.model;
 
 import java.util.Arrays;
 import java.util.Set;
 
-import io.github.choizz.notifier.core.domain.model.NotificationType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.Accessors;
 
 @Getter
+@Accessors(fluent = true)
 @RequiredArgsConstructor
-public enum RdbRetryLevel {
+public enum RetryLevel {
 
 	AGGRESSIVE(
 		Set.of(NotificationType.PAYMENT_CONFIRMED, NotificationType.CANCELLATION_PROCESSED)
@@ -26,7 +27,7 @@ public enum RdbRetryLevel {
 
 	private final Set<NotificationType> supportedTypes;
 
-	public static RdbRetryLevel from(NotificationType type) {
+	public static RetryLevel from(NotificationType type) {
 		return Arrays.stream(values())
 			.filter(level -> level.supportedTypes.contains(type))
 			.findFirst()

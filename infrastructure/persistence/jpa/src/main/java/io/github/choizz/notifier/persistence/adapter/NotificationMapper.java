@@ -14,7 +14,7 @@ public class NotificationMapper {
 			.status(notification.status())
 			.message(notification.failMessage())
 			.isRead(notification.isRead())
-			.manualRetryCount(notification.manualRetryCount())
+			.manualRetryCount(notification.recoverCount())
 			.build();
 		entity.id(notification.id());
 		entity.updatedAt(notification.updatedAt());
@@ -33,7 +33,7 @@ public class NotificationMapper {
 			.isRead(entity.isRead())
 			.createdAt(entity.createdAt())
 			.updatedAt(entity.updatedAt())
-			.manualRetryCount(entity.manualRetryCount())
+			.recoverCount(entity.manualRetryCount())
 			.build();
 	}
 }

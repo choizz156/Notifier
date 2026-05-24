@@ -1,5 +1,7 @@
 package io.github.choizz.notifier.persistence.adapter;
 
+import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -10,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import io.github.choizz.notifier.core.application.port.out.NotificationEventLogPersistencePort;
 import io.github.choizz.notifier.core.domain.model.EventStatus;
 import io.github.choizz.notifier.core.domain.model.NotificationEventLog;
+import io.github.choizz.notifier.core.domain.model.NotificationType;
 import io.github.choizz.notifier.persistence.entity.NotificationEventLogEntity;
 import io.github.choizz.notifier.persistence.repository.NotificationEventLogJpaRepository;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +38,16 @@ public class NotificationEventLogPersistenceAdapter implements NotificationEvent
 	}
 
 	@Override
+	@Transactional
+	public void saveAll(List<NotificationEventLog> eventLogs) {
+
+		List<NotificationEventLogEntity> entities = eventLogs.stream()
+			.map(NotificationEventLogMapper::toEntity)
+			.toList();
+		eventLogJpaRepository.saveAll(entities);
+	}
+
+	@Override
 	public NotificationEventLog findLatestByNotificationId(Long notificationId) {
 
 		return eventLogJpaRepository.findFirstByNotificationIdOrderByCreatedAtDesc(notificationId)
@@ -54,4 +67,13 @@ public class NotificationEventLogPersistenceAdapter implements NotificationEvent
 			.map(NotificationEventLogMapper::toDomain)
 			.toList();
 	}
-}
+
+	@Override
+	public List<NotificationEventLog> findStuckLogs(long lastId, EventStatus status, Collection<NotificationType> types, LocalDateTime thresholdTime, int chunkSize) {
+		return eventLogJpaRepository.findStuckLogs(lastId, status, types, thresholdTime, Limit.of(chunkSize))
+			.stream()
+			.map(NotificationEventLogMapper::toDomain)
+			.toList();
+	}
+	}
+

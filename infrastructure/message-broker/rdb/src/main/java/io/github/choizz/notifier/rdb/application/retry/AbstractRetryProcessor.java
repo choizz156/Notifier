@@ -10,6 +10,7 @@ import io.github.choizz.notifier.core.application.port.out.NotifierPort;
 import io.github.choizz.notifier.core.domain.event.PublishCompletedEvent;
 import io.github.choizz.notifier.core.domain.model.EventStatus;
 import io.github.choizz.notifier.core.domain.model.NotificationType;
+import io.github.choizz.notifier.core.domain.model.RetryLevel;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -21,7 +22,7 @@ public abstract class AbstractRetryProcessor implements RetryProcessor {
 	@Override
 	public boolean support(NotificationType type) {
 
-		return RdbRetryLevel.from(type) == getRdbRetryLevel();
+		return RetryLevel.from(type) == getRdbRetryLevel();
 	}
 
 	@Override
@@ -46,7 +47,7 @@ public abstract class AbstractRetryProcessor implements RetryProcessor {
 	}
 
 	@Override
-	public abstract RdbRetryLevel getRdbRetryLevel();
+	public abstract RetryLevel getRdbRetryLevel();
 
 	private void send(NotifierPort notifierPort, PublicationContext context) {
 

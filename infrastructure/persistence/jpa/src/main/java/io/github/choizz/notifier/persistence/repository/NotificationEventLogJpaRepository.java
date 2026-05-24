@@ -1,5 +1,7 @@
 package io.github.choizz.notifier.persistence.repository;
 
+import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import io.github.choizz.notifier.core.domain.model.EventStatus;
+import io.github.choizz.notifier.core.domain.model.NotificationType;
 import io.github.choizz.notifier.persistence.entity.NotificationEventLogEntity;
 
 public interface NotificationEventLogJpaRepository extends JpaRepository<NotificationEventLogEntity, Long> {
@@ -34,4 +37,20 @@ public interface NotificationEventLogJpaRepository extends JpaRepository<Notific
 	);
 
 	List<NotificationEventLogEntity> findAllByEventStatus(EventStatus eventStatus);
+
+	@Query("""
+		SELECT e FROM NotificationEventLogEntity e
+		WHERE e.id > :lastId
+		AND e.eventStatus = :status
+		AND e.notificationType IN :types
+		AND e.updatedAt < :thresholdTime
+		ORDER BY e.id ASC
+	""")
+	List<NotificationEventLogEntity> findStuckLogs(
+		@Param("lastId") Long lastId,
+		@Param("status") EventStatus status,
+		@Param("types") Collection<NotificationType> types,
+		@Param("thresholdTime") LocalDateTime thresholdTime,
+		Limit limit
+	);
 }

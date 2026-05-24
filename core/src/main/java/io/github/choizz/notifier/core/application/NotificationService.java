@@ -96,8 +96,13 @@ public class NotificationService implements NotificationUseCase {
 			0L,
 			id -> id,
 			lastId -> notificationEventLogUseCase.findUnprocessedNotificationIds(lastId, ChunkExecutor.CHUNK_SIZE),
-			this::publish
+			notificationRetryProcessor::processChunk
 		);
+	}
+
+	@Override
+	public void retryStuckNotification(List<Long> notificationId) {
+		notificationRetryProcessor.processChunk(notificationId);
 	}
 
 	@Override
@@ -141,30 +146,4 @@ public class NotificationService implements NotificationUseCase {
 		return NotificationDetailResponse.of(notification, content);
 	}
 
-	private void publish(List<Long> notificationIds) {
-
-		List<Notification> notifications = notificationPersistencePort.findAllByIds(notificationIds);
-		List<Notification> successfulNotifications = new ArrayList<>();
-
-		for (Notification notification : notifications) {
-			try {
-				notification.markAsPendingForManualRetry();
-
-				NotificationContext context = new NotificationContext(
-					notification.subscriberId(),
-					notification.notificationType().name(),
-					notification.channel().name(),
-					JsonUtils.toMap(notification.metadata())
-				);
-				applicationEventPublisher.publishEvent(NotificationRequestedEvent.of(notification, context));
-				successfulNotifications.add(notification);
-			} catch (Exception e) {
-				log.warn("알림 재시도 처리 실패: id={}", notification.id(), e);
-			}
-		}
-
-		if (!successfulNotifications.isEmpty()) {
-			notificationPersistencePort.saveAll(successfulNotifications);
-		}
-	}
 }

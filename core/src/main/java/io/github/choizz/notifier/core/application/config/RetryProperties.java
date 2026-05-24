@@ -1,8 +1,9 @@
-package io.github.choizz.notifier.rdb.application.retry;
+package io.github.choizz.notifier.core.application.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
+import io.github.choizz.notifier.core.domain.model.RetryLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,7 +27,7 @@ public class RetryProperties {
 		private double multiplier;
 	}
 
-	public RetryConfig getConfig(RdbRetryLevel level) {
+	public RetryConfig getConfig(RetryLevel level) {
 		return switch (level) {
 			case AGGRESSIVE -> aggressive;
 			case STANDARD -> standard;
