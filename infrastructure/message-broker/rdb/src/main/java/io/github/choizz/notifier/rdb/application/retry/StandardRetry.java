@@ -11,8 +11,12 @@ import org.springframework.retry.annotation.Retryable;
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Retryable(
-	maxAttempts = 3,         // 총 3번 시도 (최초 1번 + 재시도 2번)
-	backoff = @Backoff(delay = 1000, multiplier = 2, maxDelay = 10000)
+	maxAttemptsExpression = "${notifier.retry.standard.max-attempts:3}",         // 총 3번 시도 (최초 1번 + 재시도 2번)
+	backoff = @Backoff(
+		delayExpression = "${notifier.retry.standard.delay:1000}",
+		multiplierExpression = "${notifier.retry.standard.multiplier:2.0}",
+		maxDelayExpression = "${notifier.retry.standard.max-delay:10000}"
+	)
 )
 public @interface StandardRetry {
 

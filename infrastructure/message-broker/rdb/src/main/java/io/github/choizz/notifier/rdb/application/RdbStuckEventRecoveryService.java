@@ -1,4 +1,4 @@
-package io.github.choizz.notifier.rdb.application.job;
+package io.github.choizz.notifier.rdb.application;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -8,12 +8,12 @@ import org.springframework.stereotype.Service;
 
 import io.github.choizz.notifier.core.application.port.in.StuckEventRecoveryUseCase;
 import io.github.choizz.notifier.core.application.port.out.NotificationEventLogPersistencePort;
-import io.github.choizz.notifier.core.application.port.out.NotificationPersistencePort;
 import io.github.choizz.notifier.core.domain.model.EventStatus;
-import io.github.choizz.notifier.core.domain.model.Notification;
 import io.github.choizz.notifier.core.domain.model.NotificationEventLog;
 import io.github.choizz.notifier.core.domain.model.NotificationType;
 import io.github.choizz.notifier.rdb.application.retry.RdbRetryLevel;
+import io.github.choizz.notifier.rdb.application.retry.RetryProperties;
+import io.github.choizz.notifier.rdb.application.retry.RetryProperties.RetryConfig;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 public class RdbStuckEventRecoveryService implements StuckEventRecoveryUseCase {
 
 	private final NotificationEventLogPersistencePort notificationEventLogPersistencePort;
-	private final NotificationPersistencePort notificationPersistencePort;
+	private final RetryProperties retryProperties;
 
 	@Override
 	public void recoverStuckEvents() {
@@ -43,14 +43,15 @@ public class RdbStuckEventRecoveryService implements StuckEventRecoveryUseCase {
 	}
 
 	private void processStuckLog(NotificationEventLog logEvent, LocalDateTime now) {
-		Notification notification = notificationPersistencePort.findById(logEvent.notificationId());
-		NotificationType type = notification.notificationType();
+		NotificationType type = logEvent.notificationType();
 
 		RdbRetryLevel retryLevel = RdbRetryLevel.from(type);
-		LocalDateTime thresholdTime = now.minusSeconds(retryLevel.getMaxProcessingTimeSeconds());
+		RetryConfig config = retryProperties.getConfig(retryLevel);
 
-		if (logEvent.updatedAt().isBefore(thresholdTime)) {
-			recover(logEvent, retryLevel.getMaxAttempts());
+		LocalDateTime thresholdTime = now.minusSeconds(config.getMaxProcessingTimeSeconds());
+
+		if (logEvent.updatedAt().isBefore(thresholdTime)) { //최근 업데이트 시간 - 최대 소요 시 => 마지막 업데이트가 임계 시간보다 과거인지
+			recover(logEvent, config.getMaxAttempts());
 			notificationEventLogPersistencePort.save(logEvent); // save 시점에 Optimistic Lock 검사 수행
 		}
 	}

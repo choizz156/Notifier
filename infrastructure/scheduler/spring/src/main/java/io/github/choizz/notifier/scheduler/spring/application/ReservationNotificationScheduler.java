@@ -15,9 +15,8 @@ public class ReservationNotificationScheduler {
 	private final ReservationUseCase reservationUseCase;
 
 	@Scheduled(fixedDelayString = "${scheduler.reservation.fixed-delay}")
-	@SchedulerLock(name = "publishReservationNotification", lockAtLeastFor = "30s", lockAtMostFor = "10m")
+	@SchedulerLock(name = "publishReservationNotification", lockAtLeastFor = "30s", lockAtMostFor = "5m")
 	public void publishReservationNotification() {
 		reservationUseCase.publishReservationNotification();
 	}
-
 }

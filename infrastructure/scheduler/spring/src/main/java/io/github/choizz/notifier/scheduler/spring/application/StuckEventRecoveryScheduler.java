@@ -12,9 +12,8 @@ public class StuckEventRecoveryScheduler {
 
 	private final StuckEventRecoveryUseCase stuckEventRecoveryUseCase;
 
-	@Scheduled(fixedDelay = 300000) // 5분마다 실행
+	@Scheduled(fixedDelayString = "${scheduler.stuck-event-recovery.fixed-delay}") // 5분마다 실행
 	public void recover() {
-
 		stuckEventRecoveryUseCase.recoverStuckEvents();
 	}
 }

@@ -1,0 +1,20 @@
+notifier:
+  retry:
+    aggressive:
+      max-attempts: 8
+      max-processing-time-seconds: 3900
+      delay: 1000
+      max-delay: 3600000
+      multiplier: 3.715
+    standard:
+      max-attempts: 3
+      max-processing-time-seconds: 30
+      delay: 1000
+      max-delay: 10000
+      multiplier: 2.0
+    minimum:
+      max-attempts: 2
+      max-processing-time-seconds: 10
+      delay: 1000
+      max-delay: 5000
+      multiplier: 2.0
