@@ -22,6 +22,8 @@ include(
     "infrastructure:notifier:in_app",
     "infrastructure:message-broker",
     "infrastructure:message-broker:rdb",
+    "infrastructure:scheduler",
+    "infrastructure:scheduler:spring",
 
     "support:logging"
 )
