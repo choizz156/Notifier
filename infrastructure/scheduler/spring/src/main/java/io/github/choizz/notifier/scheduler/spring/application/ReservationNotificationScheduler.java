@@ -3,6 +3,8 @@ package io.github.choizz.notifier.scheduler.spring.application;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
+
 import io.github.choizz.notifier.core.application.port.in.ReservationUseCase;
 import lombok.RequiredArgsConstructor;
 
@@ -12,8 +14,9 @@ public class ReservationNotificationScheduler {
 
 	private final ReservationUseCase reservationUseCase;
 
-	@Scheduled(cron = "0 0 * * * *")
-	public void publishReservationNotification(){
+	@Scheduled(fixedDelayString = "${scheduler.reservation.fixed-delay}")
+	@SchedulerLock(name = "publishReservationNotification", lockAtLeastFor = "30s", lockAtMostFor = "10m")
+	public void publishReservationNotification() {
 		reservationUseCase.publishReservationNotification();
 	}
 
