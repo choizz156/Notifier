@@ -11,8 +11,7 @@ spring.config.activate.on-profile: local
 spring:
   datasource:
     driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:test_db;DB_CLOSE_DELAY=-1;MODE=MySQL
-    username: sa
+    url: jdbc:h2:mem:dev_db;MODE=MySQL;DB_CLOSE_DELAY=-1;rewriteBatchedStatements=true
     password:
   jpa:
     hibernate:
@@ -21,6 +20,9 @@ spring:
       hibernate:
         show-sql: true
         format_sql: true
+        jdbc.batch_size: 50
+        order_inserts: true
+        order_updates: true
   h2:
     console:
       enabled: true
@@ -31,7 +33,7 @@ spring.config.activate.on-profile: dev
 spring:
   datasource:
     driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:dev_db;DB_CLOSE_DELAY=-1;MODE=MySQL
+    url: jdbc:h2:mem:dev_db;MODE=MySQL;DB_CLOSE_DELAY=-1;rewriteBatchedStatements=true
     username: sa
     password:
     hikari:
@@ -46,6 +48,11 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
+    properties:
+      hibernate:
+        jdbc.batch_size: 100
+        order_inserts: true
+        order_updates: true
   h2:
     console:
       enabled: true

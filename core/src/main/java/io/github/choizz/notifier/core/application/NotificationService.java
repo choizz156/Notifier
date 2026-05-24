@@ -16,7 +16,7 @@ import io.github.choizz.notifier.core.application.port.in.NotificationUseCase;
 import io.github.choizz.notifier.core.application.port.out.NotificationPersistencePort;
 import io.github.choizz.notifier.core.application.port.out.TemplateRendererPort;
 import io.github.choizz.notifier.core.application.support.ChunkExecutor;
-import io.github.choizz.notifier.core.application.support.PublishProcessor;
+import io.github.choizz.notifier.core.application.support.NotificationRetryProcessor;
 import io.github.choizz.notifier.core.domain.event.NotificationRequestedEvent;
 import io.github.choizz.notifier.core.domain.model.Notification;
 import io.github.choizz.notifier.core.domain.model.NotificationStatus;
@@ -34,7 +34,7 @@ public class NotificationService implements NotificationUseCase {
 	private final NotificationPersistencePort notificationPersistencePort;
 	private final NotificationEventLogUseCase notificationEventLogUseCase;
 	private final TemplateRendererPort templateRendererPort;
-	private final PublishProcessor<Long> notificationRetryProcessor;
+	private final NotificationRetryProcessor notificationRetryProcessor;
 
 	@Override
 	public void push(NotificationContext NotificationContext) {

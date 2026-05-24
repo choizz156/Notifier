@@ -3,7 +3,7 @@ package io.github.choizz.notifier.persistence.adapter;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Limit;
 import org.springframework.stereotype.Component;
 
 import io.github.choizz.notifier.core.application.port.out.ReservationNotificationPersistencePort;
@@ -27,9 +27,14 @@ public class ReservationNotificationPersistenceAdapter implements ReservationNot
 
 	@Override
 	public List<ReservationInformation> findUnpublishedNotificationsBefore(LocalDateTime time, Long lastId, int chunkSize) {
-		return reservationNotificationJpaRepository.findUnpublishedBefore(time, lastId, PageRequest.of(0, chunkSize))
+		return reservationNotificationJpaRepository.findUnpublishedBefore(time, lastId, Limit.of(chunkSize))
 			.stream()
 			.map(ReservationNotificationMapper::toDomain)
 			.toList();
+	}
+
+	@Override
+	public void markAsPublished(List<Long> ids) {
+		reservationNotificationJpaRepository.markAsPublished(ids);
 	}
 }

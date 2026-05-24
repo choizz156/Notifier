@@ -16,13 +16,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class NotificationRetryProcessor implements PublishProcessor<Long> {
+public class NotificationRetryProcessor {
 
 	private final NotificationPersistencePort notificationPersistencePort;
 	private final ApplicationEventPublisher applicationEventPublisher;
 
 
-	@Override
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void process(Long id) {
 
