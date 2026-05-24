@@ -4,9 +4,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.dao.OptimisticLockingFailureException;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
+import io.github.choizz.notifier.core.application.port.in.StuckEventRecoveryUseCase;
 import io.github.choizz.notifier.core.application.port.out.NotificationEventLogPersistencePort;
 import io.github.choizz.notifier.core.application.port.out.NotificationPersistencePort;
 import io.github.choizz.notifier.core.domain.model.EventStatus;
@@ -19,13 +19,13 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
-@Component
-public class StuckEventRecoveryJob {
+@Service
+public class RdbStuckEventRecoveryService implements StuckEventRecoveryUseCase {
 
 	private final NotificationEventLogPersistencePort notificationEventLogPersistencePort;
 	private final NotificationPersistencePort notificationPersistencePort;
 
-	@Scheduled(fixedDelay = 300000) // 5분마다 실행
+	@Override
 	public void recoverStuckEvents() {
 		List<NotificationEventLog> processingLogs = notificationEventLogPersistencePort.findAllByEventStatus(EventStatus.PROCESSING);
 
