@@ -1,35 +1,32 @@
-package io.github.choizz.notifier.core.application;
+package io.github.choizz.notifier.rdb.application.job;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.dao.OptimisticLockingFailureException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
-import io.github.choizz.notifier.core.application.port.in.StuckEventRecoveryUseCase;
 import io.github.choizz.notifier.core.application.port.out.NotificationEventLogPersistencePort;
 import io.github.choizz.notifier.core.application.port.out.NotificationPersistencePort;
-import io.github.choizz.notifier.core.application.port.out.NotificationRetryPolicyPort;
 import io.github.choizz.notifier.core.domain.model.EventStatus;
 import io.github.choizz.notifier.core.domain.model.Notification;
 import io.github.choizz.notifier.core.domain.model.NotificationEventLog;
 import io.github.choizz.notifier.core.domain.model.NotificationType;
+import io.github.choizz.notifier.rdb.application.retry.RdbRetryLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
-@Service
-public class StuckEventRecoveryService implements StuckEventRecoveryUseCase {
+@Component
+public class StuckEventRecoveryJob {
 
 	private final NotificationEventLogPersistencePort notificationEventLogPersistencePort;
 	private final NotificationPersistencePort notificationPersistencePort;
-	private final NotificationRetryPolicyPort notificationRetryPolicyPort;
 
-	@Override
+	@Scheduled(fixedDelay = 300000) // 5분마다 실행
 	public void recoverStuckEvents() {
-
 		List<NotificationEventLog> processingLogs = notificationEventLogPersistencePort.findAllByEventStatus(EventStatus.PROCESSING);
 
 		LocalDateTime now = LocalDateTime.now();
@@ -45,25 +42,21 @@ public class StuckEventRecoveryService implements StuckEventRecoveryUseCase {
 		}
 	}
 
-	@Transactional
-	protected void processStuckLog(NotificationEventLog logEvent, LocalDateTime now) {
-
+	private void processStuckLog(NotificationEventLog logEvent, LocalDateTime now) {
 		Notification notification = notificationPersistencePort.findById(logEvent.notificationId());
-		NotificationType.RetryLevel retryLevel = notification.notificationType().retryLevel();
+		NotificationType type = notification.notificationType();
 
-		long maxProcessingTimeSeconds = notificationRetryPolicyPort.getMaxProcessingTimeSeconds(retryLevel);
-		LocalDateTime thresholdTime = now.minusSeconds(maxProcessingTimeSeconds);
+		RdbRetryLevel retryLevel = RdbRetryLevel.from(type);
+		LocalDateTime thresholdTime = now.minusSeconds(retryLevel.getMaxProcessingTimeSeconds());
 
 		if (logEvent.updatedAt().isBefore(thresholdTime)) {
-			recover(logEvent, retryLevel);
-			notificationEventLogPersistencePort.save(logEvent);
+			recover(logEvent, retryLevel.getMaxAttempts());
+			notificationEventLogPersistencePort.save(logEvent); // save 시점에 Optimistic Lock 검사 수행
 		}
 	}
 
-	private void recover(NotificationEventLog logEvent, NotificationType.RetryLevel retryLevel) {
-
+	private void recover(NotificationEventLog logEvent, int maxAttempts) {
 		int newRetryCount = logEvent.retryCount() + 1;
-		int maxAttempts = notificationRetryPolicyPort.getMaxAttempts(retryLevel);
 
 		if (newRetryCount >= maxAttempts) {
 			logEvent.markAsFailed("Stuck in processing - Max retry exceeded", newRetryCount);

@@ -10,5 +10,5 @@ public interface RetryProcessor {
 
 	void handle(NotifierPort notifierPort, PublicationContext context);
 
-	NotificationType.RetryLevel getRetryLevel();
+	RdbRetryLevel getRdbRetryLevel();
 }

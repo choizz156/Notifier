@@ -20,9 +20,9 @@ public class AggressiveRetryProcessor extends AbstractRetryProcessor {
 	}
 
 	@Override
-	public NotificationType.RetryLevel getRetryLevel() {
+	public RdbRetryLevel getRdbRetryLevel() {
 
-		return NotificationType.RetryLevel.AGGRESSIVE;
+		return RdbRetryLevel.AGGRESSIVE;
 	}
 
 	@Override

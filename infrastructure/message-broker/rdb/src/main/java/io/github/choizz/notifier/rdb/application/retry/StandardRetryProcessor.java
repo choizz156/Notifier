@@ -20,9 +20,9 @@ public class StandardRetryProcessor extends AbstractRetryProcessor {
 	}
 
 	@Override
-	public NotificationType.RetryLevel getRetryLevel() {
+	public RdbRetryLevel getRdbRetryLevel() {
 
-		return NotificationType.RetryLevel.STANDARD;
+		return RdbRetryLevel.STANDARD;
 	}
 
 	@Override

@@ -20,8 +20,9 @@ public class MinimumRetryProcessor extends AbstractRetryProcessor {
 	}
 
 	@Override
-	public NotificationType.RetryLevel getRetryLevel() {
-		return NotificationType.RetryLevel.MINIMUM;
+	public RdbRetryLevel getRdbRetryLevel() {
+
+		return RdbRetryLevel.MINIMUM;
 	}
 
 	@Override

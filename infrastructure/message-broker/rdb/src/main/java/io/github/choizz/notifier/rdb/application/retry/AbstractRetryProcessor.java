@@ -21,7 +21,7 @@ public abstract class AbstractRetryProcessor implements RetryProcessor {
 	@Override
 	public boolean support(NotificationType type) {
 
-		return type.retryLevel() == getRetryLevel();
+		return RdbRetryLevel.from(type) == getRdbRetryLevel();
 	}
 
 	@Override
@@ -46,7 +46,7 @@ public abstract class AbstractRetryProcessor implements RetryProcessor {
 	}
 
 	@Override
-	public abstract NotificationType.RetryLevel getRetryLevel();
+	public abstract RdbRetryLevel getRdbRetryLevel();
 
 	private void send(NotifierPort notifierPort, PublicationContext context) {
 
