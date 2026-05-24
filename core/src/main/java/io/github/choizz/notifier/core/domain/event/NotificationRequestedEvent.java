@@ -21,7 +21,7 @@ public record NotificationRequestedEvent(
 			.notificationId(notification.id())
 			.subscriberId(context.subscriberId())
 			.notificationType(context.notificationType().name())
-			.channel(context.channel().name())
+			.channel(notification.channel().name())
 			.metadata(Map.copyOf(context.metadata()))
 			.build();
 	}

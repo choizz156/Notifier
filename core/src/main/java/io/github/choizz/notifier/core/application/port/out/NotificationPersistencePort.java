@@ -23,5 +23,5 @@ public interface NotificationPersistencePort {
 
 	List<Notification> findAllByIds(List<Long> ids);
 
-	void saveAll(List<Notification> notifications);
+	List<Notification> saveAll(List<Notification> notifications);
 }

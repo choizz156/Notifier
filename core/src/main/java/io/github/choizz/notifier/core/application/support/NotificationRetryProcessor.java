@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.github.choizz.notifier.core.application.dto.NotificationContext;
@@ -38,7 +37,6 @@ public class NotificationRetryProcessor {
 				NotificationContext context = new NotificationContext(
 					notification.subscriberId(),
 					notification.notificationType().name(),
-					notification.channel().name(),
 					JsonUtils.toMap(notification.metadata())
 				);
 				applicationEventPublisher.publishEvent(NotificationRequestedEvent.of(notification, context));

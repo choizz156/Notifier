@@ -38,12 +38,12 @@ class NotificationQueryServiceTest {
 	void test1() {
 		// given
 		Notification notification = Notification.from(new NotificationContext(
-			1L, NotificationType.PAYMENT_CONFIRMED, Channel.IN_APP, Map.of()
-		));
+			1L, NotificationType.PAYMENT_CONFIRMED.name(), Map.of()
+		), Channel.IN_APP);
 		given(persistencePort.findById(10L)).willReturn(notification);
 
 		// when
-		NotificationStatusResponse response = sut.getStatus(10L);
+		NotificationStatusResponse response = sut.findStatus(10L);
 
 		// then
 		assertThat(response.status()).isEqualTo(NotificationStatus.PENDING);
@@ -54,15 +54,15 @@ class NotificationQueryServiceTest {
 	void test2() {
 		// given
 		Notification notification = Notification.from(new NotificationContext(
-			1L, NotificationType.PAYMENT_CONFIRMED, Channel.IN_APP, Map.of()
-		));
+			1L, NotificationType.PAYMENT_CONFIRMED.name(), Map.of()
+		), Channel.IN_APP);
 		PageResult<Notification> pageResult = new PageResult<>(
 			List.of(notification), 0, 20, 1, 1
 		);
 		given(persistencePort.findAllBySubscriberId(1L, false, 0, 20)).willReturn(pageResult);
 
 		// when
-		PageResult<NotificationResponse> response = sut.getNotifications(1L, false, 0, 20);
+		PageResult<NotificationResponse> response = sut.findNotifications(1L, false, 0, 20);
 
 		// then
 		assertThat(response.totalElements()).isEqualTo(1);

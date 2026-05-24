@@ -55,12 +55,12 @@ public class Notification {
 		this.recoverCount = recoverCount;
 	}
 
-	public static Notification from(NotificationContext context) {
+	public static Notification from(NotificationContext context, Channel channel) {
 
 		return Notification.builder()
 			.subscriberId(context.subscriberId())
 			.notificationType(context.notificationType())
-			.channel(context.channel())
+			.channel(channel)
 			.status(NotificationStatus.PENDING)
 			.metadata(context.metadataToJson())
 			.isRead(false)

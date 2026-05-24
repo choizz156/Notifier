@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import io.github.choizz.notifier.core.domain.model.Channel;
 import io.github.choizz.notifier.core.domain.model.NotificationType;
 import io.github.choizz.notifier.persistence.entity.MockUserEntity;
 import io.github.choizz.notifier.persistence.repository.MockUserJpaRepository;
@@ -38,6 +39,7 @@ public class MockUserDataRunner implements ApplicationRunner {
 
 		for (int i = 0; i < 100; i++) {
 			Map<NotificationType, Boolean> settings = new HashMap<>();
+			Map<Channel, Boolean> channelSettings = new HashMap<>();
 			
 			int typePattern = i % 4;
 			
@@ -60,8 +62,23 @@ public class MockUserDataRunner implements ApplicationRunner {
 				
 				settings.put(type, isSubscribed);
 			}
+
+			// 채널 세팅: 0=전부, 1=이메일만, 2=인앱만, 3=없음
+			if (typePattern == 0) {
+				channelSettings.put(Channel.EMAIL, true);
+				channelSettings.put(Channel.IN_APP, true);
+			} else if (typePattern == 1) {
+				channelSettings.put(Channel.EMAIL, true);
+				channelSettings.put(Channel.IN_APP, false);
+			} else if (typePattern == 2) {
+				channelSettings.put(Channel.EMAIL, false);
+				channelSettings.put(Channel.IN_APP, true);
+			} else {
+				channelSettings.put(Channel.EMAIL, false);
+				channelSettings.put(Channel.IN_APP, false);
+			}
 			
-			users.add(new MockUserEntity(settings));
+			users.add(new MockUserEntity(settings, channelSettings));
 		}
 
 		mockUserJpaRepository.saveAll(users);

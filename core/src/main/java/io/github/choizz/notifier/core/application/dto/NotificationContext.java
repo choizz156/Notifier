@@ -2,7 +2,6 @@ package io.github.choizz.notifier.core.application.dto;
 
 import java.util.Map;
 
-import io.github.choizz.notifier.core.domain.model.Channel;
 import io.github.choizz.notifier.core.domain.model.NotificationType;
 import io.github.choizz.notifier.core.domain.util.JsonUtils;
 import lombok.Builder;
@@ -11,16 +10,14 @@ import lombok.Builder;
 public record NotificationContext(
 	long subscriberId,
 	NotificationType notificationType,
-	Channel channel,
 	Map<String, String> metadata
 ) {
 
-	public NotificationContext(Long subscriberId, String NotificationType, String channel, Map<String, String> metadata) {
+	public NotificationContext(Long subscriberId, String NotificationType, Map<String, String> metadata) {
 
 		this(
 			validateSubscriberId(subscriberId),
 			parseNotificationType(NotificationType),
-			parseChannel(channel),
 			metadata == null ? Map.of() : Map.copyOf(metadata)
 		);
 	}
@@ -47,17 +44,5 @@ public record NotificationContext(
 
 	public String metadataToJson() {
 		return JsonUtils.toJson(this.metadata);
-	}
-
-	private static Channel parseChannel(String channel) {
-
-		if (channel == null) {
-			throw new IllegalArgumentException("channel이 필요합니다.");
-		}
-		try {
-			return Channel.valueOf(channel.toUpperCase());
-		} catch (IllegalArgumentException e) {
-			throw new IllegalArgumentException("지원하지 않는 채널입니다: " + channel);
-		}
 	}
 }

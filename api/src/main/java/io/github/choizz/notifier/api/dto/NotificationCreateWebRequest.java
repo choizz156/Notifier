@@ -5,8 +5,6 @@ import java.util.Map;
 public record NotificationCreateWebRequest(
 	Long subscriberId,
 	String NotificationType,
-	String channel,
 	Map<String, String> metadata
 ) {
-
 }

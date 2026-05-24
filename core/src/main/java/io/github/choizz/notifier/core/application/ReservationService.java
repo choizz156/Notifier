@@ -73,7 +73,6 @@ public class ReservationService implements ReservationUseCase {
 				NotificationContext context = NotificationContext.builder()
 					.subscriberId(notification.subscriberId())
 					.notificationType(notification.notificationType())
-					.channel(Channel.IN_APP) //TODO: 교체할만함 나중에
 					.metadata(Map.of())
 					.build();
 

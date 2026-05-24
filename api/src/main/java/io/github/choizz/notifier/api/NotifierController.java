@@ -37,7 +37,6 @@ public class NotifierController {
 		NotificationContext context = new NotificationContext(
 			request.subscriberId(),
 			request.NotificationType(),
-			request.channel(),
 			request.metadata()
 		);
 

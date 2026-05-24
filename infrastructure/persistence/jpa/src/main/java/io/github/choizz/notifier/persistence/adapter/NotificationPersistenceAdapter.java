@@ -109,11 +109,14 @@ public class NotificationPersistenceAdapter implements NotificationPersistencePo
 
 	@Override
 	@Transactional
-	public void saveAll(List<Notification> notifications) {
+	public List<Notification> saveAll(List<Notification> notifications) {
 		List<NotificationEntity> entities = notifications.stream()
 			.map(NotificationMapper::toEntity)
 			.toList();
-		notificationJpaRepository.saveAll(entities);
+		List<NotificationEntity> savedEntities = notificationJpaRepository.saveAll(entities);
+		return savedEntities.stream()
+			.map(NotificationMapper::toDomain)
+			.toList();
 	}
 }
 
