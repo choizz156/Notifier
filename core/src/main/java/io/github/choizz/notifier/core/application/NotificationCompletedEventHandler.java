@@ -1,4 +1,4 @@
-package io.github.choizz.notifier.core.application.handler;
+package io.github.choizz.notifier.core.application;
 
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;

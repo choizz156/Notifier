@@ -15,6 +15,7 @@ import io.github.choizz.notifier.core.application.port.in.NotificationEventLogUs
 import io.github.choizz.notifier.core.application.port.in.NotificationUseCase;
 import io.github.choizz.notifier.core.application.port.out.NotificationPersistencePort;
 import io.github.choizz.notifier.core.application.port.out.TemplateRendererPort;
+import io.github.choizz.notifier.core.application.support.ChunkExecutor;
 import io.github.choizz.notifier.core.domain.event.NotificationRequestedEvent;
 import io.github.choizz.notifier.core.domain.model.Notification;
 import io.github.choizz.notifier.core.domain.model.NotificationStatus;
@@ -57,6 +58,7 @@ public class NotificationService implements NotificationUseCase {
 
 	@Override
 	public void markAsRead(Long notificationId) {
+
 		notificationPersistencePort.markAsRead(notificationId);
 	}
 
@@ -73,16 +75,52 @@ public class NotificationService implements NotificationUseCase {
 		notificationPersistencePort.save(notification);
 	}
 
-	@Transactional(readOnly = true)
 	@Override
+	public void fail(Long notificationId, String failReason) {
+
+		Notification notification = notificationPersistencePort.findById(notificationId);
+		notification.markAsFailed(failReason);
+		notificationPersistencePort.save(notification);
+	}
+
+	@Override
+	public void retry() {
+
+		ChunkExecutor.execute(
+			0L,
+			id -> id,
+			lastId -> notificationEventLogUseCase.findUnprocessedNotificationIds(lastId, ChunkExecutor.CHUNK_SIZE),
+			this::publish
+		);
+	}
+
+	private void publish(List<Long> notificationIds) {
+
+		for (Long id : notificationIds) {
+			Notification notification = notificationPersistencePort.findById(id);
+			notification.markAsPendingForManualRetry();
+			Notification savedNotification = notificationPersistencePort.save(notification);
+
+			NotificationContext context = new NotificationContext(
+				savedNotification.subscriberId(),
+				savedNotification.notificationType().name(),
+				savedNotification.channel().name(),
+				JsonUtils.toMap(savedNotification.metadata())
+			);
+			applicationEventPublisher.publishEvent(NotificationRequestedEvent.of(savedNotification, context));
+		}
+	}
+
+	@Override
+	@Transactional(readOnly = true)
 	public NotificationStatusResponse getStatus(Long notificationId) {
 
 		Notification notification = notificationPersistencePort.findById(notificationId);
 		return new NotificationStatusResponse(notification.id(), notification.status());
 	}
 
-	@Transactional(readOnly = true)
 	@Override
+	@Transactional(readOnly = true)
 	public PageResult<NotificationResponse> getNotifications(Long subscriberId, Boolean isRead, int page, int size) {
 
 		PageResult<Notification> pageResult = notificationPersistencePort.findAllBySubscriberId(subscriberId, isRead,
@@ -101,8 +139,8 @@ public class NotificationService implements NotificationUseCase {
 		);
 	}
 
-	@Transactional(readOnly = true)
 	@Override
+	@Transactional(readOnly = true)
 	public NotificationDetailResponse getNotificationDetail(Long notificationId) {
 
 		Notification notification = notificationPersistencePort.findById(notificationId);
@@ -114,48 +152,7 @@ public class NotificationService implements NotificationUseCase {
 		return NotificationDetailResponse.of(notification, content);
 	}
 
-	@Override
-	public void fail(Long notificationId, String failReason) {
-
-		Notification notification = notificationPersistencePort.findById(notificationId);
-		notification.markAsFailed(failReason);
-		notificationPersistencePort.save(notification);
-	}
-
-	@Override
-	public void retry() {
-
-		long lastId = 0L;
-		int chunkSize = 500;
-
-		while (true) {
-			List<Long> notificationIds = notificationEventLogUseCase.findUnprocessedNotificationIds(lastId, chunkSize);
-
-			if (notificationIds.isEmpty()) {
-				log.info("수동 알림 재시도 완료");
-				return;
-			}
-
-			for (Long id : notificationIds) {
-				process(id);
-			}
-
-			lastId = notificationIds.getLast();
-		}
-	}
-
 	private void process(Long id) {
 
-		Notification notification = notificationPersistencePort.findById(id);
-		notification.markAsPendingForManualRetry();
-		Notification savedNotification = notificationPersistencePort.save(notification);
-
-		NotificationContext context = new NotificationContext(
-			savedNotification.subscriberId(),
-			savedNotification.notificationType().name(),
-			savedNotification.channel().name(),
-			JsonUtils.toMap(savedNotification.metadata())
-		);
-		applicationEventPublisher.publishEvent(NotificationRequestedEvent.of(savedNotification, context));
 	}
 }

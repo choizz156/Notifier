@@ -24,49 +24,56 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class ReservationService implements ReservationUseCase {
 
-	private static final int CHUNK_SIZE = 100;
 	private final ReservationNotificationPersistencePort reservationNotificationPersistencePort;
 	private final NotificationUseCase notificationUseCase;
 
 	@Override
 	public void reserve(List<Long> subscriberIds, NotificationType type, LocalDateTime reservationTime) {
-		log.info("예약 알림 생성 요청: subscriberCount={}, type={}, reservationTime={}", subscriberIds.size(), type, reservationTime);
+
+		log.info("예약 알림 생성 요청: subscriberCount={}, type={}, reservationTime={}", subscriberIds.size(), type,
+			reservationTime);
 
 		for (Long subscriberId : subscriberIds) {
-			ReservationInformation reservationInformation = ReservationInformation.of(subscriberId, type, reservationTime);
+			ReservationInformation reservationInformation = ReservationInformation.of(subscriberId, type,
+				reservationTime);
 			reservationNotificationPersistencePort.save(reservationInformation);
 		}
 	}
 
 	@Override
 	public void publishReservationNotification() {
+
 		LocalDateTime now = LocalDateTime.now();
 		log.info("예약 알림 발행 시작: 기준 시간={}", now);
 
 		ChunkExecutor.execute(
-			CHUNK_SIZE,
 			0L,
 			ReservationInformation::id,
-			lastId -> reservationNotificationPersistencePort.findUnpublishedNotificationsBefore(now, lastId, CHUNK_SIZE),
+			lastId ->
+				reservationNotificationPersistencePort.findUnpublishedNotificationsBefore(now, lastId, ChunkExecutor.CHUNK_SIZE),
 			this::publishChunk
 		);
 	}
 
 	private void publishChunk(List<ReservationInformation> chunk) {
+
 		log.info("예약 알림 Chunk 발행 처리: size={}", chunk.size());
 		for (ReservationInformation notification : chunk) {
 			try {
 				publish(notification);
 				notification.markAsPublished();
 				reservationNotificationPersistencePort.save(notification);
-				log.info("예약 알림 발행 성공: notificationId={}, subscriberId={}", notification.id(), notification.subscriberId());
+				log.info("예약 알림 발행 성공: notificationId={}, subscriberId={}", notification.id(),
+					notification.subscriberId());
 			} catch (Exception e) {
-				log.error("예약 알림 발행 실패: notificationId={}, subscriberId={}", notification.id(), notification.subscriberId(), e);
+				log.warn("예약 알림 발행 실패: notificationId={}, subscriberId={}", notification.id(),
+					notification.subscriberId(), e);
 			}
 		}
 	}
 
 	private void publish(ReservationInformation notification) {
+
 		NotificationContext context = NotificationContext.builder()
 			.subscriberId(notification.subscriberId())
 			.notificationType(notification.notificationType())

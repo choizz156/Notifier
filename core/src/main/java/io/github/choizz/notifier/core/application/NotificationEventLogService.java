@@ -63,7 +63,8 @@ public class NotificationEventLogService implements NotificationEventLogUseCase 
 	}
 
 	@Override
-	public List<Long> findUnprocessedNotificationIds(long lastId,  int chunkSize) {
+	@Transactional(readOnly = true)
+	public List<Long> findUnprocessedNotificationIds(Long lastId, int chunkSize) {
 
 		return notificationEventLogPersistencePort.findUnprocessedNotificationIds(
 			targetStatuses, lastId, chunkSize
