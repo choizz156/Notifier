@@ -43,6 +43,10 @@ subprojects {
         testImplementation("org.springframework.boot:spring-boot-starter-test")
         implementation("com.fasterxml.jackson.core:jackson-databind")
         implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
+
+        if (project.path != ":support:logging") {
+            implementation(project(":support:logging"))
+        }
     }
 
     tasks.withType<Test> {

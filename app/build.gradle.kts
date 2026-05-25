@@ -17,8 +17,6 @@ dependencies {
     implementation(project(":infrastructure:notifier:in_app"))
     implementation(project(":infrastructure:message-broker:rdb"))
     implementation(project(":infrastructure:scheduler:spring"))
-
-    implementation(project(":support:logging"))
     
     implementation("org.springframework.boot:spring-boot-starter-web")
 }
