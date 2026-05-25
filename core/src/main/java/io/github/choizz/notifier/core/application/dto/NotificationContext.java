@@ -13,11 +13,11 @@ public record NotificationContext(
 	Map<String, String> metadata
 ) {
 
-	public NotificationContext(Long subscriberId, String NotificationType, Map<String, String> metadata) {
+	public NotificationContext(Long subscriberId, String notificationType, Map<String, String> metadata) {
 
 		this(
 			validateSubscriberId(subscriberId),
-			parseNotificationType(NotificationType),
+			parseNotificationType(notificationType),
 			metadata == null ? Map.of() : Map.copyOf(metadata)
 		);
 	}

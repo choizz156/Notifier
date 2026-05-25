@@ -4,7 +4,7 @@ import java.util.Map;
 
 public record NotificationCreateWebRequest(
 	Long subscriberId,
-	String NotificationType,
+	String notificationType,
 	Map<String, String> metadata
 ) {
 }
