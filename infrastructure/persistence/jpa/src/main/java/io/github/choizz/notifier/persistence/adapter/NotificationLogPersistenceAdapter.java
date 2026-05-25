@@ -13,6 +13,7 @@ import io.github.choizz.notifier.core.application.port.out.NotificationLogPersis
 import io.github.choizz.notifier.core.domain.model.EventStatus;
 import io.github.choizz.notifier.core.domain.model.NotificationLog;
 import io.github.choizz.notifier.core.domain.model.NotificationType;
+import io.github.choizz.notifier.core.domain.model.ReferenceType;
 import io.github.choizz.notifier.persistence.entity.NotificationLogEntity;
 import io.github.choizz.notifier.persistence.repository.NotificationLogJpaRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,8 +31,8 @@ public class NotificationLogPersistenceAdapter implements NotificationLogPersist
 	@Transactional
 	public void save(NotificationLog notificationLog) {
 
-		log.info("알림 이벤트 이력 저장 - notificationId={}, eventType={}, eventStatus={}",
-			notificationLog.notificationId(), notificationLog.channelType(), notificationLog.eventStatus());
+		log.info("알림 이벤트 이력 저장 - referenceId={}, referenceType={}, channel={}, eventStatus={}",
+			notificationLog.referenceId(), notificationLog.referenceType(), notificationLog.channelType(), notificationLog.eventStatus());
 
 		NotificationLogEntity entity = NotificationLogMapper.toEntity(notificationLog);
 		notificationLogJpaRepository.save(entity);
@@ -48,11 +49,11 @@ public class NotificationLogPersistenceAdapter implements NotificationLogPersist
 	}
 
 	@Override
-	public NotificationLog findLatestByNotificationId(Long notificationId) {
+	public NotificationLog findLatestByReference(Long referenceId, ReferenceType referenceType) {
 
-		return notificationLogJpaRepository.findFirstByNotificationIdOrderByCreatedAtDesc(notificationId)
+		return notificationLogJpaRepository.findFirstByReferenceIdAndReferenceTypeOrderByCreatedAtDesc(referenceId, referenceType)
 			.map(NotificationLogMapper::toDomain)
-			.orElseThrow(() -> new NoSuchElementException("존재하지 않는 알림 정보 입니다. %s".formatted(notificationId)));
+			.orElseThrow(() -> new NoSuchElementException("존재하지 않는 알림 정보 입니다. id:%s, type:%s".formatted(referenceId, referenceType)));
 	}
 
 	@Override

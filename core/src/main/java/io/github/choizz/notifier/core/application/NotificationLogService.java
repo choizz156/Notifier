@@ -13,6 +13,7 @@ import io.github.choizz.notifier.core.application.port.in.NotificationLogUseCase
 import io.github.choizz.notifier.core.application.port.out.NotificationLogPersistencePort;
 import io.github.choizz.notifier.core.domain.model.EventStatus;
 import io.github.choizz.notifier.core.domain.model.NotificationLog;
+import io.github.choizz.notifier.core.domain.model.ReferenceType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -41,7 +42,7 @@ public class NotificationLogService implements NotificationLogUseCase {
 	public boolean tryClaim(Long notificationId) {
 
 		NotificationLog notificationLog =
-			notificationLogPersistencePort.findLatestByNotificationId(notificationId);
+			notificationLogPersistencePort.findLatestByReference(notificationId, ReferenceType.PERSONAL);
 
 		if (notificationLog.eventStatus() != EventStatus.REQUESTED && notificationLog.eventStatus() != EventStatus.RETRIED) {
 			return false;

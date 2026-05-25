@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import io.github.choizz.notifier.core.domain.model.EventStatus;
 import io.github.choizz.notifier.core.domain.model.Channel;
 import io.github.choizz.notifier.core.domain.model.NotificationType;
+import io.github.choizz.notifier.core.domain.model.ReferenceType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -24,7 +25,7 @@ import lombok.experimental.Accessors;
 	uniqueConstraints = {
 		@UniqueConstraint(
 			name = "uk_notification_event_logs_duplicate",
-			columnNames = {"notification_Id", "event_status", "retry_count"}
+			columnNames = {"reference_id", "reference_type", "event_status", "retry_count"}
 		)
 	}
 )
@@ -32,7 +33,11 @@ import lombok.experimental.Accessors;
 public class NotificationLogEntity extends BaseEntity {
 
 	@Column(nullable = false)
-	private Long notificationId;
+	private Long referenceId;
+
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	private ReferenceType referenceType;
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
@@ -56,7 +61,8 @@ public class NotificationLogEntity extends BaseEntity {
 
 	@Builder
 	private NotificationLogEntity(
-		Long notificationId,
+		Long referenceId,
+		ReferenceType referenceType,
 		NotificationType notificationType,
 		Channel channelType,
 		EventStatus eventStatus,
@@ -65,7 +71,8 @@ public class NotificationLogEntity extends BaseEntity {
 		boolean published,
 		LocalDateTime publishedAt
 	) {
-		this.notificationId = notificationId;
+		this.referenceId = referenceId;
+		this.referenceType = referenceType;
 		this.notificationType = notificationType;
 		this.channelType = channelType;
 		this.eventStatus = eventStatus;

@@ -8,7 +8,8 @@ public class NotificationLogMapper {
 	public static NotificationLogEntity toEntity(NotificationLog notificationLog) {
 
 		NotificationLogEntity entity = NotificationLogEntity.builder()
-			.notificationId(notificationLog.notificationId())
+			.referenceId(notificationLog.referenceId())
+			.referenceType(notificationLog.referenceType())
 			.notificationType(notificationLog.notificationType())
 			.channelType(notificationLog.channelType())
 			.eventStatus(notificationLog.eventStatus())
@@ -26,7 +27,8 @@ public class NotificationLogMapper {
 	public static NotificationLog toDomain(NotificationLogEntity entity) {
 		return NotificationLog.builder()
 			.id(entity.id())
-			.notificationId(entity.notificationId())
+			.referenceId(entity.referenceId())
+			.referenceType(entity.referenceType())
 			.notificationType(entity.notificationType())
 			.channelType(entity.channelType())
 			.eventStatus(entity.eventStatus())

@@ -7,6 +7,7 @@ import io.github.choizz.notifier.core.domain.model.Channel;
 import io.github.choizz.notifier.core.domain.model.EventStatus;
 import io.github.choizz.notifier.core.domain.model.NotificationLog;
 import io.github.choizz.notifier.core.domain.model.NotificationType;
+import io.github.choizz.notifier.core.domain.model.ReferenceType;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,6 +20,7 @@ public class NotificationLogFactory {
 		return switch (eventStatus) {
 			case SENT -> NotificationLog.sent(
 				context.notificationId(),
+				ReferenceType.PERSONAL,
 				NotificationType.valueOf(context.notificationType()),
 				Channel.valueOf(context.channel()),
 				context.metadata(),
@@ -26,6 +28,7 @@ public class NotificationLogFactory {
 			);
 			case RETRIED -> NotificationLog.retried(
 				context.notificationId(),
+				ReferenceType.PERSONAL,
 				NotificationType.valueOf(context.notificationType()),
 				Channel.valueOf(context.channel()),
 				context.failReason(),
@@ -34,6 +37,7 @@ public class NotificationLogFactory {
 			);
 			case FAILED -> NotificationLog.failed(
 				context.notificationId(),
+				ReferenceType.PERSONAL,
 				NotificationType.valueOf(context.notificationType()),
 				Channel.valueOf(context.channel()),
 				context.failReason(),

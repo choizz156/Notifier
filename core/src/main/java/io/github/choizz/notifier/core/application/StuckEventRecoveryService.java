@@ -61,7 +61,7 @@ public class StuckEventRecoveryService implements StuckEventRecoveryUseCase {
 		notificationLogPersistencePort.saveAll(stuckLogs);
 
 		List<Long> notificationIds = stuckLogs.stream()
-			.map(NotificationLog::notificationId)
+			.map(NotificationLog::referenceId)
 			.toList();
 
 		notificationUseCase.retryStuckNotification(notificationIds);

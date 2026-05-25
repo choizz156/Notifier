@@ -15,7 +15,8 @@ import lombok.experimental.Accessors;
 public class NotificationLog {
 
 	private final Long id;
-	private final Long notificationId;
+	private final Long referenceId;
+	private final ReferenceType referenceType;
 	private final NotificationType notificationType;
 	private final Channel channelType;
 	private final LocalDateTime createdAt;
@@ -30,7 +31,8 @@ public class NotificationLog {
 	@Builder
 	private NotificationLog(
 		Long id,
-		Long notificationId,
+		Long referenceId,
+		ReferenceType referenceType,
 		NotificationType notificationType,
 		Channel channelType,
 		EventStatus eventStatus,
@@ -44,7 +46,8 @@ public class NotificationLog {
 	) {
 
 		this.id = id;
-		this.notificationId = notificationId;
+		this.referenceId = referenceId;
+		this.referenceType = referenceType;
 		this.notificationType = notificationType;
 		this.channelType = channelType;
 		this.eventStatus = eventStatus;
@@ -57,10 +60,11 @@ public class NotificationLog {
 		this.updatedAt = updatedAt;
 	}
 
-	public static NotificationLog request(Long notificationId, NotificationType notificationType, Channel channelType, String metadata) {
+	public static NotificationLog request(Long referenceId, ReferenceType referenceType, NotificationType notificationType, Channel channelType, String metadata) {
 
 		return NotificationLog.builder()
-			.notificationId(notificationId)
+			.referenceId(referenceId)
+			.referenceType(referenceType)
 			.notificationType(notificationType)
 			.channelType(channelType)
 			.eventStatus(EventStatus.REQUESTED)
@@ -71,7 +75,8 @@ public class NotificationLog {
 	}
 
 	public static NotificationLog retried(
-		Long notificationId,
+		Long referenceId,
+		ReferenceType referenceType,
 		NotificationType notificationType,
 		Channel channelType,
 		String failReason,
@@ -80,7 +85,8 @@ public class NotificationLog {
 	) {
 
 		return NotificationLog.builder()
-			.notificationId(notificationId)
+			.referenceId(referenceId)
+			.referenceType(referenceType)
 			.notificationType(notificationType)
 			.channelType(channelType)
 			.eventStatus(EventStatus.RETRIED)
@@ -93,7 +99,8 @@ public class NotificationLog {
 	}
 
 	public static NotificationLog sent(
-		Long notificationId,
+		Long referenceId,
+		ReferenceType referenceType,
 		NotificationType notificationType,
 		Channel channelType,
 		String metadata,
@@ -101,7 +108,8 @@ public class NotificationLog {
 	) {
 
 		return NotificationLog.builder()
-			.notificationId(notificationId)
+			.referenceId(referenceId)
+			.referenceType(referenceType)
 			.notificationType(notificationType)
 			.channelType(channelType)
 			.eventStatus(EventStatus.SENT)
@@ -114,7 +122,8 @@ public class NotificationLog {
 	}
 
 	public static NotificationLog failed(
-		Long notificationId,
+		Long referenceId,
+		ReferenceType referenceType,
 		NotificationType notificationType,
 		Channel channelType,
 		String failReason,
@@ -123,7 +132,8 @@ public class NotificationLog {
 	) {
 
 		return NotificationLog.builder()
-			.notificationId(notificationId)
+			.referenceId(referenceId)
+			.referenceType(referenceType)
 			.notificationType(notificationType)
 			.channelType(channelType)
 			.eventStatus(EventStatus.FAILED)

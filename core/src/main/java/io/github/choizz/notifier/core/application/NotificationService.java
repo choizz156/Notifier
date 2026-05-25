@@ -15,6 +15,7 @@ import io.github.choizz.notifier.core.application.dto.NotificationStatusResponse
 import io.github.choizz.notifier.core.application.dto.PageResult;
 import io.github.choizz.notifier.core.application.port.in.NotificationLogUseCase;
 import io.github.choizz.notifier.core.application.port.in.NotificationUseCase;
+import io.github.choizz.notifier.core.application.port.out.LoadCombinedNotificationPort;
 import io.github.choizz.notifier.core.application.port.out.MockUserPersistencePort;
 import io.github.choizz.notifier.core.application.port.out.NotificationPersistencePort;
 import io.github.choizz.notifier.core.application.port.out.TemplateRendererPort;
@@ -39,6 +40,7 @@ public class NotificationService implements NotificationUseCase {
 	private final TemplateRendererPort templateRendererPort;
 	private final NotificationRetryProcessor notificationRetryProcessor;
 	private final MockUserPersistencePort mockUserPersistencePort;
+	private final LoadCombinedNotificationPort loadCombinedNotificationPort;
 
 	@Override
 	@Transactional
@@ -128,20 +130,7 @@ public class NotificationService implements NotificationUseCase {
 	@Transactional(readOnly = true)
 	public PageResult<NotificationResponse> findNotifications(Long subscriberId, Boolean isRead, int page, int size) {
 
-		PageResult<Notification> pageResult = notificationPersistencePort.findAllBySubscriberId(subscriberId, isRead,
-			page, size);
-
-		List<NotificationResponse> responses = pageResult.content().stream()
-			.map(NotificationResponse::from)
-			.toList();
-
-		return new PageResult<>(
-			responses,
-			pageResult.page(),
-			pageResult.size(),
-			pageResult.totalElements(),
-			pageResult.totalPages()
-		);
+		return loadCombinedNotificationPort.loadCombinedNotifications(subscriberId, isRead, page, size);
 	}
 
 	@Override
