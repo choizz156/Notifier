@@ -77,7 +77,7 @@ class NotificationLogServiceTest {
 			.metadata("{}")
 			.build();
 		NotificationLog log = NotificationLog.request(notification);
-		when(notificationLogPersistencePort.findLatestByReference(1L, ReferenceType.PERSONAL)).thenReturn(log);
+		when(notificationLogPersistencePort.findLatestByReferenceId(1L, ReferenceType.PERSONAL)).thenReturn(log);
 
 		// when
 		boolean result = notificationLogService.tryClaim(1L, ReferenceType.PERSONAL);
@@ -101,7 +101,7 @@ class NotificationLogServiceTest {
 			.build();
 		NotificationLog processingLog = NotificationLog.request(notification);
 		processingLog.markAsProcessing();
-		when(notificationLogPersistencePort.findLatestByReference(1L, ReferenceType.PERSONAL)).thenReturn(processingLog);
+		when(notificationLogPersistencePort.findLatestByReferenceId(1L, ReferenceType.PERSONAL)).thenReturn(processingLog);
 
 		PublicationContext sentContext = PublicationContext.builder()
 			.notificationId(2L)
@@ -112,7 +112,7 @@ class NotificationLogServiceTest {
 			.retryCount(0)
 			.build();
 		NotificationLog sentLog = NotificationLog.sent(sentContext);
-		when(notificationLogPersistencePort.findLatestByReference(2L, ReferenceType.PERSONAL)).thenReturn(sentLog);
+		when(notificationLogPersistencePort.findLatestByReferenceId(2L, ReferenceType.PERSONAL)).thenReturn(sentLog);
 
 		// when
 		boolean result1 = notificationLogService.tryClaim(1L, ReferenceType.PERSONAL);
@@ -136,7 +136,7 @@ class NotificationLogServiceTest {
 			.metadata("{}")
 			.build();
 		NotificationLog log = NotificationLog.request(notification);
-		when(notificationLogPersistencePort.findLatestByReference(1L, ReferenceType.PERSONAL)).thenReturn(log);
+		when(notificationLogPersistencePort.findLatestByReferenceId(1L, ReferenceType.PERSONAL)).thenReturn(log);
 		doThrow(OptimisticLockingFailureException.class).when(notificationLogPersistencePort).save(log);
 
 		// when

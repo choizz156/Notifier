@@ -49,7 +49,7 @@ public class NotificationLogPersistenceAdapter implements NotificationLogPersist
 	}
 
 	@Override
-	public NotificationLog findLatestByReference(Long referenceId, ReferenceType referenceType) {
+	public NotificationLog findLatestByReferenceId(Long referenceId, ReferenceType referenceType) {
 
 		return notificationLogJpaRepository.findFirstByReferenceIdAndReferenceTypeOrderByCreatedAtDesc(referenceId, referenceType)
 			.map(NotificationLogMapper::toDomain)

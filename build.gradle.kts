@@ -31,18 +31,21 @@ subprojects {
         }
     }
 
-
-
     dependencies{
         compileOnly("org.projectlombok:lombok")
         testCompileOnly("org.projectlombok:lombok")
         testAnnotationProcessor("org.projectlombok:lombok")
-        testRuntimeOnly("org.junit.platform:junit-platform-launcher")
         annotationProcessor("org.projectlombok:lombok")
+        testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
         implementation("org.springframework.boot:spring-boot-starter")
         testImplementation("org.springframework.boot:spring-boot-starter-test")
+        implementation("org.springframework:spring-aop")
+        implementation("org.aspectj:aspectjweaver")
+
         implementation("com.fasterxml.jackson.core:jackson-databind")
         implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
+
 
         if (project.path != ":support:logging") {
             implementation(project(":support:logging"))

@@ -84,7 +84,7 @@ class NotificationLogPersistenceAdapterTest {
 		when(notificationLogJpaRepository.findFirstByReferenceIdAndReferenceTypeOrderByCreatedAtDesc(10L, ReferenceType.PERSONAL)).thenReturn(Optional.of(entity));
 
 		// when
-		NotificationLog result = adapter.findLatestByReference(10L, ReferenceType.PERSONAL);
+		NotificationLog result = adapter.findLatestByReferenceId(10L, ReferenceType.PERSONAL);
 
 		// then
 		assertThat(result.referenceId()).isEqualTo(10L);
@@ -97,7 +97,7 @@ class NotificationLogPersistenceAdapterTest {
 		when(notificationLogJpaRepository.findFirstByReferenceIdAndReferenceTypeOrderByCreatedAtDesc(10L, ReferenceType.PERSONAL)).thenReturn(Optional.empty());
 
 		// when & then
-		assertThatThrownBy(() -> adapter.findLatestByReference(10L, ReferenceType.PERSONAL))
+		assertThatThrownBy(() -> adapter.findLatestByReferenceId(10L, ReferenceType.PERSONAL))
 			.isInstanceOf(NoSuchElementException.class);
 	}
 

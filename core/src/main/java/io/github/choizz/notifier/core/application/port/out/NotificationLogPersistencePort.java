@@ -13,7 +13,7 @@ public interface NotificationLogPersistencePort {
 
 	void save(NotificationLog notificationLog);
 	void saveAll(List<NotificationLog> notificationLogs);
-	NotificationLog findLatestByReference(Long referenceId, ReferenceType referenceType);
+	NotificationLog findLatestByReferenceId(Long referenceId, ReferenceType referenceType);
 	List<Long> findUnprocessedNotificationIds(List<EventStatus> statuses, long lastId, int chunkSize);
 	List<NotificationLog> findAllByEventStatus(EventStatus eventStatus);
 	List<NotificationLog> findStuckLogs(long lastId, EventStatus status, Collection<NotificationType> types, LocalDateTime thresholdTime, int chunkSize);
