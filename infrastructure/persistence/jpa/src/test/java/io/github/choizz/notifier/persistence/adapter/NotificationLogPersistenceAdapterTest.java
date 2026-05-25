@@ -23,6 +23,7 @@ import org.springframework.data.domain.Limit;
 import io.github.choizz.notifier.core.domain.model.EventStatus;
 import io.github.choizz.notifier.core.domain.model.NotificationLog;
 import io.github.choizz.notifier.core.domain.model.NotificationType;
+import io.github.choizz.notifier.core.domain.model.ReferenceType;
 import io.github.choizz.notifier.persistence.entity.NotificationLogEntity;
 import io.github.choizz.notifier.persistence.repository.NotificationLogJpaRepository;
 
@@ -40,12 +41,14 @@ class NotificationLogPersistenceAdapterTest {
 	void test1() {
 		// given
 		NotificationLog domain = NotificationLog.builder()
-			.notificationId(10L)
+			.referenceId(10L)
+			.referenceType(ReferenceType.PERSONAL)
 			.eventStatus(EventStatus.SENT)
 			.build();
 			
 		NotificationLogEntity entity = NotificationLogEntity.builder()
-			.notificationId(10L)
+			.referenceId(10L)
+			.referenceType(ReferenceType.PERSONAL)
 			.eventStatus(EventStatus.SENT)
 			.build();
 			
@@ -62,8 +65,8 @@ class NotificationLogPersistenceAdapterTest {
 	@Test
 	void test2() {
 		// given
-		NotificationLog domain1 = NotificationLog.builder().notificationId(10L).eventStatus(EventStatus.SENT).build();
-		NotificationLog domain2 = NotificationLog.builder().notificationId(20L).eventStatus(EventStatus.SENT).build();
+		NotificationLog domain1 = NotificationLog.builder().referenceId(10L).referenceType(ReferenceType.PERSONAL).eventStatus(EventStatus.SENT).build();
+		NotificationLog domain2 = NotificationLog.builder().referenceId(20L).referenceType(ReferenceType.PERSONAL).eventStatus(EventStatus.SENT).build();
 
 		// when
 		adapter.saveAll(List.of(domain1, domain2));
@@ -76,24 +79,24 @@ class NotificationLogPersistenceAdapterTest {
 	@Test
 	void test3() {
 		// given
-		NotificationLogEntity entity = NotificationLogEntity.builder().notificationId(10L).build();
-		when(notificationLogJpaRepository.findFirstByNotificationIdOrderByCreatedAtDesc(10L)).thenReturn(Optional.of(entity));
+		NotificationLogEntity entity = NotificationLogEntity.builder().referenceId(10L).referenceType(ReferenceType.PERSONAL).build();
+		when(notificationLogJpaRepository.findFirstByReferenceIdAndReferenceTypeOrderByCreatedAtDesc(10L, ReferenceType.PERSONAL)).thenReturn(Optional.of(entity));
 
 		// when
-		NotificationLog result = adapter.findLatestByNotificationId(10L);
+		NotificationLog result = adapter.findLatestByReference(10L, ReferenceType.PERSONAL);
 
 		// then
-		assertThat(result.notificationId()).isEqualTo(10L);
+		assertThat(result.referenceId()).isEqualTo(10L);
 	}
 
 	@DisplayName("알림 이벤트 이력이 없으면 예외가 발생한다.")
 	@Test
 	void test4() {
 		// given
-		when(notificationLogJpaRepository.findFirstByNotificationIdOrderByCreatedAtDesc(10L)).thenReturn(Optional.empty());
+		when(notificationLogJpaRepository.findFirstByReferenceIdAndReferenceTypeOrderByCreatedAtDesc(10L, ReferenceType.PERSONAL)).thenReturn(Optional.empty());
 
 		// when & then
-		assertThatThrownBy(() -> adapter.findLatestByNotificationId(10L))
+		assertThatThrownBy(() -> adapter.findLatestByReference(10L, ReferenceType.PERSONAL))
 			.isInstanceOf(NoSuchElementException.class);
 	}
 

@@ -13,6 +13,7 @@ import io.github.choizz.notifier.core.domain.model.Channel;
 import io.github.choizz.notifier.core.domain.model.EventStatus;
 import io.github.choizz.notifier.core.domain.model.NotificationLog;
 import io.github.choizz.notifier.core.domain.model.NotificationType;
+import io.github.choizz.notifier.core.domain.model.ReferenceType;
 
 class NotificationLogFactoryTest {
 
@@ -35,7 +36,8 @@ class NotificationLogFactoryTest {
 		NotificationLog log = factory.create(EventStatus.SENT, context);
 
 		// then
-		assertThat(log.notificationId()).isEqualTo(1L);
+		assertThat(log.referenceId()).isEqualTo(1L);
+		assertThat(log.referenceType()).isEqualTo(ReferenceType.PERSONAL);
 		assertThat(log.eventStatus()).isEqualTo(EventStatus.SENT);
 		assertThat(log.retryCount()).isEqualTo(0);
 	}
@@ -57,7 +59,8 @@ class NotificationLogFactoryTest {
 		NotificationLog log = factory.create(EventStatus.RETRIED, context);
 
 		// then
-		assertThat(log.notificationId()).isEqualTo(1L);
+		assertThat(log.referenceId()).isEqualTo(1L);
+		assertThat(log.referenceType()).isEqualTo(ReferenceType.PERSONAL);
 		assertThat(log.eventStatus()).isEqualTo(EventStatus.RETRIED);
 		assertThat(log.failReason()).isEqualTo("timeout");
 		assertThat(log.retryCount()).isEqualTo(1);
@@ -80,7 +83,8 @@ class NotificationLogFactoryTest {
 		NotificationLog log = factory.create(EventStatus.FAILED, context);
 
 		// then
-		assertThat(log.notificationId()).isEqualTo(1L);
+		assertThat(log.referenceId()).isEqualTo(1L);
+		assertThat(log.referenceType()).isEqualTo(ReferenceType.PERSONAL);
 		assertThat(log.eventStatus()).isEqualTo(EventStatus.FAILED);
 		assertThat(log.failReason()).isEqualTo("fatal error");
 		assertThat(log.retryCount()).isEqualTo(3);

@@ -25,6 +25,7 @@ import io.github.choizz.notifier.core.application.factory.NotificationLogFactory
 import io.github.choizz.notifier.core.application.port.out.NotificationLogPersistencePort;
 import io.github.choizz.notifier.core.domain.model.EventStatus;
 import io.github.choizz.notifier.core.domain.model.NotificationLog;
+import io.github.choizz.notifier.core.domain.model.ReferenceType;
 
 @ExtendWith(MockitoExtension.class)
 class NotificationLogServiceTest {
@@ -66,10 +67,9 @@ class NotificationLogServiceTest {
 	@Test
 	void test2() {
 		// given
-		NotificationLog log = NotificationLog.builder()
-			.eventStatus(EventStatus.REQUESTED)
-			.build();
-		when(notificationLogPersistencePort.findLatestByNotificationId(1L)).thenReturn(log);
+		// given
+		NotificationLog log = NotificationLog.request(1L, ReferenceType.PERSONAL, io.github.choizz.notifier.core.domain.model.NotificationType.PAYMENT_CONFIRMED, io.github.choizz.notifier.core.domain.model.Channel.EMAIL, "{}");
+		when(notificationLogPersistencePort.findLatestByReference(1L, ReferenceType.PERSONAL)).thenReturn(log);
 
 		// when
 		boolean result = notificationLogService.tryClaim(1L);
@@ -84,11 +84,12 @@ class NotificationLogServiceTest {
 	@Test
 	void test3() {
 		// given
-		NotificationLog processingLog = NotificationLog.builder().eventStatus(EventStatus.PROCESSING).build();
-		when(notificationLogPersistencePort.findLatestByNotificationId(1L)).thenReturn(processingLog);
+		NotificationLog processingLog = NotificationLog.request(1L, ReferenceType.PERSONAL, io.github.choizz.notifier.core.domain.model.NotificationType.PAYMENT_CONFIRMED, io.github.choizz.notifier.core.domain.model.Channel.EMAIL, "{}");
+		processingLog.markAsProcessing();
+		when(notificationLogPersistencePort.findLatestByReference(1L, ReferenceType.PERSONAL)).thenReturn(processingLog);
 
-		NotificationLog sentLog = NotificationLog.builder().eventStatus(EventStatus.SENT).build();
-		when(notificationLogPersistencePort.findLatestByNotificationId(2L)).thenReturn(sentLog);
+		NotificationLog sentLog = NotificationLog.sent(2L, ReferenceType.PERSONAL, io.github.choizz.notifier.core.domain.model.NotificationType.PAYMENT_CONFIRMED, io.github.choizz.notifier.core.domain.model.Channel.EMAIL, "{}", 0);
+		when(notificationLogPersistencePort.findLatestByReference(2L, ReferenceType.PERSONAL)).thenReturn(sentLog);
 
 		// when
 		boolean result1 = notificationLogService.tryClaim(1L);
@@ -104,8 +105,8 @@ class NotificationLogServiceTest {
 	@Test
 	void test4() {
 		// given
-		NotificationLog log = NotificationLog.builder().eventStatus(EventStatus.REQUESTED).build();
-		when(notificationLogPersistencePort.findLatestByNotificationId(1L)).thenReturn(log);
+		NotificationLog log = NotificationLog.request(1L, ReferenceType.PERSONAL, io.github.choizz.notifier.core.domain.model.NotificationType.PAYMENT_CONFIRMED, io.github.choizz.notifier.core.domain.model.Channel.EMAIL, "{}");
+		when(notificationLogPersistencePort.findLatestByReference(1L, ReferenceType.PERSONAL)).thenReturn(log);
 		doThrow(OptimisticLockingFailureException.class).when(notificationLogPersistencePort).save(log);
 
 		// when

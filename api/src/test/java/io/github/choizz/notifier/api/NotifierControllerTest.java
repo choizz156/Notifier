@@ -8,30 +8,38 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.List;
 import java.util.Map;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import io.github.choizz.notifier.api.dto.NotificationCreateWebRequest;
 import io.github.choizz.notifier.core.application.port.in.NotificationUseCase;
 
-@WebMvcTest(NotifierController.class)
+@ExtendWith(MockitoExtension.class)
 class NotifierControllerTest {
 
-	@Autowired
 	private MockMvc mockMvc;
 
-
-
-	@MockitoBean
+	@Mock
 	private NotificationUseCase notificationUseCase;
+
+	@InjectMocks
+	private NotifierController notifierController;
+
+	@BeforeEach
+	void setUp() {
+		mockMvc = MockMvcBuilders.standaloneSetup(notifierController)
+			.setControllerAdvice(new WebExceptionHandler())
+			.build();
+	}
 
 	@DisplayName("알림 이벤트 발행 API 시나리오 테스트")
 	@TestFactory

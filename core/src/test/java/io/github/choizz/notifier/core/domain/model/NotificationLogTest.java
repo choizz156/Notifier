@@ -11,10 +11,11 @@ class NotificationLogTest {
 	@Test
 	void test1() {
 		// when
-		NotificationLog log = NotificationLog.request(1L, NotificationType.PAYMENT_CONFIRMED, Channel.EMAIL, "{}");
+		NotificationLog log = NotificationLog.request(1L, ReferenceType.PERSONAL, NotificationType.PAYMENT_CONFIRMED, Channel.EMAIL, "{}");
 
 		// then
-		assertThat(log.notificationId()).isEqualTo(1L);
+		assertThat(log.referenceId()).isEqualTo(1L);
+		assertThat(log.referenceType()).isEqualTo(ReferenceType.PERSONAL);
 		assertThat(log.notificationType()).isEqualTo(NotificationType.PAYMENT_CONFIRMED);
 		assertThat(log.channelType()).isEqualTo(Channel.EMAIL);
 		assertThat(log.eventStatus()).isEqualTo(EventStatus.REQUESTED);
@@ -26,7 +27,7 @@ class NotificationLogTest {
 	@Test
 	void test2() {
 		// when
-		NotificationLog log = NotificationLog.retried(1L, NotificationType.PAYMENT_CONFIRMED, Channel.EMAIL, "timeout", "{}", 1);
+		NotificationLog log = NotificationLog.retried(1L, ReferenceType.PERSONAL, NotificationType.PAYMENT_CONFIRMED, Channel.EMAIL, "timeout", "{}", 1);
 
 		// then
 		assertThat(log.eventStatus()).isEqualTo(EventStatus.RETRIED);
@@ -39,7 +40,7 @@ class NotificationLogTest {
 	@Test
 	void test3() {
 		// when
-		NotificationLog log = NotificationLog.sent(1L, NotificationType.PAYMENT_CONFIRMED, Channel.EMAIL, "{}", 0);
+		NotificationLog log = NotificationLog.sent(1L, ReferenceType.PERSONAL, NotificationType.PAYMENT_CONFIRMED, Channel.EMAIL, "{}", 0);
 
 		// then
 		assertThat(log.eventStatus()).isEqualTo(EventStatus.SENT);
@@ -51,7 +52,7 @@ class NotificationLogTest {
 	@Test
 	void test4() {
 		// when
-		NotificationLog log = NotificationLog.failed(1L, NotificationType.PAYMENT_CONFIRMED, Channel.EMAIL, "error", "{}", 3);
+		NotificationLog log = NotificationLog.failed(1L, ReferenceType.PERSONAL, NotificationType.PAYMENT_CONFIRMED, Channel.EMAIL, "error", "{}", 3);
 
 		// then
 		assertThat(log.eventStatus()).isEqualTo(EventStatus.FAILED);
@@ -64,7 +65,7 @@ class NotificationLogTest {
 	@Test
 	void test5() {
 		// given
-		NotificationLog log = NotificationLog.request(1L, NotificationType.PAYMENT_CONFIRMED, Channel.EMAIL, "{}");
+		NotificationLog log = NotificationLog.request(1L, ReferenceType.PERSONAL, NotificationType.PAYMENT_CONFIRMED, Channel.EMAIL, "{}");
 
 		// when
 		log.markAsProcessing();
@@ -77,7 +78,7 @@ class NotificationLogTest {
 	@Test
 	void test6() {
 		// given
-		NotificationLog log = NotificationLog.request(1L, NotificationType.PAYMENT_CONFIRMED, Channel.EMAIL, "{}");
+		NotificationLog log = NotificationLog.request(1L, ReferenceType.PERSONAL, NotificationType.PAYMENT_CONFIRMED, Channel.EMAIL, "{}");
 
 		// when
 		log.markAsRetried("timeout", 1);
@@ -92,7 +93,7 @@ class NotificationLogTest {
 	@Test
 	void test7() {
 		// given
-		NotificationLog log = NotificationLog.request(1L, NotificationType.PAYMENT_CONFIRMED, Channel.EMAIL, "{}");
+		NotificationLog log = NotificationLog.request(1L, ReferenceType.PERSONAL, NotificationType.PAYMENT_CONFIRMED, Channel.EMAIL, "{}");
 
 		// when
 		log.markAsFailed("error", 3);

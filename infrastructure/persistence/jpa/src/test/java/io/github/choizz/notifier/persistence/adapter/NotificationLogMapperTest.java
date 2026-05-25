@@ -22,7 +22,8 @@ class NotificationLogMapperTest {
 		LocalDateTime now = LocalDateTime.now();
 		NotificationLog domain = NotificationLog.builder()
 			.id(1L)
-			.notificationId(100L)
+			.referenceId(100L)
+			.referenceType(io.github.choizz.notifier.core.domain.model.ReferenceType.PERSONAL)
 			.notificationType(NotificationType.PAYMENT_CONFIRMED)
 			.channelType(Channel.EMAIL)
 			.eventStatus(EventStatus.SENT)
@@ -39,7 +40,8 @@ class NotificationLogMapperTest {
 
 		// then
 		assertThat(entity.id()).isEqualTo(1L);
-		assertThat(entity.notificationId()).isEqualTo(100L);
+		assertThat(entity.referenceId()).isEqualTo(100L);
+		assertThat(entity.referenceType()).isEqualTo(io.github.choizz.notifier.core.domain.model.ReferenceType.PERSONAL);
 		assertThat(entity.notificationType()).isEqualTo(NotificationType.PAYMENT_CONFIRMED);
 		assertThat(entity.channelType()).isEqualTo(Channel.EMAIL);
 		assertThat(entity.eventStatus()).isEqualTo(EventStatus.SENT);
@@ -56,7 +58,8 @@ class NotificationLogMapperTest {
 		// given
 		LocalDateTime now = LocalDateTime.now();
 		NotificationLogEntity entity = NotificationLogEntity.builder()
-			.notificationId(200L)
+			.referenceId(200L)
+			.referenceType(io.github.choizz.notifier.core.domain.model.ReferenceType.PERSONAL)
 			.notificationType(NotificationType.COUPON_ISSUED)
 			.channelType(Channel.IN_APP)
 			.eventStatus(EventStatus.FAILED)
@@ -74,7 +77,8 @@ class NotificationLogMapperTest {
 
 		// then
 		assertThat(domain.id()).isEqualTo(2L);
-		assertThat(domain.notificationId()).isEqualTo(200L);
+		assertThat(domain.referenceId()).isEqualTo(200L);
+		assertThat(domain.referenceType()).isEqualTo(io.github.choizz.notifier.core.domain.model.ReferenceType.PERSONAL);
 		assertThat(domain.notificationType()).isEqualTo(NotificationType.COUPON_ISSUED);
 		assertThat(domain.channelType()).isEqualTo(Channel.IN_APP);
 		assertThat(domain.eventStatus()).isEqualTo(EventStatus.FAILED);

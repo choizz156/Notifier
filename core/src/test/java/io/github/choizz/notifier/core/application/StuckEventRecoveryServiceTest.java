@@ -22,6 +22,8 @@ import io.github.choizz.notifier.core.application.port.in.NotificationUseCase;
 import io.github.choizz.notifier.core.application.port.out.NotificationLogPersistencePort;
 import io.github.choizz.notifier.core.domain.model.EventStatus;
 import io.github.choizz.notifier.core.domain.model.NotificationLog;
+import io.github.choizz.notifier.core.domain.model.NotificationType;
+import io.github.choizz.notifier.core.domain.model.ReferenceType;
 
 @ExtendWith(MockitoExtension.class)
 class StuckEventRecoveryServiceTest {
@@ -49,8 +51,8 @@ class StuckEventRecoveryServiceTest {
 		config.setMaxDelay(2);
 		when(retryProperties.getConfig(any())).thenReturn(config);
 
-		NotificationLog stuckLog1 = NotificationLog.builder().id(1L).notificationId(10L).eventStatus(EventStatus.PROCESSING).build();
-		NotificationLog stuckLog2 = NotificationLog.builder().id(2L).notificationId(20L).eventStatus(EventStatus.PROCESSING).build();
+		NotificationLog stuckLog1 = NotificationLog.builder().id(1L).referenceId(10L).referenceType(ReferenceType.PERSONAL).eventStatus(EventStatus.PROCESSING).build();
+		NotificationLog stuckLog2 = NotificationLog.builder().id(2L).referenceId(20L).referenceType(ReferenceType.PERSONAL).eventStatus(EventStatus.PROCESSING).build();
 
 		// 첫 페이지 조회
 		when(notificationLogPersistencePort.findStuckLogs(org.mockito.ArgumentMatchers.anyLong(), org.mockito.ArgumentMatchers.eq(EventStatus.PROCESSING), org.mockito.ArgumentMatchers.anyCollection(), org.mockito.ArgumentMatchers.any(java.time.LocalDateTime.class), org.mockito.ArgumentMatchers.anyInt()))
