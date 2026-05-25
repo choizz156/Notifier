@@ -6,8 +6,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.time.LocalDateTime;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,9 +16,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import io.github.choizz.notifier.core.domain.model.NotificationType;
 import io.github.choizz.notifier.core.domain.model.PublicNotification;
 import io.github.choizz.notifier.core.domain.model.PublicNotificationReceipt;
-import io.github.choizz.notifier.persistence.entity.PublicNotificationEntity;
-import io.github.choizz.notifier.persistence.entity.PublicNotificationReceiptEntity;
-import io.github.choizz.notifier.persistence.repository.PublicNotificationJpaRepository;
+import io.github.choizz.notifier.persistence.jpa.entity.PublicNotificationEntity;
+import io.github.choizz.notifier.persistence.jpa.entity.PublicNotificationReceiptEntity;
+import io.github.choizz.notifier.persistence.jpa.adapter.PublicNotificationPersistenceAdapter;
+import io.github.choizz.notifier.persistence.jpa.adapter.PublicNotificationReceiptRepository;
+import io.github.choizz.notifier.persistence.jpa.repository.PublicNotificationJpaRepository;
 
 @ExtendWith(MockitoExtension.class)
 class PublicNotificationPersistenceAdapterTest {

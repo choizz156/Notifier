@@ -17,8 +17,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import io.github.choizz.notifier.core.domain.model.Channel;
 import io.github.choizz.notifier.core.domain.model.NotificationType;
-import io.github.choizz.notifier.persistence.entity.MockUserEntity;
-import io.github.choizz.notifier.persistence.repository.MockUserJpaRepository;
+import io.github.choizz.notifier.persistence.jpa.entity.MockUserEntity;
+import io.github.choizz.notifier.persistence.jpa.adapter.MockUserPersistenceAdapter;
+import io.github.choizz.notifier.persistence.jpa.repository.MockUserJpaRepository;
 
 @ExtendWith(MockitoExtension.class)
 class MockUserPersistenceAdapterTest {

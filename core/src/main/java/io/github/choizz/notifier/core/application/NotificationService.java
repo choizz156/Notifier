@@ -178,15 +178,14 @@ public class NotificationService implements NotificationUseCase {
 		}
 
 		List<NotificationLog> notificationLogs = new ArrayList<>();
-		notificationsToSave.forEach(notification ->
-			notificationLogs.add(NotificationLog.request(notification))
-		);
-
 		notificationLogUseCase.saveAll(notificationLogs);
 		notificationPersistencePort.saveAll(notificationsToSave)
-			.forEach(savedNotification ->
-				applicationEventPublisher.publishEvent(
-					NotificationRequestedEvent.of(savedNotification, notificationContext))
+			.forEach(savedNotification -> {
+					notificationLogs.add(NotificationLog.request(savedNotification));
+					applicationEventPublisher.publishEvent(
+						NotificationRequestedEvent.of(savedNotification, notificationContext)
+					);
+				}
 			);
 	}
 }

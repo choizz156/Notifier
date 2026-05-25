@@ -26,5 +26,6 @@ public class UnprocessedNotificationRecoveryRunner {
 		} catch (Exception e) {
 			log.error("알림 재처리 중 오류 발생", e);
 		}
+		log.info("미처리 알림 복구 작업을 종료합니다.");
 	}
 }

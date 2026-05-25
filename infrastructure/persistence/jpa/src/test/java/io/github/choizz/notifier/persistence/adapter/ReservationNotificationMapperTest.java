@@ -9,7 +9,8 @@ import org.junit.jupiter.api.Test;
 
 import io.github.choizz.notifier.core.domain.model.NotificationType;
 import io.github.choizz.notifier.core.domain.model.ReservationInformation;
-import io.github.choizz.notifier.persistence.entity.ReservationNotificationEntity;
+import io.github.choizz.notifier.persistence.jpa.entity.ReservationNotificationEntity;
+import io.github.choizz.notifier.persistence.jpa.adapter.ReservationNotificationMapper;
 
 class ReservationNotificationMapperTest {
 

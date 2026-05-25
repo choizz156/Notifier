@@ -7,8 +7,8 @@ import org.springframework.boot.persistence.autoconfigure.EntityScan;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-import io.github.choizz.notifier.persistence.repository.NotificationLogJpaRepository;
-import io.github.choizz.notifier.persistence.repository.NotificationJpaRepository;
+import io.github.choizz.notifier.persistence.jpa.repository.NotificationLogJpaRepository;
+import io.github.choizz.notifier.persistence.jpa.repository.NotificationJpaRepository;
 
 @SpringBootApplication(scanBasePackages = "io.github.choizz.notifier.persistence")
 @EnableJpaRepositories("io.github.choizz.notifier.persistence.repository")

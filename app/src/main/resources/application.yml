@@ -7,10 +7,10 @@ spring:
 
   config:
     import:
-      - logging.yml
-      - db.yml
-      - rdb-retry.yml
-      - scheduler.yml
+      - classpath:logging.yml
+      - classpath:db.yml
+      - classpath:rdb-retry.yml
+      - classpath:scheduler.yml
 
   threads:
     virtual:

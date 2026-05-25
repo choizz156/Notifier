@@ -4,7 +4,7 @@ Content-Type: application/json
 
 {
   "subscriberId": 1,
-  "notificationType": "EMAIL",
+  "notificationType": "CANCELLATION_PROCESSED",
   "metadata": {
     "title": "테스트 알림",
     "content": "이것은 테스트 알림입니다."

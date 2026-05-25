@@ -24,8 +24,9 @@ import io.github.choizz.notifier.core.domain.model.Channel;
 import io.github.choizz.notifier.core.domain.model.NotificationStatus;
 import io.github.choizz.notifier.core.domain.model.NotificationType;
 import io.github.choizz.notifier.core.domain.model.ReferenceType;
-import io.github.choizz.notifier.persistence.repository.CombinedNotificationJpaRepository;
-import io.github.choizz.notifier.persistence.repository.CombinedNotificationProjection;
+import io.github.choizz.notifier.persistence.jpa.adapter.CombinedNotificationPersistenceAdapter;
+import io.github.choizz.notifier.persistence.jpa.repository.CombinedNotificationJpaRepository;
+import io.github.choizz.notifier.persistence.jpa.repository.CombinedNotificationProjection;
 
 @ExtendWith(MockitoExtension.class)
 class CombinedNotificationPersistenceAdapterTest {

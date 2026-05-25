@@ -11,7 +11,8 @@ import io.github.choizz.notifier.core.domain.model.Channel;
 import io.github.choizz.notifier.core.domain.model.Notification;
 import io.github.choizz.notifier.core.domain.model.NotificationStatus;
 import io.github.choizz.notifier.core.domain.model.NotificationType;
-import io.github.choizz.notifier.persistence.entity.NotificationEntity;
+import io.github.choizz.notifier.persistence.jpa.entity.NotificationEntity;
+import io.github.choizz.notifier.persistence.jpa.adapter.NotificationMapper;
 
 class NotificationMapperTest {
 

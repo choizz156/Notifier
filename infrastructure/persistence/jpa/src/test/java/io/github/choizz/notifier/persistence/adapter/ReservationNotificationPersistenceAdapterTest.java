@@ -18,8 +18,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Limit;
 
 import io.github.choizz.notifier.core.domain.model.ReservationInformation;
-import io.github.choizz.notifier.persistence.entity.ReservationNotificationEntity;
-import io.github.choizz.notifier.persistence.repository.ReservationNotificationJpaRepository;
+import io.github.choizz.notifier.persistence.jpa.entity.ReservationNotificationEntity;
+import io.github.choizz.notifier.persistence.jpa.adapter.ReservationNotificationPersistenceAdapter;
+import io.github.choizz.notifier.persistence.jpa.repository.ReservationNotificationJpaRepository;
 
 @ExtendWith(MockitoExtension.class)
 class ReservationNotificationPersistenceAdapterTest {

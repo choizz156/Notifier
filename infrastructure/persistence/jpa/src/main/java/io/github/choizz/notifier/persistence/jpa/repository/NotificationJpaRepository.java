@@ -1,0 +1,42 @@
+package io.github.choizz.notifier.persistence.jpa.repository;
+
+import java.util.Optional;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import io.github.choizz.notifier.core.domain.model.Channel;
+import io.github.choizz.notifier.core.domain.model.NotificationStatus;
+import io.github.choizz.notifier.core.domain.model.NotificationType;
+import io.github.choizz.notifier.persistence.jpa.entity.NotificationEntity;
+
+public interface NotificationJpaRepository extends JpaRepository<NotificationEntity, Long> {
+
+	Optional<NotificationEntity> findBySubscriberId(Long subscriberId);
+
+	@Modifying(clearAutomatically = true)
+	@Query("UPDATE NotificationEntity n SET n.isRead = true WHERE n.id = :id AND n.isRead = false")
+	int markAsRead(@Param("id") Long id);
+
+	boolean existsBySubscriberIdAndNotificationTypeAndChannelAndStatus(
+		Long subscriberId,
+		NotificationType notificationType,
+		Channel channel,
+		NotificationStatus statuses
+	);
+
+	Page<NotificationEntity> findBySubscriberId(
+		Long subscriberId,
+		Pageable pageable
+	);
+
+	Page<NotificationEntity> findBySubscriberIdAndIsRead(
+		Long subscriberId,
+		boolean isRead,
+		Pageable pageable
+	);
+}

@@ -11,7 +11,7 @@ spring.config.activate.on-profile: local
 spring:
   datasource:
     driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:dev_db;MODE=MySQL;DB_CLOSE_DELAY=-1;rewriteBatchedStatements=true
+    url: jdbc:h2:mem:dev_db;MODE=MySQL;DB_CLOSE_DELAY=-1
     password:
   jpa:
     hibernate:
@@ -33,7 +33,7 @@ spring.config.activate.on-profile: dev
 spring:
   datasource:
     driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:dev_db;MODE=MySQL;DB_CLOSE_DELAY=-1;rewriteBatchedStatements=true
+    url: jdbc:h2:mem:dev_db;MODE=MySQL;DB_CLOSE_DELAY=-1
     username: sa
     password:
     hikari:

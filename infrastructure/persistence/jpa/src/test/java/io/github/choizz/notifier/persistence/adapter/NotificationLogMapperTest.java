@@ -12,7 +12,9 @@ import io.github.choizz.notifier.core.domain.model.EventStatus;
 import io.github.choizz.notifier.core.domain.model.NotificationLog;
 import io.github.choizz.notifier.core.domain.model.NotificationType;
 import io.github.choizz.notifier.core.domain.model.ReferenceType;
-import io.github.choizz.notifier.persistence.entity.NotificationLogEntity;
+import io.github.choizz.notifier.persistence.jpa.entity.NotificationLogEntity;
+import io.github.choizz.notifier.persistence.jpa.adapter.NotificationLogMapper;
+
 import org.springframework.test.util.ReflectionTestUtils;
 
 class NotificationLogMapperTest {
