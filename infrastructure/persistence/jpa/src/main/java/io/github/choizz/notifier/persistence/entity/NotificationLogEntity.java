@@ -59,6 +59,9 @@ public class NotificationLogEntity extends BaseEntity {
 
 	private LocalDateTime publishedAt;
 
+	@Column(columnDefinition = "TEXT")
+	private String metadata;
+
 	@Builder
 	private NotificationLogEntity(
 		Long referenceId,
@@ -69,7 +72,8 @@ public class NotificationLogEntity extends BaseEntity {
 		String failReason,
 		int retryCount,
 		boolean published,
-		LocalDateTime publishedAt
+		LocalDateTime publishedAt,
+		String metadata
 	) {
 		this.referenceId = referenceId;
 		this.referenceType = referenceType;
@@ -80,5 +84,6 @@ public class NotificationLogEntity extends BaseEntity {
 		this.retryCount = retryCount;
 		this.published = published;
 		this.publishedAt = publishedAt;
+		this.metadata = metadata;
 	}
 }

@@ -17,6 +17,7 @@ public class NotificationLogMapper {
 			.retryCount(notificationLog.retryCount())
 			.published(notificationLog.published())
 			.publishedAt(notificationLog.publishedAt())
+			.metadata(notificationLog.metadata())
 			.build();
 
 		entity.id(notificationLog.id());
@@ -38,6 +39,7 @@ public class NotificationLogMapper {
 			.publishedAt(entity.publishedAt())
 			.createdAt(entity.createdAt())
 			.updatedAt(entity.updatedAt())
+			.metadata(entity.metadata())
 			.build();
 	}
 }

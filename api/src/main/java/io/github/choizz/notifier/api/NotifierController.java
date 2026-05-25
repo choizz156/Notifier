@@ -25,7 +25,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/v1/Notification")
+@RequestMapping("/v1/notification")
 public class NotifierController {
 
 	private final NotificationUseCase notificationUseCase;

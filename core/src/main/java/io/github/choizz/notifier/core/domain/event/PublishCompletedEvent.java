@@ -6,10 +6,18 @@ public record PublishCompletedEvent(
 	long notificationId,
 	String notificationType,
 	String channel,
-	String metadata
+	String metadata,
+	String referenceType
 ) {
 
 	public PublishCompletedEvent(PublicationContext context) {
-		this(context.notificationId(), context.notificationType(), context.channel(), context.metadata());
+
+		this(
+			context.notificationId(),
+			context.notificationType(),
+			context.channel(),
+			context.metadata(),
+			context.referenceType()
+		);
 	}
 }

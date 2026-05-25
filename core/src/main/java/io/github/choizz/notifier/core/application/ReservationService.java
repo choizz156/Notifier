@@ -13,7 +13,6 @@ import io.github.choizz.notifier.core.application.port.in.NotificationUseCase;
 import io.github.choizz.notifier.core.application.port.in.ReservationUseCase;
 import io.github.choizz.notifier.core.application.port.out.ReservationNotificationPersistencePort;
 import io.github.choizz.notifier.core.application.support.ChunkExecutor;
-import io.github.choizz.notifier.core.domain.model.Channel;
 import io.github.choizz.notifier.core.domain.model.NotificationType;
 import io.github.choizz.notifier.core.domain.model.ReservationInformation;
 import lombok.RequiredArgsConstructor;

@@ -12,5 +12,6 @@ public interface CombinedNotificationProjection {
 	String getMessage();
 	Boolean getIs_read();
 	LocalDateTime getCreated_at();
+	LocalDateTime getUpdated_at();
 	Integer getManual_retry_count();
 }

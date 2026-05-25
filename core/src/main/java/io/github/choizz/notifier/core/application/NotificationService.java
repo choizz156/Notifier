@@ -44,31 +44,31 @@ public class NotificationService implements NotificationUseCase {
 
 	@Override
 	@Transactional
-	public void push(NotificationContext NotificationContext) {
+	public void push(NotificationContext notificationContext) {
 
 		boolean isSubscribedToType = mockUserPersistencePort.isSubscribed(
-			NotificationContext.subscriberId(),
-			NotificationContext.notificationType()
+			notificationContext.subscriberId(),
+			notificationContext.notificationType()
 		);
 
 		if (!isSubscribedToType) {
 			log.info("유저가 해당 알림 타입을 수신 거부했습니다. subscriberId = {}, type = {}",
-				NotificationContext.subscriberId(), NotificationContext.notificationType());
+				notificationContext.subscriberId(), notificationContext.notificationType());
 			return;
 		}
 
 		Set<Channel> activeChannels = mockUserPersistencePort.findSubscribedChannels(
-			NotificationContext.subscriberId()
+			notificationContext.subscriberId()
 		);
 
 		if (activeChannels.isEmpty()) {
-			log.info("유저가 켜둔 알림 채널이 없습니다. subscriberId = {}", NotificationContext.subscriberId());
+			log.info("유저가 켜둔 알림 채널이 없습니다. subscriberId = {}", notificationContext.subscriberId());
 			return;
 		}
 
-		List<Notification> notificationsToSave = addNotifications(NotificationContext, activeChannels);
+		List<Notification> notificationsToSave = addNotifications(notificationContext, activeChannels);
 
-		saveAndPush(NotificationContext, notificationsToSave);
+		saveAndPush(notificationContext, notificationsToSave);
 	}
 
 	@Override
@@ -146,24 +146,25 @@ public class NotificationService implements NotificationUseCase {
 		return NotificationDetailResponse.of(notification, content);
 	}
 
-	private List<Notification> addNotifications(NotificationContext NotificationContext,
-		Set<Channel> activeChannels) {
+	private List<Notification> addNotifications(NotificationContext notification,
+		Set<Channel> activeChannels
+	) {
 
 		List<Notification> notificationsToSave = new ArrayList<>();
 		for (Channel channel : activeChannels) {
 			boolean isDuplicate = notificationPersistencePort.existsDuplicate(
-				NotificationContext.subscriberId(),
-				NotificationContext.notificationType(),
+				notification.subscriberId(),
+				notification.notificationType(),
 				channel
 			);
 
 			if (isDuplicate) {
 				log.warn("이미 처리 중인 동일한 알람이 존재합니다. id = {}, type = {}, channel = {}",
-					NotificationContext.subscriberId(), NotificationContext.notificationType(), channel);
+					notification.subscriberId(), notification.notificationType(), channel);
 				continue;
 			}
 
-			notificationsToSave.add(Notification.from(NotificationContext, channel));
+			notificationsToSave.add(Notification.of(notification, channel));
 		}
 		return notificationsToSave;
 	}

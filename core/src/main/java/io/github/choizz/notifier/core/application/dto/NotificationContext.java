@@ -8,7 +8,7 @@ import lombok.Builder;
 
 @Builder
 public record NotificationContext(
-	long subscriberId,
+	Long subscriberId,
 	NotificationType notificationType,
 	Map<String, String> metadata
 ) {
@@ -17,6 +17,15 @@ public record NotificationContext(
 
 		this(
 			validateSubscriberId(subscriberId),
+			parseNotificationType(notificationType),
+			metadata == null ? Map.of() : Map.copyOf(metadata)
+		);
+	}
+
+	public NotificationContext(String notificationType, Map<String, String> metadata) {
+
+		this(
+			null,
 			parseNotificationType(notificationType),
 			metadata == null ? Map.of() : Map.copyOf(metadata)
 		);
@@ -43,6 +52,7 @@ public record NotificationContext(
 	}
 
 	public String metadataToJson() {
+
 		return JsonUtils.toJson(this.metadata);
 	}
 }

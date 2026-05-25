@@ -25,6 +25,7 @@ public class MockUserPersistenceAdapter implements MockUserPersistencePort {
 
 	@Override
 	public boolean isSubscribed(Long userId, NotificationType type) {
+
 		return mockUserJpaRepository.findById(userId)
 			.map(MockUserEntity::notificationSettings)
 			.map(settings -> settings.getOrDefault(type, false))
@@ -33,6 +34,7 @@ public class MockUserPersistenceAdapter implements MockUserPersistencePort {
 
 	@Override
 	public List<NotificationType> findSubscribedTypes(Long userId) {
+
 		return mockUserJpaRepository.findById(userId)
 			.map(MockUserEntity::notificationSettings)
 			.map(settings -> settings.entrySet().stream()
@@ -44,7 +46,14 @@ public class MockUserPersistenceAdapter implements MockUserPersistencePort {
 	}
 
 	@Override
+	public List<Long> findIdsBySubscribedType(NotificationType type) {
+
+		return mockUserJpaRepository.findIdsBySubscribedType(type);
+	}
+
+	@Override
 	public Set<Channel> findSubscribedChannels(Long userId) {
+
 		return mockUserJpaRepository.findById(userId)
 			.map(MockUserEntity::channelSettings)
 			.map(settings -> settings.entrySet().stream()

@@ -2,6 +2,9 @@ package io.github.choizz.notifier.core.domain.model;
 
 import java.time.LocalDateTime;
 
+import io.github.choizz.notifier.core.application.dto.PublicationContext;
+import io.github.choizz.notifier.core.domain.event.NotificationRequestedEvent;
+import io.github.choizz.notifier.core.domain.event.PublicNotificationRequestedEvent;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -60,86 +63,77 @@ public class NotificationLog {
 		this.updatedAt = updatedAt;
 	}
 
-	public static NotificationLog request(Long referenceId, ReferenceType referenceType, NotificationType notificationType, Channel channelType, String metadata) {
+	public static NotificationLog request(NotificationRequestedEvent event) {
 
 		return NotificationLog.builder()
-			.referenceId(referenceId)
-			.referenceType(referenceType)
-			.notificationType(notificationType)
-			.channelType(channelType)
+			.referenceId(event.notificationId())
+			.referenceType(ReferenceType.valueOf(event.referenceType()))
+			.notificationType(NotificationType.valueOf(event.notificationType()))
+			.channelType(Channel.valueOf(event.channel()))
 			.eventStatus(EventStatus.REQUESTED)
 			.retryCount(0)
 			.published(false)
-			.metadata(metadata)
+			.metadata(event.metadata())
 			.build();
 	}
 
-	public static NotificationLog retried(
-		Long referenceId,
-		ReferenceType referenceType,
-		NotificationType notificationType,
-		Channel channelType,
-		String failReason,
-		String metadata,
-		int retryCount
-	) {
+	public static NotificationLog requestToPublic(PublicNotificationRequestedEvent event) {
 
 		return NotificationLog.builder()
-			.referenceId(referenceId)
-			.referenceType(referenceType)
-			.notificationType(notificationType)
-			.channelType(channelType)
+			.referenceId(event.publicNotificationId())
+			.referenceType(ReferenceType.valueOf(event.referenceType()))
+			.notificationType(NotificationType.valueOf(event.notificationType()))
+			.channelType(Channel.valueOf(event.channel()))
+			.eventStatus(EventStatus.REQUESTED)
+			.retryCount(0)
+			.published(false)
+			.metadata(event.metadata())
+			.build();
+	}
+
+	public static NotificationLog retried(PublicationContext context) {
+
+		return NotificationLog.builder()
+			.referenceId(context.notificationId())
+			.referenceType(ReferenceType.valueOf(context.referenceType()))
+			.notificationType(NotificationType.valueOf(context.notificationType()))
+			.channelType(Channel.valueOf(context.channel()))
 			.eventStatus(EventStatus.RETRIED)
-			.failReason(failReason)
-			.retryCount(retryCount)
-			.metadata(metadata)
+			.failReason(context.failReason())
+			.retryCount(context.retryCount())
+			.metadata(context.metadata())
 			.published(false)
 			.updatedAt(LocalDateTime.now())
 			.build();
 	}
 
-	public static NotificationLog sent(
-		Long referenceId,
-		ReferenceType referenceType,
-		NotificationType notificationType,
-		Channel channelType,
-		String metadata,
-		int retryCount
-	) {
+	public static NotificationLog sent(PublicationContext context) {
 
 		return NotificationLog.builder()
-			.referenceId(referenceId)
-			.referenceType(referenceType)
-			.notificationType(notificationType)
-			.channelType(channelType)
+			.referenceId(context.notificationId())
+			.referenceType(ReferenceType.valueOf(context.referenceType()))
+			.notificationType(NotificationType.valueOf(context.notificationType()))
+			.channelType(Channel.valueOf(context.channel()))
 			.eventStatus(EventStatus.SENT)
-			.retryCount(retryCount)
-			.metadata(metadata)
+			.retryCount(context.retryCount())
+			.metadata(context.metadata())
 			.published(true)
 			.publishedAt(LocalDateTime.now())
 			.updatedAt(LocalDateTime.now())
 			.build();
 	}
 
-	public static NotificationLog failed(
-		Long referenceId,
-		ReferenceType referenceType,
-		NotificationType notificationType,
-		Channel channelType,
-		String failReason,
-		String metadata,
-		int retryCount
-	) {
+	public static NotificationLog failed(PublicationContext context) {
 
 		return NotificationLog.builder()
-			.referenceId(referenceId)
-			.referenceType(referenceType)
-			.notificationType(notificationType)
-			.channelType(channelType)
+			.referenceId(context.notificationId())
+			.referenceType(ReferenceType.valueOf(context.referenceType()))
+			.notificationType(NotificationType.valueOf(context.notificationType()))
+			.channelType(Channel.valueOf(context.channel()))
 			.eventStatus(EventStatus.FAILED)
-			.failReason(failReason)
-			.retryCount(retryCount)
-			.metadata(metadata)
+			.failReason(context.failReason())
+			.retryCount(context.retryCount())
+			.metadata(context.metadata())
 			.published(false)
 			.updatedAt(LocalDateTime.now())
 			.build();

@@ -1,7 +1,5 @@
 package io.github.choizz.notifier.persistence.adapter;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

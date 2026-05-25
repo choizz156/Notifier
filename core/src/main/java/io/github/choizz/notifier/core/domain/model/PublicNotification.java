@@ -17,21 +17,28 @@ public class PublicNotification {
 	private final Long id;
 	private final NotificationType notificationType;
 	private final String metadata;
-	private final String message;
 	private final LocalDateTime createdAt;
+	private LocalDateTime updatedAt;
 
 	@Builder
 	private PublicNotification(
 		Long id,
 		NotificationType notificationType,
 		String metadata,
-		String message,
-		LocalDateTime createdAt
+		LocalDateTime createdAt,
+		LocalDateTime updatedAt
 	) {
 		this.id = id;
 		this.notificationType = notificationType;
 		this.metadata = metadata;
-		this.message = message;
 		this.createdAt = createdAt != null ? createdAt : LocalDateTime.now();
+		this.updatedAt = updatedAt != null ? updatedAt : LocalDateTime.now();
+	}
+
+	public static PublicNotification of(NotificationType notificationType, String metadata) {
+		return PublicNotification.builder()
+			.notificationType(notificationType)
+			.metadata(metadata)
+			.build();
 	}
 }

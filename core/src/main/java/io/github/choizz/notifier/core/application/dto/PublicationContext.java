@@ -2,7 +2,6 @@ package io.github.choizz.notifier.core.application.dto;
 
 import io.github.choizz.notifier.core.domain.event.PublishCommandEvent;
 import io.github.choizz.notifier.core.domain.event.PublishCompletedEvent;
-import io.github.choizz.notifier.core.domain.util.JsonUtils;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.experimental.Accessors;
@@ -17,6 +16,7 @@ public final class PublicationContext {
 	private final String channel;
 	private final String metadata;
 	private final String failReason;
+	private final String referenceType;
 	private int retryCount;
 
 	@Builder(toBuilder = true)
@@ -27,6 +27,7 @@ public final class PublicationContext {
 		String channel,
 		String metadata,
 		String failReason,
+		String referenceType,
 		int retryCount
 	) {
 
@@ -36,6 +37,7 @@ public final class PublicationContext {
 		this.channel = channel;
 		this.metadata = metadata;
 		this.failReason = failReason;
+		this.referenceType = referenceType;
 		this.retryCount = retryCount;
 	}
 
@@ -46,6 +48,7 @@ public final class PublicationContext {
 			.notificationType(event.notificationType())
 			.channel(event.channel())
 			.metadata(event.metadata())
+			.referenceType(event.referenceType())
 			.retryCount(0)
 			.build();
 	}
@@ -64,7 +67,8 @@ public final class PublicationContext {
 			.subscriberId(event.subscriberId())
 			.notificationType(event.notificationType())
 			.channel(event.channel())
-			.metadata(JsonUtils.toJson(event.metadata()))
+			.metadata(event.metadata())
+			.referenceType(event.referenceType())
 			.retryCount(0)
 			.build();
 	}
