@@ -3,8 +3,6 @@ package io.github.choizz.notifier.core.domain.model;
 import java.time.LocalDateTime;
 
 import io.github.choizz.notifier.core.application.dto.PublicationContext;
-import io.github.choizz.notifier.core.domain.event.NotificationRequestedEvent;
-import io.github.choizz.notifier.core.domain.event.PublicNotificationRequestedEvent;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -63,31 +61,31 @@ public class NotificationLog {
 		this.updatedAt = updatedAt;
 	}
 
-	public static NotificationLog request(NotificationRequestedEvent event) {
+	public static NotificationLog request(Notification notification) {
 
 		return NotificationLog.builder()
-			.referenceId(event.notificationId())
-			.referenceType(ReferenceType.valueOf(event.referenceType()))
-			.notificationType(NotificationType.valueOf(event.notificationType()))
-			.channelType(Channel.valueOf(event.channel()))
+			.referenceId(notification.id())
+			.referenceType((ReferenceType.PERSONAL))
+			.notificationType(notification.notificationType())
+			.channelType(notification.channel())
 			.eventStatus(EventStatus.REQUESTED)
 			.retryCount(0)
 			.published(false)
-			.metadata(event.metadata())
+			.metadata(notification.metadata())
 			.build();
 	}
 
-	public static NotificationLog requestToPublic(PublicNotificationRequestedEvent event) {
+	public static NotificationLog requestToPublic(PublicNotification publicNotification, Channel channel) {
 
 		return NotificationLog.builder()
-			.referenceId(event.publicNotificationId())
-			.referenceType(ReferenceType.valueOf(event.referenceType()))
-			.notificationType(NotificationType.valueOf(event.notificationType()))
-			.channelType(Channel.valueOf(event.channel()))
+			.referenceId(publicNotification.id())
+			.referenceType(ReferenceType.PUBLIC)
+			.notificationType(publicNotification.notificationType())
+			.channelType(channel)
 			.eventStatus(EventStatus.REQUESTED)
 			.retryCount(0)
 			.published(false)
-			.metadata(event.metadata())
+			.metadata(publicNotification.metadata())
 			.build();
 	}
 

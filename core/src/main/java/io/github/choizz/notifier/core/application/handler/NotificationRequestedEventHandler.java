@@ -6,10 +6,8 @@ import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 import io.github.choizz.notifier.core.application.port.out.NotificationEventPublisher;
-import io.github.choizz.notifier.core.application.port.out.NotificationLogPersistencePort;
 import io.github.choizz.notifier.core.domain.event.NotificationRequestedEvent;
 import io.github.choizz.notifier.core.domain.event.PublishCommandEvent;
-import io.github.choizz.notifier.core.domain.model.NotificationLog;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,18 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class NotificationRequestedEventHandler {
 
-	private final NotificationLogPersistencePort notificationLogPersistencePort;
 	private final NotificationEventPublisher notificationEventPublisher;
-
-	@TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
-	public void saveEvent(NotificationRequestedEvent event) {
-
-		NotificationLog notificationLog = NotificationLog.request(event);
-
-		notificationLogPersistencePort.save(notificationLog);
-
-		log.info("알림 이벤트 저장 완료 - notificationId={}", event.notificationId());
-	}
 
 	@Async("taskExecutor")
 	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)

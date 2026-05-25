@@ -33,9 +33,10 @@ public class PublicNotificationPersistenceAdapter implements PublicNotificationP
 
 	@Override
 	public PublicNotification save(PublicNotification publicNotification) {
-		PublicNotificationEntity entity = PublicNotificationEntity.of(
+		PublicNotificationEntity entity = new PublicNotificationEntity(
 			publicNotification.notificationType(),
-			publicNotification.metadata()
+			publicNotification.metadata(),
+			publicNotification.idempotencyKey()
 		);
 		PublicNotificationEntity savedEntity = publicNotificationJpaRepository.save(entity);
 
@@ -43,6 +44,7 @@ public class PublicNotificationPersistenceAdapter implements PublicNotificationP
 			.id(savedEntity.id())
 			.notificationType(savedEntity.notificationType())
 			.metadata(savedEntity.metadata())
+			.idempotencyKey(savedEntity.idempotencyKey())
 			.createdAt(savedEntity.createdAt())
 			.updatedAt(savedEntity.updatedAt())
 			.build();

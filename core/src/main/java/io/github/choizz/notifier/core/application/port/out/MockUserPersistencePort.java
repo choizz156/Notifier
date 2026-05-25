@@ -9,6 +9,6 @@ import io.github.choizz.notifier.core.domain.model.NotificationType;
 public interface MockUserPersistencePort {
 	boolean isSubscribed(Long userId, NotificationType type);
 	List<NotificationType> findSubscribedTypes(Long userId);
-	List<Long> findIdsBySubscribedType(NotificationType type);
-	Set<Channel> findSubscribedChannels(Long userId);
+	List<Long> findIdsBySubscribedType(NotificationType type, Long lastId, int chunkSize);
+	Set<Channel> findSubscribedChannels(Long subscriberId);
 }

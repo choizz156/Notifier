@@ -1,7 +1,6 @@
 package io.github.choizz.notifier.core.application;
 
-import java.util.List;
-import java.util.Set;
+import java.util.UUID;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -11,9 +10,8 @@ import io.github.choizz.notifier.core.application.dto.NotificationContext;
 import io.github.choizz.notifier.core.application.port.in.PublicNotificationUseCase;
 import io.github.choizz.notifier.core.application.port.out.MockUserPersistencePort;
 import io.github.choizz.notifier.core.application.port.out.PublicNotificationPersistencePort;
+import io.github.choizz.notifier.core.application.support.ChunkExecutor;
 import io.github.choizz.notifier.core.domain.event.PublicNotificationRequestedEvent;
-import io.github.choizz.notifier.core.domain.model.Channel;
-import io.github.choizz.notifier.core.domain.model.PublicNotification;
 import io.github.choizz.notifier.core.domain.model.PublicNotificationReceipt;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,35 +30,37 @@ public class PublicNotificationService implements PublicNotificationUseCase {
 	public void markAsRead(Long subscriberId, Long publicNotificationId) {
 
 		boolean alreadyRead = publicNotificationPersistencePort.existsReceipt(subscriberId, publicNotificationId);
-		if (!alreadyRead) {
-			PublicNotificationReceipt receipt = PublicNotificationReceipt.create(subscriberId, publicNotificationId);
-			publicNotificationPersistencePort.saveReceipt(receipt);
-			log.info("공통 알림 읽음 처리 완료 - subscriberId: {}, publicNotificationId: {}", subscriberId, publicNotificationId);
-		} else {
-			log.info("이미 읽음 처리된 공통 알림입니다. - subscriberId: {}, publicNotificationId: {}", subscriberId,
-				publicNotificationId);
+		if (alreadyRead) {
+			log.info("이미 읽음 처리된 공통 알림입니다. - subscriberId: {}, publicNotificationId: {}",
+				subscriberId,
+				publicNotificationId
+			);
+			return;
 		}
+
+		PublicNotificationReceipt receipt = PublicNotificationReceipt.of(subscriberId, publicNotificationId);
+		publicNotificationPersistencePort.saveReceipt(receipt);
+		log.info("공통 알림 읽음 처리 완료 - subscriberId: {}, publicNotificationId: {}", subscriberId, publicNotificationId);
 	}
 
 	@Override
-	public void pushBulk(NotificationContext context) {
+	public void pushToPublic(NotificationContext context) {
 
-		PublicNotification savedPublicNotification = publicNotificationPersistencePort.save(
-			PublicNotification.of(context.notificationType(), context.metadataToJson())
+		String metadata = context.metadataToJson();
+		String notificationType = context.notificationType().name();
+		String idempotentKey = UUID.randomUUID().toString();
+
+		ChunkExecutor.execute(
+			0L,
+			(Long id) -> id,
+			lastId -> mockUserPersistencePort.findIdsBySubscribedType(
+				context.notificationType(),
+				lastId,
+				ChunkExecutor.CHUNK_SIZE
+			),
+			subscriberIds -> applicationEventPublisher.publishEvent(
+				new PublicNotificationRequestedEvent(subscriberIds, metadata, notificationType, idempotentKey)
+			)
 		);
-
-		List<Long> subscriberIds = mockUserPersistencePort.findIdsBySubscribedType(
-			context.notificationType()
-		);
-
-		for (Long subscriberId : subscriberIds) {
-			Set<Channel> subscribedChannels = mockUserPersistencePort.findSubscribedChannels(subscriberId);
-
-			for (Channel channel : subscribedChannels) {
-				applicationEventPublisher.publishEvent(
-					PublicNotificationRequestedEvent.of(savedPublicNotification, context, channel.name(), subscriberId)
-				);
-			}
-		}
 	}
 }

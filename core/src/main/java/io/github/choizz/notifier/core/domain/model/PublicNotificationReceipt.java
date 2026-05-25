@@ -32,7 +32,7 @@ public class PublicNotificationReceipt {
 		this.readAt = readAt != null ? readAt : LocalDateTime.now();
 	}
 
-	public static PublicNotificationReceipt create(Long subscriberId, Long publicNotificationId) {
+	public static PublicNotificationReceipt of(Long subscriberId, Long publicNotificationId) {
 		return PublicNotificationReceipt.builder()
 			.subscriberId(subscriberId)
 			.publicNotificationId(publicNotificationId)

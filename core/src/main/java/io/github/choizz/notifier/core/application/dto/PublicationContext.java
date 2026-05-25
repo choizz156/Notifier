@@ -63,7 +63,7 @@ public final class PublicationContext {
 	public static PublicationContext of(PublishCommandEvent event) {
 
 		return PublicationContext.builder()
-			.notificationId(event.notificationId())
+			.notificationId(event.referencedId())
 			.subscriberId(event.subscriberId())
 			.notificationType(event.notificationType())
 			.channel(event.channel())

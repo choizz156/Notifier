@@ -1,6 +1,7 @@
 package io.github.choizz.notifier.rdb.adapter;
 
 import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import io.github.choizz.notifier.core.application.dto.PublicationContext;
@@ -22,10 +23,11 @@ public class RdsNotificationEventPublishAdapter implements NotificationEventPubl
 	private final NotificationDispatcher notificationDispatcher;
 	private final NotificationLogUseCase notificationLogUseCase;
 
+	@Async("taskExecutor")
 	@Override
 	public void publish(PublishCommandEvent event) {
 
-		boolean isClaim = notificationLogUseCase.tryClaim(event.notificationId());
+		boolean isClaim = notificationLogUseCase.tryClaim(event.referencedId());
 		if(!isClaim){
 			throw new OptimisticLockingFailureException("이미 처리 중인 알람입니다.");
 		}

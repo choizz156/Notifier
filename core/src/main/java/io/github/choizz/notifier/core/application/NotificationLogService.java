@@ -2,7 +2,6 @@ package io.github.choizz.notifier.core.application;
 
 import java.util.List;
 
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,12 +26,17 @@ public class NotificationLogService implements NotificationLogUseCase {
 		EventStatus.REQUESTED, EventStatus.RETRIED, EventStatus.PROCESSING
 	);
 
-	private final ApplicationEventPublisher applicationEventPublisher;
 	private final NotificationLogPersistencePort notificationLogPersistencePort;
 	private final NotificationLogFactory notificationLogFactory;
 
 	@Override
-	public void savenotificationLog(Long notificationId, EventStatus eventStatus, PublicationContext context) {
+	public void saveAll(List<NotificationLog> notificationLogs) {
+
+		notificationLogPersistencePort.saveAll(notificationLogs);
+	}
+
+	@Override
+	public void saveNotificationLog(Long notificationId, EventStatus eventStatus, PublicationContext context) {
 
 		NotificationLog notificationLog = notificationLogFactory.create(eventStatus, context);
 		notificationLogPersistencePort.save(notificationLog);
@@ -44,7 +48,8 @@ public class NotificationLogService implements NotificationLogUseCase {
 		NotificationLog notificationLog =
 			notificationLogPersistencePort.findLatestByReference(notificationId, ReferenceType.PERSONAL);
 
-		if (notificationLog.eventStatus() != EventStatus.REQUESTED && notificationLog.eventStatus() != EventStatus.RETRIED) {
+		if (notificationLog.eventStatus() != EventStatus.REQUESTED
+			&& notificationLog.eventStatus() != EventStatus.RETRIED) {
 			return false;
 		}
 
@@ -65,5 +70,10 @@ public class NotificationLogService implements NotificationLogUseCase {
 		return notificationLogPersistencePort.findUnprocessedNotificationIds(
 			targetStatuses, lastId, chunkSize
 		);
+	}
+
+	@Override
+	public void save(NotificationLog notificationLog) {
+		notificationLogPersistencePort.save(notificationLog);
 	}
 }

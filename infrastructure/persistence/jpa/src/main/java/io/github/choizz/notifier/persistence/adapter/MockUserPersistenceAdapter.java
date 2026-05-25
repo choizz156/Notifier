@@ -46,9 +46,9 @@ public class MockUserPersistenceAdapter implements MockUserPersistencePort {
 	}
 
 	@Override
-	public List<Long> findIdsBySubscribedType(NotificationType type) {
+	public List<Long> findIdsBySubscribedType(NotificationType type, Long lastId, int chunkSize) {
 
-		return mockUserJpaRepository.findIdsBySubscribedType(type);
+		return mockUserJpaRepository.findIdsBySubscribedType(type, lastId, org.springframework.data.domain.Limit.of(chunkSize));
 	}
 
 	@Override

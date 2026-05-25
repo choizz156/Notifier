@@ -78,7 +78,7 @@ public class ReservationService implements ReservationUseCase {
 				notificationUseCase.push(context);
 				successIds.add(notification.id());
 			} catch (Exception e) {
-				log.warn("예약 알림 발행 실패: notificationId={}, subscriberId={}", notification.id(),
+				log.warn("예약 알림 발행 실패: referencedId={}, subscriberId={}", notification.id(),
 					notification.subscriberId(), e);
 			}
 		}

@@ -4,12 +4,17 @@ import java.util.List;
 
 import io.github.choizz.notifier.core.application.dto.PublicationContext;
 import io.github.choizz.notifier.core.domain.model.EventStatus;
+import io.github.choizz.notifier.core.domain.model.NotificationLog;
 
 public interface NotificationLogUseCase {
 
-	void savenotificationLog(Long notificationId, EventStatus eventStatus, PublicationContext context);
+	void saveAll(List<NotificationLog> notificationLogs);
+
+	void saveNotificationLog(Long notificationId, EventStatus eventStatus, PublicationContext context);
 
 	boolean tryClaim(Long notificationId);
 
 	List<Long> findUnprocessedNotificationIds(Long lastId, int chuckSize);
+
+	void save(NotificationLog notificationLog);
 }

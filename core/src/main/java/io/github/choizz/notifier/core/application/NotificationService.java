@@ -24,6 +24,7 @@ import io.github.choizz.notifier.core.application.support.NotificationRetryProce
 import io.github.choizz.notifier.core.domain.event.NotificationRequestedEvent;
 import io.github.choizz.notifier.core.domain.model.Channel;
 import io.github.choizz.notifier.core.domain.model.Notification;
+import io.github.choizz.notifier.core.domain.model.NotificationLog;
 import io.github.choizz.notifier.core.domain.model.NotificationStatus;
 import io.github.choizz.notifier.core.domain.util.JsonUtils;
 import lombok.RequiredArgsConstructor;
@@ -171,13 +172,21 @@ public class NotificationService implements NotificationUseCase {
 
 	private void saveAndPush(NotificationContext notificationContext, List<Notification> notificationsToSave) {
 
-		if (!notificationsToSave.isEmpty()) {
-			List<Notification> savedNotifications = notificationPersistencePort.saveAll(notificationsToSave);
-			for (Notification savedNotification : savedNotifications) {
-				applicationEventPublisher.publishEvent(
-					NotificationRequestedEvent.of(savedNotification, notificationContext)
-				);
-			}
+		if (notificationsToSave.isEmpty()) {
+			log.info("저장할 Notification 객체가 없습니다. size = {}", 0);
+			return;
 		}
+
+		List<NotificationLog> notificationLogs = new ArrayList<>();
+		notificationsToSave.forEach(notification ->
+			notificationLogs.add(NotificationLog.request(notification))
+		);
+
+		notificationLogUseCase.saveAll(notificationLogs);
+		notificationPersistencePort.saveAll(notificationsToSave)
+			.forEach(savedNotification ->
+				applicationEventPublisher.publishEvent(
+					NotificationRequestedEvent.of(savedNotification, notificationContext))
+			);
 	}
 }

@@ -26,16 +26,14 @@ public class PublicNotificationEntity extends BaseEntity {
 	@Column(columnDefinition = "json")
 	private String metadata;
 
+	@Column(nullable = false, unique = true)
+	private String idempotencyKey;
+
 	@Builder
-	public PublicNotificationEntity(NotificationType notificationType, String metadata) {
+	public PublicNotificationEntity(NotificationType notificationType, String metadata, String idempotencyKey) {
+
 		this.notificationType = notificationType;
 		this.metadata = metadata;
-	}
-
-	public static PublicNotificationEntity of(NotificationType notificationType, String metadata) {
-		return PublicNotificationEntity.builder()
-			.notificationType(notificationType)
-			.metadata(metadata)
-			.build();
+		this.idempotencyKey = idempotencyKey;
 	}
 }

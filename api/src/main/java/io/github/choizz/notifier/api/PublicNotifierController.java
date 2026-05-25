@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/v1/public/notification")
+@RequestMapping("/v1/notification/public")
 public class PublicNotifierController {
 
 	private final PublicNotificationUseCase publicNotificationUseCase;
@@ -29,7 +29,7 @@ public class PublicNotifierController {
 	) {
 
 		NotificationContext notificationContext = new NotificationContext(request.type(), request.metadata());
-		publicNotificationUseCase.pushBulk(notificationContext);
+		publicNotificationUseCase.pushToPublic(notificationContext);
 	}
 
 	@PatchMapping("/{id}/read")

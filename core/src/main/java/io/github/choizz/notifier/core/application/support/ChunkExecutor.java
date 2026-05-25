@@ -11,7 +11,7 @@ public class ChunkExecutor {
 
 	public static final int CHUNK_SIZE = 500;
 
-	public static <T, ID> void execute(
+	public static <T, ID extends Comparable<ID>> void execute(
 		ID initId,
 		Function<T, ID> idExtractor,
 		Function<ID, List<T>> reader,
