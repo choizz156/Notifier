@@ -5,7 +5,7 @@ import java.util.List;
 import io.github.choizz.notifier.core.application.dto.PublicationContext;
 import io.github.choizz.notifier.core.domain.model.EventStatus;
 
-public interface NotificationEventLogUseCase {
+public interface NotificationLogUseCase {
 
 	void saveEventLog(Long notificationId, EventStatus eventStatus, PublicationContext context);
 

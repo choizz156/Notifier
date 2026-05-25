@@ -5,9 +5,10 @@ import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.support.RetrySynchronizationManager;
 
 import io.github.choizz.notifier.core.application.dto.PublicationContext;
-import io.github.choizz.notifier.core.application.port.in.NotificationEventLogUseCase;
+import io.github.choizz.notifier.core.application.port.in.NotificationLogUseCase;
 import io.github.choizz.notifier.core.application.port.out.NotifierPort;
 import io.github.choizz.notifier.core.domain.event.PublishCompletedEvent;
+import io.github.choizz.notifier.core.domain.event.PublishFailedEvent;
 import io.github.choizz.notifier.core.domain.model.EventStatus;
 import io.github.choizz.notifier.core.domain.model.NotificationType;
 import io.github.choizz.notifier.core.domain.model.RetryLevel;
@@ -16,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public abstract class AbstractRetryProcessor implements RetryProcessor {
 
-	private final NotificationEventLogUseCase notificationEventLogUseCase;
+	private final NotificationLogUseCase notificationLogUseCase;
 	private final ApplicationEventPublisher applicationEventPublisher;
 
 	@Override
@@ -31,19 +32,14 @@ public abstract class AbstractRetryProcessor implements RetryProcessor {
 		int currentRetryCount = RetrySynchronizationManager.getContext().getRetryCount();
 
 		context.updateRetryCount(currentRetryCount);
-		notificationEventLogUseCase.saveEventLog(context.notificationId(), EventStatus.RETRIED, context);
+		notificationLogUseCase.saveEventLog(context.notificationId(), EventStatus.RETRIED, context);
 
 		send(notifierPort, context);
 	}
 
 	@Recover
-	protected void fail(Exception e, NotifierPort notifierPort, PublicationContext context) {
-
-		notificationEventLogUseCase.saveEventLog(
-			context.notificationId(),
-			EventStatus.FAILED,
-			context.notSent(e.getMessage())
-		);
+	public void fail(Exception e, NotifierPort notifierPort, PublicationContext context) {
+		applicationEventPublisher.publishEvent(new PublishFailedEvent(context));
 	}
 
 	@Override

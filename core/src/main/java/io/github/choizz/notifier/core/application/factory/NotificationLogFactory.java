@@ -5,27 +5,26 @@ import org.springframework.stereotype.Component;
 import io.github.choizz.notifier.core.application.dto.PublicationContext;
 import io.github.choizz.notifier.core.domain.model.Channel;
 import io.github.choizz.notifier.core.domain.model.EventStatus;
-import io.github.choizz.notifier.core.domain.model.NotificationEventLog;
+import io.github.choizz.notifier.core.domain.model.NotificationLog;
 import io.github.choizz.notifier.core.domain.model.NotificationType;
-import io.github.choizz.notifier.core.domain.util.JsonUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
-public class NotificationEventLogFactory {
+public class NotificationLogFactory {
 
-	public NotificationEventLog create(EventStatus eventStatus, PublicationContext context) {
+	public NotificationLog create(EventStatus eventStatus, PublicationContext context) {
 
 		return switch (eventStatus) {
-			case SENT -> NotificationEventLog.sent(
+			case SENT -> NotificationLog.sent(
 				context.notificationId(),
 				NotificationType.valueOf(context.notificationType()),
 				Channel.valueOf(context.channel()),
 				context.metadata(),
 				context.retryCount()
 			);
-			case RETRIED -> NotificationEventLog.retried(
+			case RETRIED -> NotificationLog.retried(
 				context.notificationId(),
 				NotificationType.valueOf(context.notificationType()),
 				Channel.valueOf(context.channel()),
@@ -33,7 +32,7 @@ public class NotificationEventLogFactory {
 				context.metadata(),
 				context.retryCount()
 			);
-			case FAILED -> NotificationEventLog.failed(
+			case FAILED -> NotificationLog.failed(
 				context.notificationId(),
 				NotificationType.valueOf(context.notificationType()),
 				Channel.valueOf(context.channel()),

@@ -12,7 +12,7 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode
 @Getter
 @Accessors(fluent = true)
-public class NotificationEventLog {
+public class NotificationLog {
 
 	private final Long id;
 	private final Long notificationId;
@@ -28,7 +28,7 @@ public class NotificationEventLog {
 	private LocalDateTime updatedAt;
 
 	@Builder
-	private NotificationEventLog(
+	private NotificationLog(
 		Long id,
 		Long notificationId,
 		NotificationType notificationType,
@@ -57,9 +57,9 @@ public class NotificationEventLog {
 		this.updatedAt = updatedAt;
 	}
 
-	public static NotificationEventLog request(Long notificationId, NotificationType notificationType, Channel channelType, String metadata) {
+	public static NotificationLog request(Long notificationId, NotificationType notificationType, Channel channelType, String metadata) {
 
-		return NotificationEventLog.builder()
+		return NotificationLog.builder()
 			.notificationId(notificationId)
 			.notificationType(notificationType)
 			.channelType(channelType)
@@ -70,7 +70,7 @@ public class NotificationEventLog {
 			.build();
 	}
 
-	public static NotificationEventLog retried(
+	public static NotificationLog retried(
 		Long notificationId,
 		NotificationType notificationType,
 		Channel channelType,
@@ -79,7 +79,7 @@ public class NotificationEventLog {
 		int retryCount
 	) {
 
-		return NotificationEventLog.builder()
+		return NotificationLog.builder()
 			.notificationId(notificationId)
 			.notificationType(notificationType)
 			.channelType(channelType)
@@ -92,7 +92,7 @@ public class NotificationEventLog {
 			.build();
 	}
 
-	public static NotificationEventLog sent(
+	public static NotificationLog sent(
 		Long notificationId,
 		NotificationType notificationType,
 		Channel channelType,
@@ -100,7 +100,7 @@ public class NotificationEventLog {
 		int retryCount
 	) {
 
-		return NotificationEventLog.builder()
+		return NotificationLog.builder()
 			.notificationId(notificationId)
 			.notificationType(notificationType)
 			.channelType(channelType)
@@ -113,7 +113,7 @@ public class NotificationEventLog {
 			.build();
 	}
 
-	public static NotificationEventLog failed(
+	public static NotificationLog failed(
 		Long notificationId,
 		NotificationType notificationType,
 		Channel channelType,
@@ -122,7 +122,7 @@ public class NotificationEventLog {
 		int retryCount
 	) {
 
-		return NotificationEventLog.builder()
+		return NotificationLog.builder()
 			.notificationId(notificationId)
 			.notificationType(notificationType)
 			.channelType(channelType)

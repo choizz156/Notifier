@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.github.choizz.notifier.core.application.dto.PublicationContext;
-import io.github.choizz.notifier.core.application.port.in.NotificationEventLogUseCase;
+import io.github.choizz.notifier.core.application.port.in.NotificationLogUseCase;
 import io.github.choizz.notifier.core.application.port.in.NotificationUseCase;
 import io.github.choizz.notifier.core.domain.event.PublishCompletedEvent;
 import io.github.choizz.notifier.core.domain.model.EventStatus;
@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class NotificationCompletedEventHandler {
 
-	private final NotificationEventLogUseCase notificationEventLogUseCase;
+	private final NotificationLogUseCase notificationLogUseCase;
 	private final NotificationUseCase notificationUseCase;
 	
 	@Async("taskExecutor")
@@ -28,7 +28,7 @@ public class NotificationCompletedEventHandler {
 	public void handleNotificationCompleted(PublishCompletedEvent event) {
 		try {
 			notificationUseCase.updateStatus(event.notificationId(), NotificationStatus.COMPLETED);
-			notificationEventLogUseCase.saveEventLog(event.notificationId(), EventStatus.SENT, PublicationContext.success(event));
+			notificationLogUseCase.saveEventLog(event.notificationId(), EventStatus.SENT, PublicationContext.success(event));
 		} catch (Exception e) {
 			log.error("알림(ID: {}) 상태 및 이벤트 로그 성공 업데이트에 실패하여 상태가 변경되지 않았습니다.", event.notificationId(), e);
 			throw new RuntimeException(e);

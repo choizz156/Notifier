@@ -1,11 +1,11 @@
 package io.github.choizz.notifier.persistence.adapter;
 
 import io.github.choizz.notifier.persistence.entity.NotificationEventLogEntity;
-import io.github.choizz.notifier.core.domain.model.NotificationEventLog;
+import io.github.choizz.notifier.core.domain.model.NotificationLog;
 
-public class NotificationEventLogMapper {
+public class NotificationLogMapper {
 
-	public static NotificationEventLogEntity toEntity(NotificationEventLog eventLog) {
+	public static NotificationEventLogEntity toEntity(NotificationLog eventLog) {
 
 		NotificationEventLogEntity entity = NotificationEventLogEntity.builder()
 			.notificationId(eventLog.notificationId())
@@ -23,8 +23,8 @@ public class NotificationEventLogMapper {
 		return entity;
 	}
 
-	public static NotificationEventLog toDomain(NotificationEventLogEntity entity) {
-		return NotificationEventLog.builder()
+	public static NotificationLog toDomain(NotificationEventLogEntity entity) {
+		return NotificationLog.builder()
 			.id(entity.id())
 			.notificationId(entity.notificationId())
 			.notificationType(entity.notificationType())

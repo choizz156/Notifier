@@ -13,7 +13,7 @@ import io.github.choizz.notifier.core.application.dto.NotificationDetailResponse
 import io.github.choizz.notifier.core.application.dto.NotificationResponse;
 import io.github.choizz.notifier.core.application.dto.NotificationStatusResponse;
 import io.github.choizz.notifier.core.application.dto.PageResult;
-import io.github.choizz.notifier.core.application.port.in.NotificationEventLogUseCase;
+import io.github.choizz.notifier.core.application.port.in.NotificationLogUseCase;
 import io.github.choizz.notifier.core.application.port.in.NotificationUseCase;
 import io.github.choizz.notifier.core.application.port.out.MockUserPersistencePort;
 import io.github.choizz.notifier.core.application.port.out.NotificationPersistencePort;
@@ -35,7 +35,7 @@ public class NotificationService implements NotificationUseCase {
 
 	private final ApplicationEventPublisher applicationEventPublisher;
 	private final NotificationPersistencePort notificationPersistencePort;
-	private final NotificationEventLogUseCase notificationEventLogUseCase;
+	private final NotificationLogUseCase notificationLogUseCase;
 	private final TemplateRendererPort templateRendererPort;
 	private final NotificationRetryProcessor notificationRetryProcessor;
 	private final MockUserPersistencePort mockUserPersistencePort;
@@ -105,7 +105,7 @@ public class NotificationService implements NotificationUseCase {
 		ChunkExecutor.execute(
 			0L,
 			id -> id,
-			lastId -> notificationEventLogUseCase.findUnprocessedNotificationIds(lastId, ChunkExecutor.CHUNK_SIZE),
+			lastId -> notificationLogUseCase.findUnprocessedNotificationIds(lastId, ChunkExecutor.CHUNK_SIZE),
 			notificationRetryProcessor::processChunk
 		);
 	}
@@ -179,13 +179,14 @@ public class NotificationService implements NotificationUseCase {
 		return notificationsToSave;
 	}
 
-	private void saveAndPush(NotificationContext NotificationContext, List<Notification> notificationsToSave) {
+	private void saveAndPush(NotificationContext notificationContext, List<Notification> notificationsToSave) {
 
 		if (!notificationsToSave.isEmpty()) {
 			List<Notification> savedNotifications = notificationPersistencePort.saveAll(notificationsToSave);
 			for (Notification savedNotification : savedNotifications) {
 				applicationEventPublisher.publishEvent(
-					NotificationRequestedEvent.of(savedNotification, NotificationContext));
+					NotificationRequestedEvent.of(savedNotification, notificationContext)
+				);
 			}
 		}
 	}

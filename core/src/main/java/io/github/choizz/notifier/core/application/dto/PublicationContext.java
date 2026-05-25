@@ -50,8 +50,9 @@ public final class PublicationContext {
 			.build();
 	}
 
-	public  PublicationContext notSent(String failReason) {
-	return 	this.toBuilder()
+	public PublicationContext notSent(String failReason) {
+
+		return this.toBuilder()
 			.failReason(failReason)
 			.build();
 	}
@@ -69,6 +70,7 @@ public final class PublicationContext {
 	}
 
 	public void updateRetryCount(int retryCount) {
+
 		this.retryCount = retryCount + 1;
 	}
 }

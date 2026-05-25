@@ -9,10 +9,10 @@ import io.github.choizz.notifier.core.application.config.RetryProperties;
 import io.github.choizz.notifier.core.application.config.RetryProperties.RetryConfig;
 import io.github.choizz.notifier.core.application.port.in.NotificationUseCase;
 import io.github.choizz.notifier.core.application.port.in.StuckEventRecoveryUseCase;
-import io.github.choizz.notifier.core.application.port.out.NotificationEventLogPersistencePort;
+import io.github.choizz.notifier.core.application.port.out.NotificationLogPersistencePort;
 import io.github.choizz.notifier.core.application.support.ChunkExecutor;
 import io.github.choizz.notifier.core.domain.model.EventStatus;
-import io.github.choizz.notifier.core.domain.model.NotificationEventLog;
+import io.github.choizz.notifier.core.domain.model.NotificationLog;
 import io.github.choizz.notifier.core.domain.model.RetryLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class StuckEventRecoveryService implements StuckEventRecoveryUseCase {
 
-	private final NotificationEventLogPersistencePort notificationEventLogPersistencePort;
+	private final NotificationLogPersistencePort notificationLogPersistencePort;
 	private final NotificationUseCase notificationUseCase;
 	private final RetryProperties retryProperties;
 
@@ -41,8 +41,8 @@ public class StuckEventRecoveryService implements StuckEventRecoveryUseCase {
 
 			ChunkExecutor.execute(
 				0L,
-				NotificationEventLog::id,
-				lastId -> notificationEventLogPersistencePort.findStuckLogs(
+				NotificationLog::id,
+				lastId -> notificationLogPersistencePort.findStuckLogs(
 					lastId,
 					EventStatus.PROCESSING,
 					level.supportedTypes(),
@@ -54,14 +54,14 @@ public class StuckEventRecoveryService implements StuckEventRecoveryUseCase {
 		}
 	}
 
-	private void recover(List<NotificationEventLog> stuckLogs) {
-		for (NotificationEventLog log : stuckLogs) {
+	private void recover(List<NotificationLog> stuckLogs) {
+		for (NotificationLog log : stuckLogs) {
 			log.markAsFailed("Stuck Timeout Recovery", log.retryCount());
 		}
-		notificationEventLogPersistencePort.saveAll(stuckLogs);
+		notificationLogPersistencePort.saveAll(stuckLogs);
 
 		List<Long> notificationIds = stuckLogs.stream()
-			.map(NotificationEventLog::notificationId)
+			.map(NotificationLog::notificationId)
 			.toList();
 
 		notificationUseCase.retryStuckNotification(notificationIds);

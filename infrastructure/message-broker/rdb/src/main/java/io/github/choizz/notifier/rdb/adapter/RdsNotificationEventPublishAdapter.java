@@ -4,7 +4,7 @@ import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Component;
 
 import io.github.choizz.notifier.core.application.dto.PublicationContext;
-import io.github.choizz.notifier.core.application.port.in.NotificationEventLogUseCase;
+import io.github.choizz.notifier.core.application.port.in.NotificationLogUseCase;
 import io.github.choizz.notifier.core.application.port.out.NotificationEventPublisher;
 import io.github.choizz.notifier.core.application.port.out.NotifierPort;
 import io.github.choizz.notifier.core.domain.event.PublishCommandEvent;
@@ -20,12 +20,12 @@ public class RdsNotificationEventPublishAdapter implements NotificationEventPubl
 
 	private final NotifierFacade notifierFacade;
 	private final NotificationDispatcher notificationDispatcher;
-	private final NotificationEventLogUseCase notificationEventLogUseCase;
+	private final NotificationLogUseCase notificationLogUseCase;
 
 	@Override
 	public void publish(PublishCommandEvent event) {
 
-		boolean isClaim = notificationEventLogUseCase.tryClaim(event.notificationId());
+		boolean isClaim = notificationLogUseCase.tryClaim(event.notificationId());
 		if(!isClaim){
 			throw new OptimisticLockingFailureException("이미 처리 중인 알람입니다.");
 		}
