@@ -2,12 +2,11 @@ package io.github.choizz.notifier.rdb.adapter;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import java.util.Map;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,6 +22,7 @@ import io.github.choizz.notifier.core.application.port.out.NotifierPort;
 import io.github.choizz.notifier.core.domain.event.PublishCommandEvent;
 import io.github.choizz.notifier.core.domain.model.Channel;
 import io.github.choizz.notifier.core.domain.model.NotificationType;
+import io.github.choizz.notifier.core.domain.model.ReferenceType;
 import io.github.choizz.notifier.infrastructure.messagebroker.NotificationDispatcher;
 import io.github.choizz.notifier.infrastructure.messagebroker.NotifierFacade;
 
@@ -50,7 +50,8 @@ class RdsNotificationEventPublishAdapterTest {
 			100L,
 			NotificationType.PAYMENT_CONFIRMED.name(),
 			Channel.EMAIL.name(),
-			Map.of()
+			"{}",
+			ReferenceType.PERSONAL.name()
 		);
 
 		when(notificationLogUseCase.tryClaim(1L)).thenReturn(true);
@@ -63,7 +64,7 @@ class RdsNotificationEventPublishAdapterTest {
 		// then
 		verify(notificationLogUseCase, times(1)).tryClaim(1L);
 		verify(notifierFacade, times(1)).getNotifierPort(Channel.EMAIL.name());
-		verify(notificationDispatcher, times(1)).dispatch(org.mockito.ArgumentMatchers.eq(notifierPort), any(PublicationContext.class));
+		verify(notificationDispatcher, times(1)).dispatch(eq(notifierPort), any(PublicationContext.class));
 	}
 
 	@DisplayName("처리 중인 알람에 대한 이벤트 발행은 실패한다.")
@@ -75,7 +76,8 @@ class RdsNotificationEventPublishAdapterTest {
 			100L,
 			NotificationType.PAYMENT_CONFIRMED.name(),
 			Channel.EMAIL.name(),
-			Map.of()
+			"{}",
+			ReferenceType.PERSONAL.name()
 		);
 
 		when(notificationLogUseCase.tryClaim(1L)).thenReturn(false);

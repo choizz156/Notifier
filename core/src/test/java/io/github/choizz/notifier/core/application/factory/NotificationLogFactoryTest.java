@@ -3,8 +3,6 @@ package io.github.choizz.notifier.core.application.factory;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.util.Map;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -29,6 +27,7 @@ class NotificationLogFactoryTest {
 			.channel(Channel.EMAIL.name())
 			.failReason("success")
 			.metadata("{}")
+			.referenceType(ReferenceType.PERSONAL.name())
 			.retryCount(0)
 			.build();
 
@@ -52,6 +51,7 @@ class NotificationLogFactoryTest {
 			.channel(Channel.EMAIL.name())
 			.failReason("timeout")
 			.metadata("{}")
+			.referenceType(ReferenceType.PERSONAL.name())
 			.retryCount(1)
 			.build();
 
@@ -76,6 +76,7 @@ class NotificationLogFactoryTest {
 			.channel(Channel.EMAIL.name())
 			.failReason("fatal error")
 			.metadata("{}")
+			.referenceType(ReferenceType.PERSONAL.name())
 			.retryCount(3)
 			.build();
 
@@ -99,6 +100,7 @@ class NotificationLogFactoryTest {
 			.notificationType(NotificationType.PAYMENT_CONFIRMED.name())
 			.channel(Channel.EMAIL.name())
 			.metadata("{}")
+			.referenceType(ReferenceType.PERSONAL.name())
 			.retryCount(0)
 			.build();
 

@@ -5,13 +5,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import io.github.choizz.notifier.core.application.dto.PublicationContext;
+import io.github.choizz.notifier.core.domain.event.NotificationRequestedEvent;
+
 class NotificationLogTest {
 
 	@DisplayName("알림 로그를 REQUESTED 상태로 생성한다.")
 	@Test
 	void test1() {
 		// when
-		NotificationLog log = NotificationLog.request(1L, ReferenceType.PERSONAL, NotificationType.PAYMENT_CONFIRMED, Channel.EMAIL, "{}");
+		NotificationRequestedEvent event = new NotificationRequestedEvent(1L, 2L, NotificationType.PAYMENT_CONFIRMED.name(), Channel.EMAIL.name(), "{}", ReferenceType.PERSONAL.name());
+		NotificationLog log = NotificationLog.request(event);
 
 		// then
 		assertThat(log.referenceId()).isEqualTo(1L);
@@ -27,7 +31,16 @@ class NotificationLogTest {
 	@Test
 	void test2() {
 		// when
-		NotificationLog log = NotificationLog.retried(1L, ReferenceType.PERSONAL, NotificationType.PAYMENT_CONFIRMED, Channel.EMAIL, "timeout", "{}", 1);
+		PublicationContext context = PublicationContext.builder()
+			.notificationId(1L)
+			.referenceType(ReferenceType.PERSONAL.name())
+			.notificationType(NotificationType.PAYMENT_CONFIRMED.name())
+			.channel(Channel.EMAIL.name())
+			.failReason("timeout")
+			.metadata("{}")
+			.retryCount(1)
+			.build();
+		NotificationLog log = NotificationLog.retried(context);
 
 		// then
 		assertThat(log.eventStatus()).isEqualTo(EventStatus.RETRIED);
@@ -40,7 +53,15 @@ class NotificationLogTest {
 	@Test
 	void test3() {
 		// when
-		NotificationLog log = NotificationLog.sent(1L, ReferenceType.PERSONAL, NotificationType.PAYMENT_CONFIRMED, Channel.EMAIL, "{}", 0);
+		PublicationContext context = PublicationContext.builder()
+			.notificationId(1L)
+			.referenceType(ReferenceType.PERSONAL.name())
+			.notificationType(NotificationType.PAYMENT_CONFIRMED.name())
+			.channel(Channel.EMAIL.name())
+			.metadata("{}")
+			.retryCount(0)
+			.build();
+		NotificationLog log = NotificationLog.sent(context);
 
 		// then
 		assertThat(log.eventStatus()).isEqualTo(EventStatus.SENT);
@@ -52,7 +73,16 @@ class NotificationLogTest {
 	@Test
 	void test4() {
 		// when
-		NotificationLog log = NotificationLog.failed(1L, ReferenceType.PERSONAL, NotificationType.PAYMENT_CONFIRMED, Channel.EMAIL, "error", "{}", 3);
+		PublicationContext context = PublicationContext.builder()
+			.notificationId(1L)
+			.referenceType(ReferenceType.PERSONAL.name())
+			.notificationType(NotificationType.PAYMENT_CONFIRMED.name())
+			.channel(Channel.EMAIL.name())
+			.failReason("error")
+			.metadata("{}")
+			.retryCount(3)
+			.build();
+		NotificationLog log = NotificationLog.failed(context);
 
 		// then
 		assertThat(log.eventStatus()).isEqualTo(EventStatus.FAILED);
@@ -65,7 +95,8 @@ class NotificationLogTest {
 	@Test
 	void test5() {
 		// given
-		NotificationLog log = NotificationLog.request(1L, ReferenceType.PERSONAL, NotificationType.PAYMENT_CONFIRMED, Channel.EMAIL, "{}");
+		NotificationRequestedEvent event = new NotificationRequestedEvent(1L, 2L, NotificationType.PAYMENT_CONFIRMED.name(), Channel.EMAIL.name(), "{}", ReferenceType.PERSONAL.name());
+		NotificationLog log = NotificationLog.request(event);
 
 		// when
 		log.markAsProcessing();
@@ -78,7 +109,8 @@ class NotificationLogTest {
 	@Test
 	void test6() {
 		// given
-		NotificationLog log = NotificationLog.request(1L, ReferenceType.PERSONAL, NotificationType.PAYMENT_CONFIRMED, Channel.EMAIL, "{}");
+		NotificationRequestedEvent event = new NotificationRequestedEvent(1L, 2L, NotificationType.PAYMENT_CONFIRMED.name(), Channel.EMAIL.name(), "{}", ReferenceType.PERSONAL.name());
+		NotificationLog log = NotificationLog.request(event);
 
 		// when
 		log.markAsRetried("timeout", 1);
@@ -93,7 +125,8 @@ class NotificationLogTest {
 	@Test
 	void test7() {
 		// given
-		NotificationLog log = NotificationLog.request(1L, ReferenceType.PERSONAL, NotificationType.PAYMENT_CONFIRMED, Channel.EMAIL, "{}");
+		NotificationRequestedEvent event = new NotificationRequestedEvent(1L, 2L, NotificationType.PAYMENT_CONFIRMED.name(), Channel.EMAIL.name(), "{}", ReferenceType.PERSONAL.name());
+		NotificationLog log = NotificationLog.request(event);
 
 		// when
 		log.markAsFailed("error", 3);

@@ -1,12 +1,9 @@
 package io.github.choizz.notifier.api;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.List;
-import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,9 +15,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import io.github.choizz.notifier.api.dto.NotificationCreateWebRequest;
 import io.github.choizz.notifier.core.application.port.in.NotificationUseCase;
 
 @ExtendWith(MockitoExtension.class)
@@ -48,14 +45,12 @@ class NotifierControllerTest {
 			DynamicTest.dynamicTest("정상적으로 알림 이벤트를 발행하면 202 ACCEPTED를 반환한다.", () -> {
 				// given
 				String requestJson = "{\"subscriberId\": 1, \"notificationType\": \"PAYMENT_CONFIRMED\", \"metadata\": {\"message\": \"테스트 알림입니다.\"}}";
-				
-				doNothing().when(notificationUseCase).push(any());
 
 				// when & then
-				mockMvc.perform(post("/v1/Notification")
+				mockMvc.perform(post("/v1/notification")
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(requestJson))
-					.andDo(org.springframework.test.web.servlet.result.MockMvcResultHandlers.print())
+					.andDo(MockMvcResultHandlers.print())
 					.andExpect(status().isAccepted());
 			}),
 			
@@ -64,7 +59,7 @@ class NotifierControllerTest {
 				String requestJson = "{\"subscriberId\": null, \"NotificationType\": null, \"metadata\": null}";
 
 				// when & then
-				mockMvc.perform(post("/v1/Notification")
+				mockMvc.perform(post("/v1/notification")
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(requestJson))
 					.andExpect(status().isBadRequest());

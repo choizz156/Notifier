@@ -7,8 +7,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.util.Map;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,6 +22,7 @@ import io.github.choizz.notifier.core.domain.model.Channel;
 import io.github.choizz.notifier.core.domain.model.EventStatus;
 import io.github.choizz.notifier.core.domain.model.NotificationStatus;
 import io.github.choizz.notifier.core.domain.model.NotificationType;
+import io.github.choizz.notifier.core.domain.model.ReferenceType;
 
 @ExtendWith(MockitoExtension.class)
 class NotificationCompletedEventHandlerTest {
@@ -45,7 +44,8 @@ class NotificationCompletedEventHandlerTest {
 			1L,
 			NotificationType.PAYMENT_CONFIRMED.name(),
 			Channel.EMAIL.name(),
-			"{}"
+			"{}",
+			ReferenceType.PERSONAL.name()
 		);
 
 		// when
@@ -64,7 +64,8 @@ class NotificationCompletedEventHandlerTest {
 			1L,
 			NotificationType.PAYMENT_CONFIRMED.name(),
 			Channel.EMAIL.name(),
-			"{}"
+			"{}",
+			ReferenceType.PERSONAL.name()
 		);
 		doThrow(new IllegalStateException("DB error")).when(notificationUseCase).updateStatus(1L, NotificationStatus.COMPLETED);
 

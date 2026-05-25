@@ -4,8 +4,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
 
-import java.util.Map;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,6 +18,7 @@ import io.github.choizz.notifier.core.domain.event.PublishCommandEvent;
 import io.github.choizz.notifier.core.domain.model.Channel;
 import io.github.choizz.notifier.core.domain.model.NotificationLog;
 import io.github.choizz.notifier.core.domain.model.NotificationType;
+import io.github.choizz.notifier.core.domain.model.ReferenceType;
 
 @ExtendWith(MockitoExtension.class)
 class NotificationRequestedEventHandlerTest {
@@ -42,7 +41,8 @@ class NotificationRequestedEventHandlerTest {
 			2L,
 			NotificationType.PAYMENT_CONFIRMED.name(),
 			Channel.EMAIL.name(),
-			Map.of("key", "value")
+			"{\"key\":\"value\"}",
+			ReferenceType.PERSONAL.name()
 		);
 
 		// when
@@ -61,7 +61,8 @@ class NotificationRequestedEventHandlerTest {
 			2L,
 			NotificationType.PAYMENT_CONFIRMED.name(),
 			Channel.EMAIL.name(),
-			Map.of("key", "value")
+			"{\"key\":\"value\"}",
+			ReferenceType.PERSONAL.name()
 		);
 
 		// when

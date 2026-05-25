@@ -44,7 +44,7 @@ class PublicNotifierControllerTest {
 
 		// when & then
 		mockMvc.perform(
-				patch("/v1/PublicNotification/{id}/read", publicNotificationId)
+				patch("/v1/public/notification/{id}/read", publicNotificationId)
 					.param("subscriberId", String.valueOf(subscriberId))
 			)
 			.andExpect(status().isOk());

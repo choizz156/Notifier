@@ -2,7 +2,6 @@ package io.github.choizz.notifier.core.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -23,8 +22,11 @@ import org.springframework.dao.OptimisticLockingFailureException;
 import io.github.choizz.notifier.core.application.dto.PublicationContext;
 import io.github.choizz.notifier.core.application.factory.NotificationLogFactory;
 import io.github.choizz.notifier.core.application.port.out.NotificationLogPersistencePort;
+import io.github.choizz.notifier.core.domain.event.NotificationRequestedEvent;
+import io.github.choizz.notifier.core.domain.model.Channel;
 import io.github.choizz.notifier.core.domain.model.EventStatus;
 import io.github.choizz.notifier.core.domain.model.NotificationLog;
+import io.github.choizz.notifier.core.domain.model.NotificationType;
 import io.github.choizz.notifier.core.domain.model.ReferenceType;
 
 @ExtendWith(MockitoExtension.class)
@@ -67,8 +69,8 @@ class NotificationLogServiceTest {
 	@Test
 	void test2() {
 		// given
-		// given
-		NotificationLog log = NotificationLog.request(1L, ReferenceType.PERSONAL, io.github.choizz.notifier.core.domain.model.NotificationType.PAYMENT_CONFIRMED, io.github.choizz.notifier.core.domain.model.Channel.EMAIL, "{}");
+		NotificationRequestedEvent event = new NotificationRequestedEvent(1L, 2L, NotificationType.PAYMENT_CONFIRMED.name(), Channel.EMAIL.name(), "{}", ReferenceType.PERSONAL.name());
+		NotificationLog log = NotificationLog.request(event);
 		when(notificationLogPersistencePort.findLatestByReference(1L, ReferenceType.PERSONAL)).thenReturn(log);
 
 		// when
@@ -84,11 +86,20 @@ class NotificationLogServiceTest {
 	@Test
 	void test3() {
 		// given
-		NotificationLog processingLog = NotificationLog.request(1L, ReferenceType.PERSONAL, io.github.choizz.notifier.core.domain.model.NotificationType.PAYMENT_CONFIRMED, io.github.choizz.notifier.core.domain.model.Channel.EMAIL, "{}");
+		NotificationRequestedEvent event = new NotificationRequestedEvent(1L, 2L, NotificationType.PAYMENT_CONFIRMED.name(), Channel.EMAIL.name(), "{}", ReferenceType.PERSONAL.name());
+		NotificationLog processingLog = NotificationLog.request(event);
 		processingLog.markAsProcessing();
 		when(notificationLogPersistencePort.findLatestByReference(1L, ReferenceType.PERSONAL)).thenReturn(processingLog);
 
-		NotificationLog sentLog = NotificationLog.sent(2L, ReferenceType.PERSONAL, io.github.choizz.notifier.core.domain.model.NotificationType.PAYMENT_CONFIRMED, io.github.choizz.notifier.core.domain.model.Channel.EMAIL, "{}", 0);
+		PublicationContext sentContext = PublicationContext.builder()
+			.notificationId(2L)
+			.referenceType(ReferenceType.PERSONAL.name())
+			.notificationType(NotificationType.PAYMENT_CONFIRMED.name())
+			.channel(Channel.EMAIL.name())
+			.metadata("{}")
+			.retryCount(0)
+			.build();
+		NotificationLog sentLog = NotificationLog.sent(sentContext);
 		when(notificationLogPersistencePort.findLatestByReference(2L, ReferenceType.PERSONAL)).thenReturn(sentLog);
 
 		// when
@@ -105,7 +116,8 @@ class NotificationLogServiceTest {
 	@Test
 	void test4() {
 		// given
-		NotificationLog log = NotificationLog.request(1L, ReferenceType.PERSONAL, io.github.choizz.notifier.core.domain.model.NotificationType.PAYMENT_CONFIRMED, io.github.choizz.notifier.core.domain.model.Channel.EMAIL, "{}");
+		NotificationRequestedEvent event = new NotificationRequestedEvent(1L, 2L, NotificationType.PAYMENT_CONFIRMED.name(), Channel.EMAIL.name(), "{}", ReferenceType.PERSONAL.name());
+		NotificationLog log = NotificationLog.request(event);
 		when(notificationLogPersistencePort.findLatestByReference(1L, ReferenceType.PERSONAL)).thenReturn(log);
 		doThrow(OptimisticLockingFailureException.class).when(notificationLogPersistencePort).save(log);
 

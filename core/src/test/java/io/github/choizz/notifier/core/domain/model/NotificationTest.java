@@ -19,7 +19,7 @@ class NotificationTest {
 		NotificationContext context = new NotificationContext(1L, "PAYMENT_CONFIRMED", Map.of("key", "value"));
 
 		// when
-		Notification notification = Notification.from(context, Channel.EMAIL);
+		Notification notification = Notification.of(context, Channel.EMAIL);
 
 		// then
 		assertThat(notification.subscriberId()).isEqualTo(1L);
