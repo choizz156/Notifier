@@ -15,20 +15,17 @@ public class AggressiveRetryProcessor extends AbstractRetryProcessor {
 		NotificationLogUseCase notificationLogUseCase,
 		ApplicationEventPublisher applicationEventPublisher
 	) {
-
 		super(notificationLogUseCase, applicationEventPublisher);
 	}
 
 	@Override
 	public RetryLevel getRdbRetryLevel() {
-
 		return RetryLevel.AGGRESSIVE;
 	}
 
 	@Override
 	@AggressiveRetry
 	public void handle(NotifierPort notifierPort, PublicationContext context) {
-
 		super.handle(notifierPort, context);
 	}
 }
