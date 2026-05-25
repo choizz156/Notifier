@@ -1,0 +1,55 @@
+### 1. 단일 알림 생성 (Push Event)
+POST http://localhost:8080/v1/notification
+Content-Type: application/json
+
+{
+  "subscriberId": 1,
+  "notificationType": "EMAIL",
+  "metadata": {
+    "title": "테스트 알림",
+    "content": "이것은 테스트 알림입니다."
+  }
+}
+
+### 2. 알림 상태 조회
+GET http://localhost:8080/v1/notification/1/status
+
+### 3. 구독자 알림 목록 조회
+GET http://localhost:8080/v1/notification/subscribers/1?page=0&size=20&isRead=false
+
+### 4. 알림 상세 정보 조회
+GET http://localhost:8080/v1/notification/1
+
+### 5. 알림 읽음 처리 (App)
+PATCH http://localhost:8080/v1/notification/1/read
+
+### 6. 알림 읽음 처리 (Email - 리다이렉트)
+GET http://localhost:8080/v1/notification/1/read
+
+### 7. 실패 알림 재시도
+POST http://localhost:8080/v1/notification/retry
+
+### 8. 대량(Public) 알림 생성
+POST http://localhost:8080/v1/notification/public
+Content-Type: application/json
+
+{
+  "type": "NOTICE",
+  "metadata": {
+    "title": "공지사항",
+    "content": "새로운 기능이 추가되었습니다."
+  }
+}
+
+### 9. 대량(Public) 알림 읽음 처리
+PATCH http://localhost:8080/v1/notification/public/1/read?subscriberId=1
+
+### 10. 알림 예약 생성
+POST http://localhost:8080/v1/reservations
+Content-Type: application/json
+
+{
+  "subscriberIds": [1, 2, 3],
+  "type": "EMAIL",
+  "reservationTime": "2026-05-26T10:00:00"
+}
