@@ -48,7 +48,7 @@ public class Notification {
 		this.channel = channel;
 		this.metadata = metadata;
 		this.status = status != null ? status : NotificationStatus.PENDING;
-		this.failMessage = null;
+		this.failMessage = failMessage;
 		this.isRead = isRead;
 		this.createdAt = createdAt != null ? createdAt : LocalDateTime.now();
 		this.updatedAt = updatedAt != null ? updatedAt : LocalDateTime.now();
