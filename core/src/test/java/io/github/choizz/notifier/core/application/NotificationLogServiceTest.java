@@ -56,7 +56,7 @@ class NotificationLogServiceTest {
 		when(notificationLogFactory.create(EventStatus.SENT, context)).thenReturn(log);
 
 		// when
-		notificationLogService.saveEventLog(1L, EventStatus.SENT, context);
+		notificationLogService.savenotificationLog(1L, EventStatus.SENT, context);
 
 		// then
 		verify(notificationLogPersistencePort, times(1)).save(log);

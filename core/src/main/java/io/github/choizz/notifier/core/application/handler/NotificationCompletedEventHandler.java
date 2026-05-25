@@ -28,7 +28,7 @@ public class NotificationCompletedEventHandler {
 	public void handleNotificationCompleted(PublishCompletedEvent event) {
 		try {
 			notificationUseCase.updateStatus(event.notificationId(), NotificationStatus.COMPLETED);
-			notificationLogUseCase.saveEventLog(event.notificationId(), EventStatus.SENT, PublicationContext.success(event));
+			notificationLogUseCase.savenotificationLog(event.notificationId(), EventStatus.SENT, PublicationContext.success(event));
 		} catch (Exception e) {
 			log.error("알림(ID: {}) 상태 및 이벤트 로그 성공 업데이트에 실패하여 상태가 변경되지 않았습니다.", event.notificationId(), e);
 			throw new RuntimeException(e);

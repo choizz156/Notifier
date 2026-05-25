@@ -31,26 +31,26 @@ public class NotificationLogService implements NotificationLogUseCase {
 	private final NotificationLogFactory notificationLogFactory;
 
 	@Override
-	public void saveEventLog(Long notificationId, EventStatus eventStatus, PublicationContext context) {
+	public void savenotificationLog(Long notificationId, EventStatus eventStatus, PublicationContext context) {
 
-		NotificationLog eventLog = notificationLogFactory.create(eventStatus, context);
-		notificationLogPersistencePort.save(eventLog);
+		NotificationLog notificationLog = notificationLogFactory.create(eventStatus, context);
+		notificationLogPersistencePort.save(notificationLog);
 	}
 
 	@Override
 	public boolean tryClaim(Long notificationId) {
 
-		NotificationLog eventLog =
+		NotificationLog notificationLog =
 			notificationLogPersistencePort.findLatestByNotificationId(notificationId);
 
-		if (eventLog.eventStatus() != EventStatus.REQUESTED && eventLog.eventStatus() != EventStatus.RETRIED) {
+		if (notificationLog.eventStatus() != EventStatus.REQUESTED && notificationLog.eventStatus() != EventStatus.RETRIED) {
 			return false;
 		}
 
-		eventLog.markAsProcessing();
+		notificationLog.markAsProcessing();
 
 		try {
-			notificationLogPersistencePort.save(eventLog);
+			notificationLogPersistencePort.save(notificationLog);
 			return true;
 		} catch (OptimisticLockingFailureException e) {
 			return false;

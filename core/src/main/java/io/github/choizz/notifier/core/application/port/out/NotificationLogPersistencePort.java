@@ -10,8 +10,8 @@ import io.github.choizz.notifier.core.domain.model.NotificationType;
 
 public interface NotificationLogPersistencePort {
 
-	void save(NotificationLog eventLog);
-	void saveAll(List<NotificationLog> eventLogs);
+	void save(NotificationLog notificationLog);
+	void saveAll(List<NotificationLog> notificationLogs);
 	NotificationLog findLatestByNotificationId(Long notificationId);
 	List<Long> findUnprocessedNotificationIds(List<EventStatus> statuses, long lastId, int chunkSize);
 	List<NotificationLog> findAllByEventStatus(EventStatus eventStatus);

@@ -12,18 +12,18 @@ import org.springframework.data.repository.query.Param;
 
 import io.github.choizz.notifier.core.domain.model.EventStatus;
 import io.github.choizz.notifier.core.domain.model.NotificationType;
-import io.github.choizz.notifier.persistence.entity.NotificationEventLogEntity;
+import io.github.choizz.notifier.persistence.entity.NotificationLogEntity;
 
-public interface NotificationEventLogJpaRepository extends JpaRepository<NotificationEventLogEntity, Long> {
+public interface NotificationLogJpaRepository extends JpaRepository<NotificationLogEntity, Long> {
 
-	Optional<NotificationEventLogEntity> findFirstByNotificationIdOrderByCreatedAtDesc(Long notificationId);
+	Optional<NotificationLogEntity> findFirstByNotificationIdOrderByCreatedAtDesc(Long notificationId);
 
 	@Query("""
         SELECT e.notificationId 
-        FROM NotificationEventLogEntity e
+        FROM NotificationLogEntity e
         WHERE e.id IN (
             SELECT MAX(e2.id) 
-            FROM NotificationEventLogEntity e2 
+            FROM NotificationLogEntity e2 
             WHERE e2.notificationId > :lastNotificationId  
             GROUP BY e2.notificationId
         )
@@ -36,17 +36,17 @@ public interface NotificationEventLogJpaRepository extends JpaRepository<Notific
 		Limit limit
 	);
 
-	List<NotificationEventLogEntity> findAllByEventStatus(EventStatus eventStatus);
+	List<NotificationLogEntity> findAllByEventStatus(EventStatus eventStatus);
 
 	@Query("""
-		SELECT e FROM NotificationEventLogEntity e
+		SELECT e FROM NotificationLogEntity e
 		WHERE e.id > :lastId
 		AND e.eventStatus = :status
 		AND e.notificationType IN :types
 		AND e.updatedAt < :thresholdTime
 		ORDER BY e.id ASC
 	""")
-	List<NotificationEventLogEntity> findStuckLogs(
+	List<NotificationLogEntity> findStuckLogs(
 		@Param("lastId") Long lastId,
 		@Param("status") EventStatus status,
 		@Param("types") Collection<NotificationType> types,

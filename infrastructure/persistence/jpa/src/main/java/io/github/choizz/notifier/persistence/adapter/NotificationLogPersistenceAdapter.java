@@ -13,8 +13,8 @@ import io.github.choizz.notifier.core.application.port.out.NotificationLogPersis
 import io.github.choizz.notifier.core.domain.model.EventStatus;
 import io.github.choizz.notifier.core.domain.model.NotificationLog;
 import io.github.choizz.notifier.core.domain.model.NotificationType;
-import io.github.choizz.notifier.persistence.entity.NotificationEventLogEntity;
-import io.github.choizz.notifier.persistence.repository.NotificationEventLogJpaRepository;
+import io.github.choizz.notifier.persistence.entity.NotificationLogEntity;
+import io.github.choizz.notifier.persistence.repository.NotificationLogJpaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,45 +24,45 @@ import lombok.extern.slf4j.Slf4j;
 @Repository
 public class NotificationLogPersistenceAdapter implements NotificationLogPersistencePort {
 
-	private final NotificationEventLogJpaRepository eventLogJpaRepository;
+	private final NotificationLogJpaRepository notificationLogJpaRepository;
 
 	@Override
 	@Transactional
-	public void save(NotificationLog eventLog) {
+	public void save(NotificationLog notificationLog) {
 
 		log.info("알림 이벤트 이력 저장 - notificationId={}, eventType={}, eventStatus={}",
-			eventLog.notificationId(), eventLog.channelType(), eventLog.eventStatus());
+			notificationLog.notificationId(), notificationLog.channelType(), notificationLog.eventStatus());
 
-		NotificationEventLogEntity entity = NotificationLogMapper.toEntity(eventLog);
-		eventLogJpaRepository.save(entity);
+		NotificationLogEntity entity = NotificationLogMapper.toEntity(notificationLog);
+		notificationLogJpaRepository.save(entity);
 	}
 
 	@Override
 	@Transactional
-	public void saveAll(List<NotificationLog> eventLogs) {
+	public void saveAll(List<NotificationLog> notificationLogs) {
 
-		List<NotificationEventLogEntity> entities = eventLogs.stream()
+		List<NotificationLogEntity> entities = notificationLogs.stream()
 			.map(NotificationLogMapper::toEntity)
 			.toList();
-		eventLogJpaRepository.saveAll(entities);
+		notificationLogJpaRepository.saveAll(entities);
 	}
 
 	@Override
 	public NotificationLog findLatestByNotificationId(Long notificationId) {
 
-		return eventLogJpaRepository.findFirstByNotificationIdOrderByCreatedAtDesc(notificationId)
+		return notificationLogJpaRepository.findFirstByNotificationIdOrderByCreatedAtDesc(notificationId)
 			.map(NotificationLogMapper::toDomain)
 			.orElseThrow(() -> new NoSuchElementException("존재하지 않는 알림 정보 입니다. %s".formatted(notificationId)));
 	}
 
 	@Override
 	public List<Long> findUnprocessedNotificationIds(List<EventStatus> statuses, long lastId, int chunkSize) {
-		return eventLogJpaRepository.findUnprocessedNotificationIds(statuses, lastId, Limit.of(chunkSize));
+		return notificationLogJpaRepository.findUnprocessedNotificationIds(statuses, lastId, Limit.of(chunkSize));
 	}
 
 	@Override
 	public List<NotificationLog> findAllByEventStatus(EventStatus eventStatus) {
-		return eventLogJpaRepository.findAllByEventStatus(eventStatus)
+		return notificationLogJpaRepository.findAllByEventStatus(eventStatus)
 			.stream()
 			.map(NotificationLogMapper::toDomain)
 			.toList();
@@ -70,7 +70,7 @@ public class NotificationLogPersistenceAdapter implements NotificationLogPersist
 
 	@Override
 	public List<NotificationLog> findStuckLogs(long lastId, EventStatus status, Collection<NotificationType> types, LocalDateTime thresholdTime, int chunkSize) {
-		return eventLogJpaRepository.findStuckLogs(lastId, status, types, thresholdTime, Limit.of(chunkSize))
+		return notificationLogJpaRepository.findStuckLogs(lastId, status, types, thresholdTime, Limit.of(chunkSize))
 			.stream()
 			.map(NotificationLogMapper::toDomain)
 			.toList();

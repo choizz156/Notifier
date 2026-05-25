@@ -11,7 +11,7 @@ import io.github.choizz.notifier.core.domain.model.Channel;
 import io.github.choizz.notifier.core.domain.model.EventStatus;
 import io.github.choizz.notifier.core.domain.model.NotificationLog;
 import io.github.choizz.notifier.core.domain.model.NotificationType;
-import io.github.choizz.notifier.persistence.entity.NotificationEventLogEntity;
+import io.github.choizz.notifier.persistence.entity.NotificationLogEntity;
 
 class NotificationLogMapperTest {
 
@@ -35,7 +35,7 @@ class NotificationLogMapperTest {
 			.build();
 
 		// when
-		NotificationEventLogEntity entity = NotificationLogMapper.toEntity(domain);
+		NotificationLogEntity entity = NotificationLogMapper.toEntity(domain);
 
 		// then
 		assertThat(entity.id()).isEqualTo(1L);
@@ -50,12 +50,12 @@ class NotificationLogMapperTest {
 		assertThat(entity.updatedAt()).isEqualTo(now);
 	}
 
-	@DisplayName("NotificationEventLogEntity 객체를 도메인으로 변환한다.")
+	@DisplayName("NotificationLogEntity 객체를 도메인으로 변환한다.")
 	@Test
 	void test2() {
 		// given
 		LocalDateTime now = LocalDateTime.now();
-		NotificationEventLogEntity entity = NotificationEventLogEntity.builder()
+		NotificationLogEntity entity = NotificationLogEntity.builder()
 			.notificationId(200L)
 			.notificationType(NotificationType.COUPON_ISSUED)
 			.channelType(Channel.IN_APP)

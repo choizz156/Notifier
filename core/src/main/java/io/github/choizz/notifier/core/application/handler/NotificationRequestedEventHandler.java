@@ -21,20 +21,20 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class NotificationRequestedEventHandler {
 
-	private final NotificationLogPersistencePort eventLogPersistencePort;
+	private final NotificationLogPersistencePort notificationLogPersistencePort;
 	private final NotificationEventPublisher notificationEventPublisher;
 
 	@TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
 	public void saveEvent(NotificationRequestedEvent event) {
 
-		NotificationLog eventLog = NotificationLog.request(
+		NotificationLog notificationLog = NotificationLog.request(
 			event.notificationId(),
 			NotificationType.valueOf(event.notificationType()),
 			Channel.valueOf(event.channel()),
 			JsonUtils.toJson(event.metadata())
 		);
 
-		eventLogPersistencePort.save(eventLog);
+		notificationLogPersistencePort.save(notificationLog);
 
 		log.info("알림 이벤트 저장 완료 - notificationId={}", event.notificationId());
 	}

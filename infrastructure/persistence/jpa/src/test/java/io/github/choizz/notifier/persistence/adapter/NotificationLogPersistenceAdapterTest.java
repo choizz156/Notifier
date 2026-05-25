@@ -23,14 +23,14 @@ import org.springframework.data.domain.Limit;
 import io.github.choizz.notifier.core.domain.model.EventStatus;
 import io.github.choizz.notifier.core.domain.model.NotificationLog;
 import io.github.choizz.notifier.core.domain.model.NotificationType;
-import io.github.choizz.notifier.persistence.entity.NotificationEventLogEntity;
-import io.github.choizz.notifier.persistence.repository.NotificationEventLogJpaRepository;
+import io.github.choizz.notifier.persistence.entity.NotificationLogEntity;
+import io.github.choizz.notifier.persistence.repository.NotificationLogJpaRepository;
 
 @ExtendWith(MockitoExtension.class)
 class NotificationLogPersistenceAdapterTest {
 
 	@Mock
-	private NotificationEventLogJpaRepository eventLogJpaRepository;
+	private NotificationLogJpaRepository notificationLogJpaRepository;
 
 	@InjectMocks
 	private NotificationLogPersistenceAdapter adapter;
@@ -44,18 +44,18 @@ class NotificationLogPersistenceAdapterTest {
 			.eventStatus(EventStatus.SENT)
 			.build();
 			
-		NotificationEventLogEntity entity = NotificationEventLogEntity.builder()
+		NotificationLogEntity entity = NotificationLogEntity.builder()
 			.notificationId(10L)
 			.eventStatus(EventStatus.SENT)
 			.build();
 			
-		when(eventLogJpaRepository.save(any(NotificationEventLogEntity.class))).thenReturn(entity);
+		when(notificationLogJpaRepository.save(any(NotificationLogEntity.class))).thenReturn(entity);
 
 		// when
 		adapter.save(domain);
 
 		// then
-		verify(eventLogJpaRepository, times(1)).save(any(NotificationEventLogEntity.class));
+		verify(notificationLogJpaRepository, times(1)).save(any(NotificationLogEntity.class));
 	}
 
 	@DisplayName("알림 이벤트 이력을 다건 저장한다.")
@@ -69,15 +69,15 @@ class NotificationLogPersistenceAdapterTest {
 		adapter.saveAll(List.of(domain1, domain2));
 
 		// then
-		verify(eventLogJpaRepository, times(1)).saveAll(any());
+		verify(notificationLogJpaRepository, times(1)).saveAll(any());
 	}
 
 	@DisplayName("가장 최신의 알림 이벤트 이력을 조회한다.")
 	@Test
 	void test3() {
 		// given
-		NotificationEventLogEntity entity = NotificationEventLogEntity.builder().notificationId(10L).build();
-		when(eventLogJpaRepository.findFirstByNotificationIdOrderByCreatedAtDesc(10L)).thenReturn(Optional.of(entity));
+		NotificationLogEntity entity = NotificationLogEntity.builder().notificationId(10L).build();
+		when(notificationLogJpaRepository.findFirstByNotificationIdOrderByCreatedAtDesc(10L)).thenReturn(Optional.of(entity));
 
 		// when
 		NotificationLog result = adapter.findLatestByNotificationId(10L);
@@ -90,7 +90,7 @@ class NotificationLogPersistenceAdapterTest {
 	@Test
 	void test4() {
 		// given
-		when(eventLogJpaRepository.findFirstByNotificationIdOrderByCreatedAtDesc(10L)).thenReturn(Optional.empty());
+		when(notificationLogJpaRepository.findFirstByNotificationIdOrderByCreatedAtDesc(10L)).thenReturn(Optional.empty());
 
 		// when & then
 		assertThatThrownBy(() -> adapter.findLatestByNotificationId(10L))
@@ -101,7 +101,7 @@ class NotificationLogPersistenceAdapterTest {
 	@Test
 	void test5() {
 		// given
-		when(eventLogJpaRepository.findUnprocessedNotificationIds(org.mockito.ArgumentMatchers.anyList(), org.mockito.ArgumentMatchers.eq(0L), any(Limit.class)))
+		when(notificationLogJpaRepository.findUnprocessedNotificationIds(org.mockito.ArgumentMatchers.anyList(), org.mockito.ArgumentMatchers.eq(0L), any(Limit.class)))
 			.thenReturn(List.of(1L, 2L, 3L));
 
 		// when
@@ -115,8 +115,8 @@ class NotificationLogPersistenceAdapterTest {
 	@Test
 	void test6() {
 		// given
-		NotificationEventLogEntity entity = NotificationEventLogEntity.builder().build();
-		when(eventLogJpaRepository.findStuckLogs(
+		NotificationLogEntity entity = NotificationLogEntity.builder().build();
+		when(notificationLogJpaRepository.findStuckLogs(
 			org.mockito.ArgumentMatchers.anyLong(),
 			org.mockito.ArgumentMatchers.any(EventStatus.class),
 			org.mockito.ArgumentMatchers.anyCollection(),

@@ -32,7 +32,7 @@ public abstract class AbstractRetryProcessor implements RetryProcessor {
 		int currentRetryCount = RetrySynchronizationManager.getContext().getRetryCount();
 
 		context.updateRetryCount(currentRetryCount);
-		notificationLogUseCase.saveEventLog(context.notificationId(), EventStatus.RETRIED, context);
+		notificationLogUseCase.savenotificationLog(context.notificationId(), EventStatus.RETRIED, context);
 
 		send(notifierPort, context);
 	}

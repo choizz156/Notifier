@@ -1,29 +1,29 @@
 package io.github.choizz.notifier.persistence.adapter;
 
-import io.github.choizz.notifier.persistence.entity.NotificationEventLogEntity;
+import io.github.choizz.notifier.persistence.entity.NotificationLogEntity;
 import io.github.choizz.notifier.core.domain.model.NotificationLog;
 
 public class NotificationLogMapper {
 
-	public static NotificationEventLogEntity toEntity(NotificationLog eventLog) {
+	public static NotificationLogEntity toEntity(NotificationLog notificationLog) {
 
-		NotificationEventLogEntity entity = NotificationEventLogEntity.builder()
-			.notificationId(eventLog.notificationId())
-			.notificationType(eventLog.notificationType())
-			.channelType(eventLog.channelType())
-			.eventStatus(eventLog.eventStatus())
-			.failReason(eventLog.failReason())
-			.retryCount(eventLog.retryCount())
-			.published(eventLog.published())
-			.publishedAt(eventLog.publishedAt())
+		NotificationLogEntity entity = NotificationLogEntity.builder()
+			.notificationId(notificationLog.notificationId())
+			.notificationType(notificationLog.notificationType())
+			.channelType(notificationLog.channelType())
+			.eventStatus(notificationLog.eventStatus())
+			.failReason(notificationLog.failReason())
+			.retryCount(notificationLog.retryCount())
+			.published(notificationLog.published())
+			.publishedAt(notificationLog.publishedAt())
 			.build();
 
-		entity.id(eventLog.id());
-		entity.updatedAt(eventLog.updatedAt());
+		entity.id(notificationLog.id());
+		entity.updatedAt(notificationLog.updatedAt());
 		return entity;
 	}
 
-	public static NotificationLog toDomain(NotificationEventLogEntity entity) {
+	public static NotificationLog toDomain(NotificationLogEntity entity) {
 		return NotificationLog.builder()
 			.id(entity.id())
 			.notificationId(entity.notificationId())

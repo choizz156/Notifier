@@ -7,7 +7,7 @@ import org.springframework.boot.persistence.autoconfigure.EntityScan;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-import io.github.choizz.notifier.persistence.repository.NotificationEventLogJpaRepository;
+import io.github.choizz.notifier.persistence.repository.NotificationLogJpaRepository;
 import io.github.choizz.notifier.persistence.repository.NotificationJpaRepository;
 
 @SpringBootApplication(scanBasePackages = "io.github.choizz.notifier.persistence")
@@ -17,14 +17,14 @@ import io.github.choizz.notifier.persistence.repository.NotificationJpaRepositor
 public class DataTestContext {
 
 	@Autowired
-	protected NotificationEventLogJpaRepository notificationEventLogJpaRepository;
+	protected NotificationLogJpaRepository notificationLogJpaRepository;
 
 	@Autowired
 	protected NotificationJpaRepository notificationJpaRepository;
 
 	@AfterEach
 	void tearDown() {
-		notificationEventLogJpaRepository.deleteAll();
+		notificationLogJpaRepository.deleteAll();
 		notificationJpaRepository.deleteAll();
 	}
 }

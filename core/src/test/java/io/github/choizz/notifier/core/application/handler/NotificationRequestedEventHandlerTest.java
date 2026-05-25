@@ -25,7 +25,7 @@ import io.github.choizz.notifier.core.domain.model.NotificationType;
 class NotificationRequestedEventHandlerTest {
 
 	@Mock
-	private NotificationLogPersistencePort eventLogPersistencePort;
+	private NotificationLogPersistencePort notificationLogPersistencePort;
 
 	@Mock
 	private NotificationEventPublisher notificationEventPublisher;
@@ -49,7 +49,7 @@ class NotificationRequestedEventHandlerTest {
 		handler.saveEvent(event);
 
 		// then
-		verify(eventLogPersistencePort, times(1)).save(any(NotificationLog.class));
+		verify(notificationLogPersistencePort, times(1)).save(any(NotificationLog.class));
 	}
 
 	@DisplayName("알림 요청 이벤트가 발생하면 발송 명령 이벤트를 발행한다.")

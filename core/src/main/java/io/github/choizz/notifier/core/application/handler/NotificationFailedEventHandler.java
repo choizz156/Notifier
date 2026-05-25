@@ -25,7 +25,7 @@ public class NotificationFailedEventHandler {
 	@EventListener
 	public void updateNotification(PublishFailedEvent event) {
 
-		notificationLogUseCase.saveEventLog(
+		notificationLogUseCase.savenotificationLog(
 			event.context().notificationId(),
 			EventStatus.FAILED,
 			event.context()

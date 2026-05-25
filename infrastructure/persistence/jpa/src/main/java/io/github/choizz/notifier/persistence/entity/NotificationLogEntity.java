@@ -29,7 +29,7 @@ import lombok.experimental.Accessors;
 	}
 )
 @Entity
-public class NotificationEventLogEntity extends BaseEntity {
+public class NotificationLogEntity extends BaseEntity {
 
 	@Column(nullable = false)
 	private Long notificationId;
@@ -55,7 +55,7 @@ public class NotificationEventLogEntity extends BaseEntity {
 	private LocalDateTime publishedAt;
 
 	@Builder
-	private NotificationEventLogEntity(
+	private NotificationLogEntity(
 		Long notificationId,
 		NotificationType notificationType,
 		Channel channelType,
