@@ -6,7 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import io.github.choizz.notifier.core.application.dto.PublicationContext;
-import io.github.choizz.notifier.core.domain.event.NotificationRequestedEvent;
+import io.github.choizz.notifier.core.domain.model.Notification;
 
 class NotificationLogTest {
 
@@ -14,8 +14,14 @@ class NotificationLogTest {
 	@Test
 	void test1() {
 		// when
-		NotificationRequestedEvent event = new NotificationRequestedEvent(1L, 2L, NotificationType.PAYMENT_CONFIRMED.name(), Channel.EMAIL.name(), "{}", ReferenceType.PERSONAL.name());
-		NotificationLog log = NotificationLog.request(event);
+		Notification notification = Notification.builder()
+			.id(1L)
+			.subscriberId(2L)
+			.notificationType(NotificationType.PAYMENT_CONFIRMED)
+			.channel(Channel.EMAIL)
+			.metadata("{}")
+			.build();
+		NotificationLog log = NotificationLog.request(notification);
 
 		// then
 		assertThat(log.referenceId()).isEqualTo(1L);
@@ -95,8 +101,14 @@ class NotificationLogTest {
 	@Test
 	void test5() {
 		// given
-		NotificationRequestedEvent event = new NotificationRequestedEvent(1L, 2L, NotificationType.PAYMENT_CONFIRMED.name(), Channel.EMAIL.name(), "{}", ReferenceType.PERSONAL.name());
-		NotificationLog log = NotificationLog.request(event);
+		Notification notification = Notification.builder()
+			.id(1L)
+			.subscriberId(2L)
+			.notificationType(NotificationType.PAYMENT_CONFIRMED)
+			.channel(Channel.EMAIL)
+			.metadata("{}")
+			.build();
+		NotificationLog log = NotificationLog.request(notification);
 
 		// when
 		log.markAsProcessing();
@@ -109,8 +121,14 @@ class NotificationLogTest {
 	@Test
 	void test6() {
 		// given
-		NotificationRequestedEvent event = new NotificationRequestedEvent(1L, 2L, NotificationType.PAYMENT_CONFIRMED.name(), Channel.EMAIL.name(), "{}", ReferenceType.PERSONAL.name());
-		NotificationLog log = NotificationLog.request(event);
+		Notification notification = Notification.builder()
+			.id(1L)
+			.subscriberId(2L)
+			.notificationType(NotificationType.PAYMENT_CONFIRMED)
+			.channel(Channel.EMAIL)
+			.metadata("{}")
+			.build();
+		NotificationLog log = NotificationLog.request(notification);
 
 		// when
 		log.markAsRetried("timeout", 1);
@@ -125,8 +143,14 @@ class NotificationLogTest {
 	@Test
 	void test7() {
 		// given
-		NotificationRequestedEvent event = new NotificationRequestedEvent(1L, 2L, NotificationType.PAYMENT_CONFIRMED.name(), Channel.EMAIL.name(), "{}", ReferenceType.PERSONAL.name());
-		NotificationLog log = NotificationLog.request(event);
+		Notification notification = Notification.builder()
+			.id(1L)
+			.subscriberId(2L)
+			.notificationType(NotificationType.PAYMENT_CONFIRMED)
+			.channel(Channel.EMAIL)
+			.metadata("{}")
+			.build();
+		NotificationLog log = NotificationLog.request(notification);
 
 		// when
 		log.markAsFailed("error", 3);

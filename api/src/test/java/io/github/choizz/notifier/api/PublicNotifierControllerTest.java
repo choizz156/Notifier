@@ -1,8 +1,11 @@
 package io.github.choizz.notifier.api;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -12,6 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -35,16 +39,33 @@ class PublicNotifierControllerTest {
 			.build();
 	}
 
+	@DisplayName("공통 알림 발송 API를 호출하면 202 ACCEPTED를 반환한다.")
+	@Test
+	void test1() throws Exception {
+		// given
+		String requestJson = "{\"type\": \"PAYMENT_CONFIRMED\", \"metadata\": {\"message\": \"공통 알림 테스트\"}}";
+
+		doNothing().when(publicNotificationUseCase).pushToPublic(any());
+
+		// when & then
+		mockMvc.perform(post("/v1/notification/public")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(requestJson))
+			.andExpect(status().isAccepted());
+
+		verify(publicNotificationUseCase, times(1)).pushToPublic(any());
+	}
+
 	@DisplayName("공통 알림을 읽음 처리하는 API를 호출한다.")
 	@Test
-	void markAsRead() throws Exception {
+	void test2() throws Exception {
 		// given
 		Long publicNotificationId = 100L;
 		Long subscriberId = 1L;
 
 		// when & then
 		mockMvc.perform(
-				patch("/v1/public/notification/{id}/read", publicNotificationId)
+				patch("/v1/notification/public/{id}/read", publicNotificationId)
 					.param("subscriberId", String.valueOf(subscriberId))
 			)
 			.andExpect(status().isOk());

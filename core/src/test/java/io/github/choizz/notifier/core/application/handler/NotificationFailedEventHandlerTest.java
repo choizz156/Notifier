@@ -51,7 +51,7 @@ class NotificationFailedEventHandlerTest {
 		handler.updateNotification(event);
 
 		// then
-		verify(notificationLogUseCase, times(1)).savenotificationLog(eq(1L), eq(EventStatus.FAILED), eq(context));
+		verify(notificationLogUseCase, times(1)).saveNotificationLog(eq(1L), eq(EventStatus.FAILED), eq(context));
 		verify(notificationUseCase, times(1)).fail(1L, "connection error");
 	}
 }

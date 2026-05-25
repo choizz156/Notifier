@@ -25,6 +25,7 @@ import io.github.choizz.notifier.core.application.dto.NotificationStatusResponse
 import io.github.choizz.notifier.core.application.port.in.NotificationLogUseCase;
 import io.github.choizz.notifier.core.application.port.out.MockUserPersistencePort;
 import io.github.choizz.notifier.core.application.port.out.NotificationPersistencePort;
+import io.github.choizz.notifier.core.application.port.out.LoadCombinedNotificationPort;
 import io.github.choizz.notifier.core.application.port.out.TemplateRendererPort;
 import io.github.choizz.notifier.core.application.support.NotificationRetryProcessor;
 import io.github.choizz.notifier.core.domain.event.NotificationRequestedEvent;
@@ -48,6 +49,8 @@ class NotificationServiceTest {
 	private NotificationRetryProcessor notificationRetryProcessor;
 	@Mock
 	private MockUserPersistencePort mockUserPersistencePort;
+	@Mock
+	private LoadCombinedNotificationPort loadCombinedNotificationPort;
 
 	@InjectMocks
 	private NotificationService notificationService;
@@ -194,5 +197,65 @@ class NotificationServiceTest {
 		// then
 		assertThat(response.notificationId()).isEqualTo(1L);
 		assertThat(response.status()).isEqualTo(NotificationStatus.FAILED);
+	}
+
+	@DisplayName("알림을 읽음 처리한다.")
+	@Test
+	void test9() {
+		// given
+		Long notificationId = 1L;
+
+		// when
+		notificationService.markAsRead(notificationId);
+
+		// then
+		verify(notificationPersistencePort, times(1)).markAsRead(notificationId);
+	}
+
+	@DisplayName("알림 목록을 조회한다.")
+	@Test
+	void test10() {
+		// given
+		Long subscriberId = 1L;
+		Boolean isRead = false;
+		int page = 0;
+		int size = 10;
+		io.github.choizz.notifier.core.application.dto.PageResult<io.github.choizz.notifier.core.application.dto.NotificationResponse> expectedResult = new io.github.choizz.notifier.core.application.dto.PageResult<>(List.of(), 0, 0, 0L, 0);
+		when(loadCombinedNotificationPort.loadCombinedNotifications(subscriberId, isRead, page, size)).thenReturn(expectedResult);
+
+		// when
+		io.github.choizz.notifier.core.application.dto.PageResult<io.github.choizz.notifier.core.application.dto.NotificationResponse> result = notificationService.findNotifications(subscriberId, isRead, page, size);
+
+		// then
+		assertThat(result).isEqualTo(expectedResult);
+		verify(loadCombinedNotificationPort, times(1)).loadCombinedNotifications(subscriberId, isRead, page, size);
+	}
+
+	@DisplayName("단건 재시도를 수행한다.")
+	@Test
+	void test11() {
+		// given
+		List<Long> notificationIds = List.of(1L, 2L);
+
+		// when
+		notificationService.retryStuckNotification(notificationIds);
+
+		// then
+		verify(notificationRetryProcessor, times(1)).processChunk(notificationIds);
+	}
+
+	@DisplayName("전체 실패 건 재시도를 수행한다.")
+	@Test
+	void test12() {
+		// given
+		when(notificationLogUseCase.findUnprocessedNotificationIds(0L, 500))
+			.thenReturn(List.of(1L, 2L, 3L));
+
+		// when
+		notificationService.retry();
+
+		// then
+		verify(notificationLogUseCase, times(1)).findUnprocessedNotificationIds(any(Long.class), any(Integer.class));
+		verify(notificationRetryProcessor, times(1)).processChunk(List.of(1L, 2L, 3L));
 	}
 }

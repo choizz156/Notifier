@@ -75,7 +75,7 @@ class AggressiveRetryProcessorTest {
 			processor.handle(notifierPort, context);
 
 			// then
-			verify(notificationLogUseCase, times(1)).savenotificationLog(eq(1L), eq(EventStatus.RETRIED), any(PublicationContext.class));
+			verify(notificationLogUseCase, times(1)).saveNotificationLog(eq(1L), eq(EventStatus.RETRIED), any(PublicationContext.class));
 			verify(notifierPort, times(1)).publish(context);
 			verify(applicationEventPublisher, times(1)).publishEvent(any(PublishCompletedEvent.class));
 		} finally {

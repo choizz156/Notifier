@@ -53,7 +53,7 @@ class NotificationCompletedEventHandlerTest {
 
 		// then
 		verify(notificationUseCase, times(1)).updateStatus(1L, NotificationStatus.COMPLETED);
-		verify(notificationLogUseCase, times(1)).savenotificationLog(eq(1L), eq(EventStatus.SENT), any(PublicationContext.class));
+		verify(notificationLogUseCase, times(1)).saveNotificationLog(eq(1L), eq(EventStatus.SENT), any(PublicationContext.class));
 	}
 
 	@DisplayName("알림 상태 업데이트나 로그 저장 중 예외가 발생하면 RuntimeException으로 던진다.")

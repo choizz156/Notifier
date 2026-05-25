@@ -22,7 +22,7 @@ import org.springframework.dao.OptimisticLockingFailureException;
 import io.github.choizz.notifier.core.application.dto.PublicationContext;
 import io.github.choizz.notifier.core.application.factory.NotificationLogFactory;
 import io.github.choizz.notifier.core.application.port.out.NotificationLogPersistencePort;
-import io.github.choizz.notifier.core.domain.event.NotificationRequestedEvent;
+import io.github.choizz.notifier.core.domain.model.Notification;
 import io.github.choizz.notifier.core.domain.model.Channel;
 import io.github.choizz.notifier.core.domain.model.EventStatus;
 import io.github.choizz.notifier.core.domain.model.NotificationLog;
@@ -59,7 +59,7 @@ class NotificationLogServiceTest {
 		when(notificationLogFactory.create(EventStatus.SENT, context)).thenReturn(log);
 
 		// when
-		notificationLogService.savenotificationLog(1L, EventStatus.SENT, context);
+		notificationLogService.saveNotificationLog(1L, EventStatus.SENT, context);
 
 		// then
 		verify(notificationLogPersistencePort, times(1)).save(log);
@@ -69,8 +69,14 @@ class NotificationLogServiceTest {
 	@Test
 	void test2() {
 		// given
-		NotificationRequestedEvent event = new NotificationRequestedEvent(1L, 2L, NotificationType.PAYMENT_CONFIRMED.name(), Channel.EMAIL.name(), "{}", ReferenceType.PERSONAL.name());
-		NotificationLog log = NotificationLog.request(event);
+		Notification notification = Notification.builder()
+			.id(1L)
+			.subscriberId(2L)
+			.notificationType(NotificationType.PAYMENT_CONFIRMED)
+			.channel(Channel.EMAIL)
+			.metadata("{}")
+			.build();
+		NotificationLog log = NotificationLog.request(notification);
 		when(notificationLogPersistencePort.findLatestByReference(1L, ReferenceType.PERSONAL)).thenReturn(log);
 
 		// when
@@ -86,8 +92,14 @@ class NotificationLogServiceTest {
 	@Test
 	void test3() {
 		// given
-		NotificationRequestedEvent event = new NotificationRequestedEvent(1L, 2L, NotificationType.PAYMENT_CONFIRMED.name(), Channel.EMAIL.name(), "{}", ReferenceType.PERSONAL.name());
-		NotificationLog processingLog = NotificationLog.request(event);
+		Notification notification = Notification.builder()
+			.id(1L)
+			.subscriberId(2L)
+			.notificationType(NotificationType.PAYMENT_CONFIRMED)
+			.channel(Channel.EMAIL)
+			.metadata("{}")
+			.build();
+		NotificationLog processingLog = NotificationLog.request(notification);
 		processingLog.markAsProcessing();
 		when(notificationLogPersistencePort.findLatestByReference(1L, ReferenceType.PERSONAL)).thenReturn(processingLog);
 
@@ -116,8 +128,14 @@ class NotificationLogServiceTest {
 	@Test
 	void test4() {
 		// given
-		NotificationRequestedEvent event = new NotificationRequestedEvent(1L, 2L, NotificationType.PAYMENT_CONFIRMED.name(), Channel.EMAIL.name(), "{}", ReferenceType.PERSONAL.name());
-		NotificationLog log = NotificationLog.request(event);
+		Notification notification = Notification.builder()
+			.id(1L)
+			.subscriberId(2L)
+			.notificationType(NotificationType.PAYMENT_CONFIRMED)
+			.channel(Channel.EMAIL)
+			.metadata("{}")
+			.build();
+		NotificationLog log = NotificationLog.request(notification);
 		when(notificationLogPersistencePort.findLatestByReference(1L, ReferenceType.PERSONAL)).thenReturn(log);
 		doThrow(OptimisticLockingFailureException.class).when(notificationLogPersistencePort).save(log);
 
