@@ -43,10 +43,10 @@ public class NotificationLogService implements NotificationLogUseCase {
 	}
 
 	@Override
-	public boolean tryClaim(Long notificationId) {
+	public boolean tryClaim(Long notificationId, ReferenceType referenceType) {
 
 		NotificationLog notificationLog =
-			notificationLogPersistencePort.findLatestByReference(notificationId, ReferenceType.PERSONAL);
+			notificationLogPersistencePort.findLatestByReference(notificationId, referenceType);
 
 		if (notificationLog.eventStatus() != EventStatus.REQUESTED
 			&& notificationLog.eventStatus() != EventStatus.RETRIED) {

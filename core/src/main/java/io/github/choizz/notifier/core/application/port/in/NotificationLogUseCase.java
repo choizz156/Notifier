@@ -5,6 +5,7 @@ import java.util.List;
 import io.github.choizz.notifier.core.application.dto.PublicationContext;
 import io.github.choizz.notifier.core.domain.model.EventStatus;
 import io.github.choizz.notifier.core.domain.model.NotificationLog;
+import io.github.choizz.notifier.core.domain.model.ReferenceType;
 
 public interface NotificationLogUseCase {
 
@@ -12,7 +13,7 @@ public interface NotificationLogUseCase {
 
 	void saveNotificationLog(Long notificationId, EventStatus eventStatus, PublicationContext context);
 
-	boolean tryClaim(Long notificationId);
+	boolean tryClaim(Long notificationId, ReferenceType referenceType);
 
 	List<Long> findUnprocessedNotificationIds(Long lastId, int chuckSize);
 

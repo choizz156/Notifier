@@ -11,6 +11,7 @@ import io.github.choizz.notifier.core.application.port.out.NotifierPort;
 import io.github.choizz.notifier.core.domain.event.PublishCommandEvent;
 import io.github.choizz.notifier.infrastructure.messagebroker.NotificationDispatcher;
 import io.github.choizz.notifier.infrastructure.messagebroker.NotifierFacade;
+import io.github.choizz.notifier.core.domain.model.ReferenceType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,7 +28,7 @@ public class RdsNotificationEventPublishAdapter implements NotificationEventPubl
 	@Override
 	public void publish(PublishCommandEvent event) {
 
-		boolean isClaim = notificationLogUseCase.tryClaim(event.referencedId());
+		boolean isClaim = notificationLogUseCase.tryClaim(event.referencedId(), ReferenceType.valueOf(event.referenceType()));
 		if(!isClaim){
 			throw new OptimisticLockingFailureException("이미 처리 중인 알람입니다.");
 		}

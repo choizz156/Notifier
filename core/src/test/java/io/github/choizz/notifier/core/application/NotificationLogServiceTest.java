@@ -80,7 +80,7 @@ class NotificationLogServiceTest {
 		when(notificationLogPersistencePort.findLatestByReference(1L, ReferenceType.PERSONAL)).thenReturn(log);
 
 		// when
-		boolean result = notificationLogService.tryClaim(1L);
+		boolean result = notificationLogService.tryClaim(1L, ReferenceType.PERSONAL);
 
 		// then
 		assertThat(result).isTrue();
@@ -115,8 +115,8 @@ class NotificationLogServiceTest {
 		when(notificationLogPersistencePort.findLatestByReference(2L, ReferenceType.PERSONAL)).thenReturn(sentLog);
 
 		// when
-		boolean result1 = notificationLogService.tryClaim(1L);
-		boolean result2 = notificationLogService.tryClaim(2L);
+		boolean result1 = notificationLogService.tryClaim(1L, ReferenceType.PERSONAL);
+		boolean result2 = notificationLogService.tryClaim(2L, ReferenceType.PERSONAL);
 
 		// then
 		assertThat(result1).isFalse();
@@ -140,7 +140,7 @@ class NotificationLogServiceTest {
 		doThrow(OptimisticLockingFailureException.class).when(notificationLogPersistencePort).save(log);
 
 		// when
-		boolean result = notificationLogService.tryClaim(1L);
+		boolean result = notificationLogService.tryClaim(1L, ReferenceType.PERSONAL);
 
 		// then
 		assertThat(result).isFalse();

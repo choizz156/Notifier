@@ -9,6 +9,7 @@ import io.github.choizz.notifier.core.application.port.in.NotificationLogUseCase
 import io.github.choizz.notifier.core.application.port.in.NotificationUseCase;
 import io.github.choizz.notifier.core.domain.event.PublishFailedEvent;
 import io.github.choizz.notifier.core.domain.model.EventStatus;
+import io.github.choizz.notifier.core.domain.model.ReferenceType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,6 +31,9 @@ public class NotificationFailedEventHandler {
 			EventStatus.FAILED,
 			event.context()
 		);
-		notificationUseCase.fail(event.context().notificationId(), event.context().failReason());
+
+		if (ReferenceType.PERSONAL == ReferenceType.valueOf(event.context().referenceType())) {
+			notificationUseCase.fail(event.context().notificationId(), event.context().failReason());
+		}
 	}
 }
