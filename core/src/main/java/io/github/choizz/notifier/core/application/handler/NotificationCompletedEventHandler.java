@@ -8,9 +8,11 @@ import org.springframework.transaction.annotation.Transactional;
 import io.github.choizz.notifier.core.application.dto.PublicationContext;
 import io.github.choizz.notifier.core.application.port.in.NotificationLogUseCase;
 import io.github.choizz.notifier.core.application.port.in.NotificationUseCase;
+import io.github.choizz.notifier.core.application.port.in.PublicNotificationUseCase;
 import io.github.choizz.notifier.core.domain.event.PublishCompletedEvent;
 import io.github.choizz.notifier.core.domain.model.EventStatus;
 import io.github.choizz.notifier.core.domain.model.NotificationStatus;
+import io.github.choizz.notifier.core.domain.model.ReferenceType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -21,14 +23,24 @@ public class NotificationCompletedEventHandler {
 
 	private final NotificationLogUseCase notificationLogUseCase;
 	private final NotificationUseCase notificationUseCase;
-	
+	private final PublicNotificationUseCase publicNotificationUseCase;
+
 	@Async("taskExecutor")
 	@Transactional
 	@EventListener
 	public void handleNotificationCompleted(PublishCompletedEvent event) {
 		try {
-			notificationUseCase.updateStatus(event.notificationId(), NotificationStatus.COMPLETED);
+			ReferenceType referenceType = ReferenceType.valueOf(event.referenceType());
+
+			if (referenceType == ReferenceType.PERSONAL) {
+				notificationUseCase.updateStatus(event.notificationId(), NotificationStatus.COMPLETED);
+			}
+
 			notificationLogUseCase.saveNotificationLog(event.notificationId(), EventStatus.SENT, PublicationContext.success(event));
+
+			if (referenceType == ReferenceType.PUBLIC) {
+				publicNotificationUseCase.completeIfAllDone(event.notificationId());
+			}
 		} catch (Exception e) {
 			log.error("알림(ID: {}) 상태 및 이벤트 로그 성공 업데이트에 실패하여 상태가 변경되지 않았습니다.", event.notificationId(), e);
 			throw new RuntimeException(e);

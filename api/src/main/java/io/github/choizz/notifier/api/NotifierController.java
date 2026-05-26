@@ -80,7 +80,7 @@ public class NotifierController {
 
 		notificationUseCase.markAsRead(id);
 
-		URI homepageUri = URI.create("http://localhost:8080");
+		URI homepageUri = URI.create("http://localhost:8080/");
 
 		return ResponseEntity.status(HttpStatus.FOUND)
 			.location(homepageUri)

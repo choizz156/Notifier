@@ -7,4 +7,7 @@ public interface PublicNotificationPersistencePort {
 	void saveReceipt(PublicNotificationReceipt receipt);
 	boolean existsReceipt(Long subscriberId, Long publicNotificationId);
 	PublicNotification save(PublicNotification publicNotification);
+	PublicNotification findById(Long id);
+	void update(PublicNotification publicNotification);
 }
+

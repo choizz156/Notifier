@@ -1,6 +1,9 @@
 package io.github.choizz.notifier.persistence.jpa.adapter;
 
+import java.util.NoSuchElementException;
+
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import io.github.choizz.notifier.core.application.port.out.PublicNotificationPersistencePort;
 import io.github.choizz.notifier.core.domain.model.PublicNotification;
@@ -12,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 
 @Repository
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class PublicNotificationPersistenceAdapter implements PublicNotificationPersistencePort {
 
 	private final PublicNotificationReceiptRepository publicNotificationReceiptRepository;
@@ -32,23 +36,45 @@ public class PublicNotificationPersistenceAdapter implements PublicNotificationP
 	}
 
 	@Override
+	@Transactional
 	public PublicNotification save(PublicNotification publicNotification) {
 		PublicNotificationEntity entity = new PublicNotificationEntity(
 			publicNotification.notificationType(),
 			publicNotification.metadata(),
-			publicNotification.idempotencyKey()
+			publicNotification.idempotencyKey(),
+			publicNotification.status()
 		);
 		entity.version(publicNotification.version());
 		PublicNotificationEntity savedEntity = publicNotificationJpaRepository.save(entity);
+		return toDomain(savedEntity);
+	}
 
+	@Override
+	public PublicNotification findById(Long id) {
+		PublicNotificationEntity entity = publicNotificationJpaRepository.findById(id)
+			.orElseThrow(() -> new NoSuchElementException("공개 알림을 찾을 수 없습니다. id=" + id));
+		return toDomain(entity);
+	}
+
+	@Override
+	@Transactional
+	public void update(PublicNotification publicNotification) {
+		PublicNotificationEntity entity = publicNotificationJpaRepository.findById(publicNotification.id())
+			.orElseThrow(() -> new NoSuchElementException("공개 알림을 찾을 수 없습니다. id=" + publicNotification.id()));
+		entity.updateStatus(publicNotification.status());
+	}
+
+	private PublicNotification toDomain(PublicNotificationEntity entity) {
 		return PublicNotification.builder()
-			.id(savedEntity.id())
-			.notificationType(savedEntity.notificationType())
-			.metadata(savedEntity.metadata())
-			.idempotencyKey(savedEntity.idempotencyKey())
-			.createdAt(savedEntity.createdAt())
-			.updatedAt(savedEntity.updatedAt())
-			.version(savedEntity.version())
+			.id(entity.id())
+			.notificationType(entity.notificationType())
+			.metadata(entity.metadata())
+			.idempotencyKey(entity.idempotencyKey())
+			.status(entity.status())
+			.createdAt(entity.createdAt())
+			.updatedAt(entity.updatedAt())
+			.version(entity.version())
 			.build();
 	}
 }
+

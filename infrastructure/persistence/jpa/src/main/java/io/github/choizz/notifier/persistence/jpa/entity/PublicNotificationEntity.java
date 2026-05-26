@@ -1,5 +1,6 @@
 package io.github.choizz.notifier.persistence.jpa.entity;
 
+import io.github.choizz.notifier.core.domain.model.NotificationStatus;
 import io.github.choizz.notifier.core.domain.model.NotificationType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -29,11 +30,24 @@ public class PublicNotificationEntity extends BaseEntity {
 	@Column(nullable = false, unique = true)
 	private String idempotencyKey;
 
-	@Builder
-	public PublicNotificationEntity(NotificationType notificationType, String metadata, String idempotencyKey) {
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	private NotificationStatus status;
 
+	@Builder
+	public PublicNotificationEntity(
+		NotificationType notificationType,
+		String metadata,
+		String idempotencyKey,
+		NotificationStatus status
+	) {
 		this.notificationType = notificationType;
 		this.metadata = metadata;
 		this.idempotencyKey = idempotencyKey;
+		this.status = status != null ? status : NotificationStatus.PENDING;
+	}
+
+	public void updateStatus(NotificationStatus status) {
+		this.status = status;
 	}
 }

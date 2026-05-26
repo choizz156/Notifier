@@ -6,4 +6,6 @@ public interface PublicNotificationUseCase {
 	void markAsRead(Long subscriberId, Long publicNotificationId);
 
 	void pushToPublic(NotificationContext context);
+
+	void completeIfAllDone(Long publicNotificationId);
 }
