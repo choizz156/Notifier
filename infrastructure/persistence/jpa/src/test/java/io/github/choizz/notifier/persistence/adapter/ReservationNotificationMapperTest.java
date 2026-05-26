@@ -22,8 +22,8 @@ class ReservationNotificationMapperTest {
 		LocalDateTime reservationTime = LocalDateTime.now().plusDays(1);
 		ReservationInformation domain = ReservationInformation.builder()
 			.id(1L)
-			.subscriberId(100L)
 			.notificationType(NotificationType.COUPON_ISSUED)
+			.metadata("{\"key\":\"value\"}")
 			.reservationTime(reservationTime)
 			.isPublished(true)
 			.build();
@@ -33,8 +33,8 @@ class ReservationNotificationMapperTest {
 
 		// then
 		assertThat(entity.id()).isEqualTo(1L);
-		assertThat(entity.subscriberId()).isEqualTo(100L);
 		assertThat(entity.notificationType()).isEqualTo(NotificationType.COUPON_ISSUED);
+		assertThat(entity.metadata()).isEqualTo("{\"key\":\"value\"}");
 		assertThat(entity.reservationTime()).isEqualTo(reservationTime);
 		assertThat(entity.isPublished()).isTrue();
 	}
@@ -46,8 +46,8 @@ class ReservationNotificationMapperTest {
 		LocalDateTime now = LocalDateTime.now();
 		LocalDateTime reservationTime = now.plusDays(1);
 		ReservationNotificationEntity entity = ReservationNotificationEntity.builder()
-			.subscriberId(200L)
 			.notificationType(NotificationType.PAYMENT_CONFIRMED)
+			.metadata("{}")
 			.reservationTime(reservationTime)
 			.isPublished(false)
 			.build();
@@ -60,8 +60,8 @@ class ReservationNotificationMapperTest {
 
 		// then
 		assertThat(domain.id()).isEqualTo(2L);
-		assertThat(domain.subscriberId()).isEqualTo(200L);
 		assertThat(domain.notificationType()).isEqualTo(NotificationType.PAYMENT_CONFIRMED);
+		assertThat(domain.metadata()).isEqualTo("{}");
 		assertThat(domain.reservationTime()).isEqualTo(reservationTime);
 		assertThat(domain.isPublished()).isFalse();
 		assertThat(domain.createdAt()).isEqualTo(now.minusDays(1));

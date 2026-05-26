@@ -157,7 +157,7 @@ class NotificationLogServiceTest {
 	@Test
 	void test5() {
 		// given
-		when(notificationLogPersistencePort.findUnprocessedNotificationIds(NotificationLogService.targetStatuses, 0L, 10))
+		when(notificationLogPersistencePort.findUnprocessedNotificationIds(NotificationLogService.TARGET_STATUSES, 0L, 10))
 			.thenReturn(List.of(1L, 2L, 3L));
 
 		// when

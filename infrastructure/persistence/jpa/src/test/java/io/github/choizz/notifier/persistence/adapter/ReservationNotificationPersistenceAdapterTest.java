@@ -18,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Limit;
 
+import io.github.choizz.notifier.core.domain.model.NotificationType;
 import io.github.choizz.notifier.core.domain.model.ReservationInformation;
 import io.github.choizz.notifier.persistence.jpa.entity.ReservationNotificationEntity;
 import io.github.choizz.notifier.persistence.jpa.adapter.ReservationNotificationPersistenceAdapter;
@@ -37,11 +38,13 @@ class ReservationNotificationPersistenceAdapterTest {
 	void test1() {
 		// given
 		ReservationInformation domain = ReservationInformation.builder()
-			.subscriberId(1L)
+			.notificationType(NotificationType.COUPON_ISSUED)
+			.reservationTime(LocalDateTime.now())
 			.build();
 			
 		ReservationNotificationEntity entity = ReservationNotificationEntity.builder()
-			.subscriberId(1L)
+			.notificationType(NotificationType.COUPON_ISSUED)
+			.reservationTime(LocalDateTime.now())
 			.build();
 		entity.id(100L);
 			
@@ -59,8 +62,8 @@ class ReservationNotificationPersistenceAdapterTest {
 	@Test
 	void test2() {
 		// given
-		ReservationInformation domain1 = ReservationInformation.builder().subscriberId(1L).build();
-		ReservationInformation domain2 = ReservationInformation.builder().subscriberId(2L).build();
+		ReservationInformation domain1 = ReservationInformation.builder().notificationType(NotificationType.COUPON_ISSUED).reservationTime(LocalDateTime.now()).build();
+		ReservationInformation domain2 = ReservationInformation.builder().notificationType(NotificationType.COUPON_ISSUED).reservationTime(LocalDateTime.now()).build();
 
 		// when
 		adapter.saveAll(List.of(domain1, domain2));
@@ -73,7 +76,7 @@ class ReservationNotificationPersistenceAdapterTest {
 	@Test
 	void test3() {
 		// given
-		ReservationNotificationEntity entity = ReservationNotificationEntity.builder().build();
+		ReservationNotificationEntity entity = ReservationNotificationEntity.builder().notificationType(NotificationType.COUPON_ISSUED).reservationTime(LocalDateTime.now()).build();
 		entity.id(1L);
 		
 		LocalDateTime time = LocalDateTime.now();

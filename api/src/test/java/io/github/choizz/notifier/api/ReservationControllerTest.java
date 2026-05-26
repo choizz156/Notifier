@@ -36,16 +36,16 @@ class ReservationControllerTest {
 			.build();
 	}
 
-	@DisplayName("알림 예약 API를 호출하면 202 ACCEPTED를 반환한다.")
+	@DisplayName("공개 알림 예약 API를 호출하면 202 ACCEPTED를 반환한다.")
 	@Test
 	void test1() throws Exception {
 		// given
-		String requestJson = "{\"subscriberIds\": [1, 2], \"type\": \"PAYMENT_CONFIRMED\", \"reservationTime\": \"2026-01-01T10:00:00\"}";
+		String requestJson = "{\"type\": \"NEW_LECTURE_OPENED\", \"metadata\": {\"key\": \"value\"}, \"reservationTime\": \"2026-01-01T10:00:00\"}";
 		
-		doNothing().when(reservationUseCase).reserve(any(), any(), any());
+		doNothing().when(reservationUseCase).reservePublic(any(), any(), any());
 
 		// when & then
-		mockMvc.perform(post("/v1/reservations")
+		mockMvc.perform(post("/v1/reservations/public")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(requestJson))
 			.andExpect(status().isAccepted());

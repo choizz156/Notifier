@@ -9,7 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.github.choizz.notifier.core.application.dto.NotificationContext;
-import io.github.choizz.notifier.core.application.port.in.NotificationUseCase;
+import io.github.choizz.notifier.core.application.util.JsonUtils;
+import io.github.choizz.notifier.core.application.port.in.PublicNotificationUseCase;
 import io.github.choizz.notifier.core.application.port.in.ReservationUseCase;
 import io.github.choizz.notifier.core.application.port.out.ReservationNotificationPersistencePort;
 import io.github.choizz.notifier.core.application.support.ChunkExecutor;
@@ -24,23 +25,17 @@ import lombok.extern.slf4j.Slf4j;
 public class ReservationService implements ReservationUseCase {
 
 	private final ReservationNotificationPersistencePort reservationNotificationPersistencePort;
-	private final NotificationUseCase notificationUseCase;
+	private final PublicNotificationUseCase publicNotificationUseCase;
+
 
 	@Override
 	@Transactional
-	public void reserve(List<Long> subscriberIds, NotificationType type, LocalDateTime reservationTime) {
+	public void reservePublic(NotificationType type, Map<String, String> metadata, LocalDateTime reservationTime) {
 
-		log.info("예약 알림 생성 요청: subscriberCount={}, type={}, reservationTime={}",
-			subscriberIds.size(),
-			type,
-			reservationTime
-		);
+		log.info("공개 예약 알림 생성 요청: type={}, metadata={}, reservationTime={}", type, metadata, reservationTime);
 
-		List<ReservationInformation> reservationInformations = subscriberIds.stream()
-			.map(subscriberId -> ReservationInformation.of(subscriberId, type, reservationTime))
-			.toList();
-
-		reservationNotificationPersistencePort.saveAll(reservationInformations);
+		ReservationInformation reservation = ReservationInformation.ofPublic(type, JsonUtils.toJson(metadata), reservationTime);
+		reservationNotificationPersistencePort.saveAll(List.of(reservation));
 	}
 
 	@Override
@@ -70,16 +65,16 @@ public class ReservationService implements ReservationUseCase {
 		for (ReservationInformation notification : chunk) {
 			try {
 				NotificationContext context = NotificationContext.builder()
-					.subscriberId(notification.subscriberId())
+					.subscriberId(null)
 					.notificationType(notification.notificationType())
-					.metadata(Map.of())
+					.metadata(JsonUtils.toMap(notification.metadata()))
 					.build();
 
-				notificationUseCase.push(context);
+				publicNotificationUseCase.pushToPublic(context);
+				
 				successIds.add(notification.id());
 			} catch (Exception e) {
-				log.warn("예약 알림 발행 실패: referencedId={}, subscriberId={}", notification.id(),
-					notification.subscriberId(), e);
+				log.error("예약 알림 발행 실패: referencedId={}", notification.id(), e);
 			}
 		}
 

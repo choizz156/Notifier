@@ -20,12 +20,12 @@ import lombok.experimental.Accessors;
 @Entity
 public class ReservationNotificationEntity extends BaseEntity {
 
-	@Column(nullable = false)
-	private Long subscriberId;
-
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	private NotificationType notificationType;
+
+	@Column(columnDefinition = "TEXT")
+	private String metadata;
 
 	@Column(nullable = false)
 	private LocalDateTime reservationTime;
@@ -36,14 +36,14 @@ public class ReservationNotificationEntity extends BaseEntity {
 	@Builder
 	public ReservationNotificationEntity(
 		Long id,
-		Long subscriberId,
 		NotificationType notificationType,
+		String metadata,
 		LocalDateTime reservationTime,
 		boolean isPublished
 	) {
 		this.id(id);
-		this.subscriberId = subscriberId;
 		this.notificationType = notificationType;
+		this.metadata = metadata;
 		this.reservationTime = reservationTime;
 		this.isPublished = isPublished;
 	}

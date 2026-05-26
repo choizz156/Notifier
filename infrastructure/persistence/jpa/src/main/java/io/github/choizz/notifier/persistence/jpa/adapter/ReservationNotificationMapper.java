@@ -7,8 +7,8 @@ public class ReservationNotificationMapper {
 
 	public static ReservationNotificationEntity toEntity(ReservationInformation domain) {
 		ReservationNotificationEntity entity = ReservationNotificationEntity.builder()
-			.subscriberId(domain.subscriberId())
 			.notificationType(domain.notificationType())
+			.metadata(domain.metadata())
 			.reservationTime(domain.reservationTime())
 			.isPublished(domain.isPublished())
 			.build();
@@ -29,8 +29,8 @@ public class ReservationNotificationMapper {
 	public static ReservationInformation toDomain(ReservationNotificationEntity entity) {
 		return ReservationInformation.builder()
 			.id(entity.id())
-			.subscriberId(entity.subscriberId())
 			.notificationType(entity.notificationType())
+			.metadata(entity.metadata())
 			.reservationTime(entity.reservationTime())
 			.isPublished(entity.isPublished())
 			.createdAt(entity.createdAt())

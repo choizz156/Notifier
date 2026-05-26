@@ -14,7 +14,6 @@ import io.github.choizz.notifier.core.application.port.in.NotificationLogUseCase
 import io.github.choizz.notifier.core.application.port.out.NotificationLogPersistencePort;
 import io.github.choizz.notifier.core.domain.model.EventStatus;
 import io.github.choizz.notifier.core.domain.model.NotificationLog;
-import io.github.choizz.notifier.core.domain.model.ReferenceType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class NotificationLogService implements NotificationLogUseCase {
 
-	public static final List<EventStatus> targetStatuses = List.of(
+	public static final List<EventStatus> TARGET_STATUSES = List.of(
 		EventStatus.REQUESTED, EventStatus.RETRIED, EventStatus.PROCESSING
 	);
 
@@ -75,7 +74,7 @@ public class NotificationLogService implements NotificationLogUseCase {
 	public List<Long> findUnprocessedNotificationIds(Long lastId, int chunkSize) {
 
 		return notificationLogPersistencePort.findUnprocessedNotificationIds(
-			targetStatuses, lastId, chunkSize
+			TARGET_STATUSES, lastId, chunkSize
 		);
 	}
 

@@ -21,8 +21,8 @@ public class ReservationInformation {
 	);
 
 	private final Long id;
-	private final Long subscriberId;
 	private final NotificationType notificationType;
+	private final String metadata;
 	private final LocalDateTime createdAt;
 	private final LocalDateTime reservationTime;
 	private boolean isPublished;
@@ -32,8 +32,8 @@ public class ReservationInformation {
 	@Builder
 	public ReservationInformation(
 		Long id,
-		Long subscriberId,
 		NotificationType notificationType,
+		String metadata,
 		LocalDateTime createdAt,
 		LocalDateTime reservationTime,
 		boolean isPublished,
@@ -41,8 +41,8 @@ public class ReservationInformation {
 		Long version
 	) {
 		this.id = id;
-		this.subscriberId = subscriberId;
 		this.notificationType = notificationType;
+		this.metadata = metadata;
 		this.createdAt = createdAt;
 		this.reservationTime = reservationTime;
 		this.isPublished = isPublished;
@@ -50,12 +50,12 @@ public class ReservationInformation {
 		this.version = version;
 	}
 
-	public static ReservationInformation of(Long subscriberId, NotificationType notificationType, LocalDateTime reservationTime) {
+	public static ReservationInformation ofPublic(NotificationType notificationType, String metadata, LocalDateTime reservationTime) {
 		validate(notificationType, reservationTime);
 
 		return ReservationInformation.builder()
-			.subscriberId(subscriberId)
 			.notificationType(notificationType)
+			.metadata(metadata)
 			.createdAt(LocalDateTime.now())
 			.reservationTime(reservationTime)
 			.updatedAt(LocalDateTime.now())

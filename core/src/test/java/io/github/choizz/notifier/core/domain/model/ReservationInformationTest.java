@@ -10,18 +10,18 @@ import org.junit.jupiter.api.Test;
 
 class ReservationInformationTest {
 
-	@DisplayName("올바른 파라미터로 예약 정보를 생성한다.")
+	@DisplayName("올바른 파라미터로 공개 예약 정보를 생성한다.")
 	@Test
 	void test1() {
 		// given
 		LocalDateTime futureTime = LocalDateTime.now().plusDays(1).withMinute(0).withSecond(0).withNano(0);
 
 		// when
-		ReservationInformation reservation = ReservationInformation.of(1L, NotificationType.COUPON_ISSUED, futureTime);
+		ReservationInformation reservation = ReservationInformation.ofPublic(NotificationType.NEW_LECTURE_OPENED, "{\"key\":\"value\"}", futureTime);
 
 		// then
-		assertThat(reservation.subscriberId()).isEqualTo(1L);
-		assertThat(reservation.notificationType()).isEqualTo(NotificationType.COUPON_ISSUED);
+		assertThat(reservation.notificationType()).isEqualTo(NotificationType.NEW_LECTURE_OPENED);
+		assertThat(reservation.metadata()).isEqualTo("{\"key\":\"value\"}");
 		assertThat(reservation.reservationTime()).isEqualTo(futureTime);
 		assertThat(reservation.isPublished()).isFalse();
 	}
@@ -33,7 +33,7 @@ class ReservationInformationTest {
 		LocalDateTime futureTime = LocalDateTime.now().plusDays(1).withMinute(0).withSecond(0).withNano(0);
 
 		// when & then
-		assertThatThrownBy(() -> ReservationInformation.of(1L, NotificationType.PAYMENT_CONFIRMED, futureTime))
+		assertThatThrownBy(() -> ReservationInformation.ofPublic(NotificationType.PAYMENT_CONFIRMED, null, futureTime))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("해당 알림 타입은 예약 발송을 지원하지 않습니다");
 	}
@@ -45,7 +45,7 @@ class ReservationInformationTest {
 		LocalDateTime futureTime = LocalDateTime.now().plusDays(1).withMinute(30).withSecond(0).withNano(0);
 
 		// when & then
-		assertThatThrownBy(() -> ReservationInformation.of(1L, NotificationType.COUPON_ISSUED, futureTime))
+		assertThatThrownBy(() -> ReservationInformation.ofPublic(NotificationType.COUPON_ISSUED, null, futureTime))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("예약 시간은 1시간 단위(정각)로만 설정 가능합니다");
 	}
@@ -57,7 +57,7 @@ class ReservationInformationTest {
 		LocalDateTime pastTime = LocalDateTime.now().minusDays(1).withMinute(0).withSecond(0).withNano(0);
 
 		// when & then
-		assertThatThrownBy(() -> ReservationInformation.of(1L, NotificationType.COUPON_ISSUED, pastTime))
+		assertThatThrownBy(() -> ReservationInformation.ofPublic(NotificationType.COUPON_ISSUED, null, pastTime))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("과거 시간으로 예약할 수 없습니다");
 	}
@@ -67,7 +67,7 @@ class ReservationInformationTest {
 	void test5() {
 		// given
 		LocalDateTime futureTime = LocalDateTime.now().plusDays(1).withMinute(0).withSecond(0).withNano(0);
-		ReservationInformation reservation = ReservationInformation.of(1L, NotificationType.COUPON_ISSUED, futureTime);
+		ReservationInformation reservation = ReservationInformation.ofPublic(NotificationType.COUPON_ISSUED, null, futureTime);
 
 		// when
 		reservation.markAsPublished();
@@ -75,4 +75,20 @@ class ReservationInformationTest {
 		// then
 		assertThat(reservation.isPublished()).isTrue();
 	}
+
+	@DisplayName("메타데이터가 null이거나 빈 값인 경우에도 예약 정보가 정상 생성된다.")
+	@Test
+	void test6() {
+		// given
+		LocalDateTime futureTime = LocalDateTime.now().plusDays(1).withMinute(0).withSecond(0).withNano(0);
+
+		// when & then (null 케이스)
+		ReservationInformation reservationNull = ReservationInformation.ofPublic(NotificationType.COUPON_ISSUED, null, futureTime);
+		assertThat(reservationNull.metadata()).isNull();
+
+		// when & then (빈 값 케이스)
+		ReservationInformation reservationEmpty = ReservationInformation.ofPublic(NotificationType.COUPON_ISSUED, "", futureTime);
+		assertThat(reservationEmpty.metadata()).isEmpty();
+	}
 }
+

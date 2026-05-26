@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.github.choizz.notifier.api.dto.ReservationCreateWebRequest;
+import io.github.choizz.notifier.api.dto.PublicReservationCreateWebRequest;
 import io.github.choizz.notifier.core.application.port.in.ReservationUseCase;
 import lombok.RequiredArgsConstructor;
 
@@ -18,9 +18,10 @@ public class ReservationController {
 
 	private final ReservationUseCase reservationUseCase;
 
+
 	@ResponseStatus(HttpStatus.ACCEPTED)
-	@PostMapping
-	public void reserve(@RequestBody ReservationCreateWebRequest request) {
-		reservationUseCase.reserve(request.subscriberIds(), request.type(), request.reservationTime());
+	@PostMapping("/public")
+	public void reservePublic(@RequestBody PublicReservationCreateWebRequest request) {
+		reservationUseCase.reservePublic(request.type(), request.metadata(), request.reservationTime());
 	}
 }
