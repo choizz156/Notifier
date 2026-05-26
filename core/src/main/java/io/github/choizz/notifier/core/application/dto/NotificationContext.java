@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import io.github.choizz.notifier.core.domain.model.NotificationType;
-import io.github.choizz.notifier.core.domain.util.JsonUtils;
+import io.github.choizz.notifier.core.application.util.JsonUtils;
 import lombok.Builder;
 
 @Builder

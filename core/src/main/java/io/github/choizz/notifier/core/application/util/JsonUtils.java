@@ -1,9 +1,10 @@
-package io.github.choizz.notifier.core.domain.util;
+package io.github.choizz.notifier.core.application.util;
+
+import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.Map;
 
 public class JsonUtils {
 
@@ -25,7 +26,7 @@ public class JsonUtils {
 			return Map.of();
 		}
 		try {
-			 return Map.copyOf(OBJECT_MAPPER.readValue(json, new TypeReference<>() {}));
+			return Map.copyOf(OBJECT_MAPPER.readValue(json, new TypeReference<>() {}));
 		} catch (JsonProcessingException e) {
 			throw new IllegalStateException("JSON을 map으로 변환하는데 실패했습니다. json: " + json, e);
 		}

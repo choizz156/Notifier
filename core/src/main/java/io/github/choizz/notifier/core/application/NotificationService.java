@@ -28,7 +28,7 @@ import io.github.choizz.notifier.core.domain.model.Channel;
 import io.github.choizz.notifier.core.domain.model.Notification;
 import io.github.choizz.notifier.core.domain.model.NotificationLog;
 import io.github.choizz.notifier.core.domain.model.NotificationStatus;
-import io.github.choizz.notifier.core.domain.util.JsonUtils;
+import io.github.choizz.notifier.core.application.util.JsonUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

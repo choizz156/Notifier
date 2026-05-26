@@ -8,7 +8,7 @@ import io.github.choizz.notifier.core.application.port.out.NotifierPort;
 import io.github.choizz.notifier.core.application.port.out.TemplateRendererPort;
 import io.github.choizz.notifier.core.domain.model.Channel;
 import io.github.choizz.notifier.core.domain.model.NotificationType;
-import io.github.choizz.notifier.core.domain.util.JsonUtils;
+import io.github.choizz.notifier.core.application.util.JsonUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

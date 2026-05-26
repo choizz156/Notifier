@@ -1,4 +1,4 @@
-package io.github.choizz.notifier.core.domain.util;
+package io.github.choizz.notifier.core.application.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
