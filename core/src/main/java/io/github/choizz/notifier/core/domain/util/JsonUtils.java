@@ -27,7 +27,7 @@ public class JsonUtils {
 		try {
 			 return Map.copyOf(OBJECT_MAPPER.readValue(json, new TypeReference<>() {}));
 		} catch (JsonProcessingException e) {
-			throw new IllegalStateException("JSON을 map으로 변환하는데 실패했습니다.", e);
+			throw new IllegalStateException("JSON을 map으로 변환하는데 실패했습니다. json: " + json, e);
 		}
 	}
 }

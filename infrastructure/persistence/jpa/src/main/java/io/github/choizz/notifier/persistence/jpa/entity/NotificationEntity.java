@@ -43,7 +43,7 @@ public class NotificationEntity extends BaseEntity {
 	@Column(name = "idempotency_key")
 	private String idempotencyKey;
 
-	@Column(columnDefinition = "json")
+	@Column(length = 2000)
 	private String metadata;
 
 	@Enumerated(EnumType.STRING)

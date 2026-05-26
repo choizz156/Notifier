@@ -24,7 +24,7 @@ public class PublicNotificationEntity extends BaseEntity {
 	@Column(nullable = false)
 	private NotificationType notificationType;
 
-	@Column(columnDefinition = "json")
+	@Column(length = 2000)
 	private String metadata;
 
 	@Column(nullable = false, unique = true)
