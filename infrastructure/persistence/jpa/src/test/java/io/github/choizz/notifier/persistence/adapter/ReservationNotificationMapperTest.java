@@ -11,6 +11,7 @@ import io.github.choizz.notifier.core.domain.model.NotificationType;
 import io.github.choizz.notifier.core.domain.model.ReservationInformation;
 import io.github.choizz.notifier.persistence.jpa.entity.ReservationNotificationEntity;
 import io.github.choizz.notifier.persistence.jpa.adapter.ReservationNotificationMapper;
+import org.springframework.test.util.ReflectionTestUtils;
 
 class ReservationNotificationMapperTest {
 
@@ -51,7 +52,7 @@ class ReservationNotificationMapperTest {
 			.isPublished(false)
 			.build();
 		entity.id(2L);
-		org.springframework.test.util.ReflectionTestUtils.setField(entity, "createdAt", now.minusDays(1));
+		ReflectionTestUtils.setField(entity, "createdAt", now.minusDays(1));
 		entity.updatedAt(now);
 
 		// when

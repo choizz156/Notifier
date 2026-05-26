@@ -27,6 +27,7 @@ public class ReservationInformation {
 	private final LocalDateTime reservationTime;
 	private boolean isPublished;
 	private LocalDateTime updatedAt;
+	private final Long version;
 
 	@Builder
 	public ReservationInformation(
@@ -36,7 +37,8 @@ public class ReservationInformation {
 		LocalDateTime createdAt,
 		LocalDateTime reservationTime,
 		boolean isPublished,
-		LocalDateTime updatedAt
+		LocalDateTime updatedAt,
+		Long version
 	) {
 		this.id = id;
 		this.subscriberId = subscriberId;
@@ -45,6 +47,7 @@ public class ReservationInformation {
 		this.reservationTime = reservationTime;
 		this.isPublished = isPublished;
 		this.updatedAt = updatedAt;
+		this.version = version;
 	}
 
 	public static ReservationInformation of(Long subscriberId, NotificationType notificationType, LocalDateTime reservationTime) {
@@ -57,6 +60,7 @@ public class ReservationInformation {
 			.reservationTime(reservationTime)
 			.updatedAt(LocalDateTime.now())
 			.isPublished(false)
+			.version(0L)
 			.build();
 	}
 

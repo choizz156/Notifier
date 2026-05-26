@@ -26,6 +26,7 @@ public class Notification {
 	private final LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
 	private int recoverCount;
+	private final Long version;
 
 	@Builder
 	private Notification(
@@ -39,7 +40,8 @@ public class Notification {
 		boolean isRead,
 		LocalDateTime createdAt,
 		LocalDateTime updatedAt,
-		int recoverCount
+		int recoverCount,
+		Long version
 	) {
 
 		this.id = id;
@@ -53,6 +55,7 @@ public class Notification {
 		this.createdAt = createdAt != null ? createdAt : LocalDateTime.now();
 		this.updatedAt = updatedAt != null ? updatedAt : LocalDateTime.now();
 		this.recoverCount = recoverCount;
+		this.version = version;
 	}
 
 	public static Notification of(NotificationContext context, Channel channel) {
@@ -65,6 +68,7 @@ public class Notification {
 			.metadata(context.metadataToJson())
 			.isRead(false)
 			.recoverCount(0)
+			.version(0L)
 			.build();
 	}
 

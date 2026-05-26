@@ -22,6 +22,7 @@ public class NotificationLogMapper {
 
 		entity.id(notificationLog.id());
 		entity.updatedAt(notificationLog.updatedAt());
+		entity.version(notificationLog.version());
 		return entity;
 	}
 
@@ -40,6 +41,7 @@ public class NotificationLogMapper {
 			.createdAt(entity.createdAt())
 			.updatedAt(entity.updatedAt())
 			.metadata(entity.metadata())
+			.version(entity.version())
 			.build();
 	}
 }

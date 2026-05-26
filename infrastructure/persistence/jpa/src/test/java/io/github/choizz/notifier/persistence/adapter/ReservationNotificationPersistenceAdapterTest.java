@@ -2,6 +2,7 @@ package io.github.choizz.notifier.persistence.adapter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -77,8 +78,8 @@ class ReservationNotificationPersistenceAdapterTest {
 		
 		LocalDateTime time = LocalDateTime.now();
 		when(reservationNotificationJpaRepository.findUnpublishedBefore(
-			org.mockito.ArgumentMatchers.eq(time),
-			org.mockito.ArgumentMatchers.eq(0L),
+			eq(time),
+			eq(0L),
 			any(Limit.class)
 		)).thenReturn(List.of(entity));
 

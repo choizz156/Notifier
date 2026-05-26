@@ -21,6 +21,7 @@ public class PublicNotification {
 	private final String idempotencyKey;
 	private final LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
+	private final Long version;
 
 	@Builder
 	private PublicNotification(
@@ -29,7 +30,8 @@ public class PublicNotification {
 		String metadata,
 		String idempotencyKey,
 		LocalDateTime createdAt,
-		LocalDateTime updatedAt
+		LocalDateTime updatedAt,
+		Long version
 	) {
 		this.id = id;
 		this.notificationType = notificationType;
@@ -37,6 +39,7 @@ public class PublicNotification {
 		this.idempotencyKey = idempotencyKey;
 		this.createdAt = createdAt != null ? createdAt : LocalDateTime.now();
 		this.updatedAt = updatedAt != null ? updatedAt : LocalDateTime.now();
+		this.version = version;
 	}
 
 	public static PublicNotification of(PublicNotificationRequestedEvent event) {
@@ -44,6 +47,7 @@ public class PublicNotification {
 			.notificationType(NotificationType.valueOf(event.notificationType()))
 			.metadata(event.metadata())
 			.idempotencyKey(event.idempotentKey())
+			.version(0L)
 			.build();
 	}
 }

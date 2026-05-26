@@ -3,13 +3,16 @@ package io.github.choizz.notifier.persistence.adapter;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyCollection;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
@@ -84,28 +87,31 @@ class NotificationLogPersistenceAdapterTest {
 		when(notificationLogJpaRepository.findFirstByReferenceIdAndReferenceTypeOrderByCreatedAtDesc(10L, ReferenceType.PERSONAL)).thenReturn(Optional.of(entity));
 
 		// when
-		NotificationLog result = adapter.findLatestByReferenceId(10L, ReferenceType.PERSONAL);
+		Optional<NotificationLog> result = adapter.findLatestByReferenceId(10L, ReferenceType.PERSONAL);
 
 		// then
-		assertThat(result.referenceId()).isEqualTo(10L);
+		assertThat(result).isPresent();
+		assertThat(result.get().referenceId()).isEqualTo(10L);
 	}
 
-	@DisplayName("알림 이벤트 이력이 없으면 예외가 발생한다.")
+	@DisplayName("알림 이벤트 이력이 없으면 빈 Optional을 반환한다.")
 	@Test
 	void test4() {
 		// given
 		when(notificationLogJpaRepository.findFirstByReferenceIdAndReferenceTypeOrderByCreatedAtDesc(10L, ReferenceType.PERSONAL)).thenReturn(Optional.empty());
 
-		// when & then
-		assertThatThrownBy(() -> adapter.findLatestByReferenceId(10L, ReferenceType.PERSONAL))
-			.isInstanceOf(NoSuchElementException.class);
+		// when
+		Optional<NotificationLog> result = adapter.findLatestByReferenceId(10L, ReferenceType.PERSONAL);
+		
+		// then
+		assertThat(result).isEmpty();
 	}
 
 	@DisplayName("처리되지 않은 알림 ID 목록을 조회한다.")
 	@Test
 	void test5() {
 		// given
-		when(notificationLogJpaRepository.findUnprocessedNotificationIds(org.mockito.ArgumentMatchers.anyList(), org.mockito.ArgumentMatchers.eq(0L), any(Limit.class)))
+		when(notificationLogJpaRepository.findUnprocessedNotificationIds(anyList(), eq(0L), any(Limit.class)))
 			.thenReturn(List.of(1L, 2L, 3L));
 
 		// when
@@ -121,10 +127,10 @@ class NotificationLogPersistenceAdapterTest {
 		// given
 		NotificationLogEntity entity = NotificationLogEntity.builder().build();
 		when(notificationLogJpaRepository.findStuckLogs(
-			org.mockito.ArgumentMatchers.anyLong(),
-			org.mockito.ArgumentMatchers.any(EventStatus.class),
-			org.mockito.ArgumentMatchers.anyCollection(),
-			org.mockito.ArgumentMatchers.any(LocalDateTime.class),
+			anyLong(),
+			any(EventStatus.class),
+			anyCollection(),
+			any(LocalDateTime.class),
 			any(Limit.class)
 		)).thenReturn(List.of(entity));
 

@@ -9,9 +9,9 @@ import io.github.choizz.notifier.core.application.port.in.NotificationLogUseCase
 import io.github.choizz.notifier.core.application.port.out.NotificationEventPublisher;
 import io.github.choizz.notifier.core.application.port.out.NotifierPort;
 import io.github.choizz.notifier.core.domain.event.PublishCommandEvent;
+import io.github.choizz.notifier.core.domain.model.ReferenceType;
 import io.github.choizz.notifier.infrastructure.messagebroker.NotificationDispatcher;
 import io.github.choizz.notifier.infrastructure.messagebroker.NotifierFacade;
-import io.github.choizz.notifier.core.domain.model.ReferenceType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

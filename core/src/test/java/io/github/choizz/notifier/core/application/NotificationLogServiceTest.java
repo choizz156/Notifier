@@ -9,6 +9,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -77,7 +78,7 @@ class NotificationLogServiceTest {
 			.metadata("{}")
 			.build();
 		NotificationLog log = NotificationLog.request(notification);
-		when(notificationLogPersistencePort.findLatestByReferenceId(1L, ReferenceType.PERSONAL)).thenReturn(log);
+		when(notificationLogPersistencePort.findLatestByReferenceId(1L, ReferenceType.PERSONAL)).thenReturn(Optional.of(log));
 
 		// when
 		boolean result = notificationLogService.tryClaim(1L, ReferenceType.PERSONAL);
@@ -101,7 +102,7 @@ class NotificationLogServiceTest {
 			.build();
 		NotificationLog processingLog = NotificationLog.request(notification);
 		processingLog.markAsProcessing();
-		when(notificationLogPersistencePort.findLatestByReferenceId(1L, ReferenceType.PERSONAL)).thenReturn(processingLog);
+		when(notificationLogPersistencePort.findLatestByReferenceId(1L, ReferenceType.PERSONAL)).thenReturn(Optional.of(processingLog));
 
 		PublicationContext sentContext = PublicationContext.builder()
 			.notificationId(2L)
@@ -112,7 +113,7 @@ class NotificationLogServiceTest {
 			.retryCount(0)
 			.build();
 		NotificationLog sentLog = NotificationLog.sent(sentContext);
-		when(notificationLogPersistencePort.findLatestByReferenceId(2L, ReferenceType.PERSONAL)).thenReturn(sentLog);
+		when(notificationLogPersistencePort.findLatestByReferenceId(2L, ReferenceType.PERSONAL)).thenReturn(Optional.of(sentLog));
 
 		// when
 		boolean result1 = notificationLogService.tryClaim(1L, ReferenceType.PERSONAL);
@@ -136,7 +137,7 @@ class NotificationLogServiceTest {
 			.metadata("{}")
 			.build();
 		NotificationLog log = NotificationLog.request(notification);
-		when(notificationLogPersistencePort.findLatestByReferenceId(1L, ReferenceType.PERSONAL)).thenReturn(log);
+		when(notificationLogPersistencePort.findLatestByReferenceId(1L, ReferenceType.PERSONAL)).thenReturn(Optional.of(log));
 		doThrow(OptimisticLockingFailureException.class).when(notificationLogPersistencePort).save(log);
 
 		// when

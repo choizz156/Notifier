@@ -13,6 +13,7 @@ import io.github.choizz.notifier.core.domain.model.NotificationStatus;
 import io.github.choizz.notifier.core.domain.model.NotificationType;
 import io.github.choizz.notifier.persistence.jpa.entity.NotificationEntity;
 import io.github.choizz.notifier.persistence.jpa.adapter.NotificationMapper;
+import org.springframework.test.util.ReflectionTestUtils;
 
 class NotificationMapperTest {
 
@@ -67,7 +68,7 @@ class NotificationMapperTest {
 			.manualRetryCount(0)
 			.build();
 		entity.id(2L);
-		org.springframework.test.util.ReflectionTestUtils.setField(entity, "createdAt", now.minusDays(1));
+		ReflectionTestUtils.setField(entity, "createdAt", now.minusDays(1));
 		entity.updatedAt(now);
 
 		// when

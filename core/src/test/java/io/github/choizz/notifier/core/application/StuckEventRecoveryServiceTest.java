@@ -1,12 +1,16 @@
 package io.github.choizz.notifier.core.application;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyCollection;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
@@ -54,7 +58,7 @@ class StuckEventRecoveryServiceTest {
 		NotificationLog stuckLog2 = NotificationLog.builder().id(2L).referenceId(20L).referenceType(ReferenceType.PERSONAL).eventStatus(EventStatus.PROCESSING).build();
 
 		// 첫 페이지 조회
-		when(notificationLogPersistencePort.findStuckLogs(org.mockito.ArgumentMatchers.anyLong(), org.mockito.ArgumentMatchers.eq(EventStatus.PROCESSING), org.mockito.ArgumentMatchers.anyCollection(), org.mockito.ArgumentMatchers.any(java.time.LocalDateTime.class), org.mockito.ArgumentMatchers.anyInt()))
+		when(notificationLogPersistencePort.findStuckLogs(anyLong(), eq(EventStatus.PROCESSING), anyCollection(), any(LocalDateTime.class), anyInt()))
 			.thenReturn(List.of(stuckLog1, stuckLog2))
 			.thenReturn(List.of()); // 이후 조회시 빈 리스트로 루프 종료
 

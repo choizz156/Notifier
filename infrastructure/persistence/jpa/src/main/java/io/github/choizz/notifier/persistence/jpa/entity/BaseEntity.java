@@ -27,10 +27,12 @@ public abstract class BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long  id;
 
+	@Version
+	private Long version;
+
 	@CreationTimestamp
 	private LocalDateTime createdAt;
 
-	@Version
 	@UpdateTimestamp
 	private LocalDateTime updatedAt;
 
@@ -40,6 +42,10 @@ public abstract class BaseEntity {
 
 	public void updatedAt(LocalDateTime updatedAt) {
 		this.updatedAt = updatedAt;
+	}
+
+	public void version(Long version) {
+		this.version = version;
 	}
 
 	@Override

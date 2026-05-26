@@ -16,6 +16,12 @@ public class ReservationNotificationMapper {
 		if (domain.id() != null) {
 			entity.id(domain.id());
 		}
+		if (domain.updatedAt() != null) {
+			entity.updatedAt(domain.updatedAt());
+		}
+		if (domain.version() != null) {
+			entity.version(domain.version());
+		}
 
 		return entity;
 	}
@@ -29,6 +35,7 @@ public class ReservationNotificationMapper {
 			.isPublished(entity.isPublished())
 			.createdAt(entity.createdAt())
 			.updatedAt(entity.updatedAt())
+			.version(entity.version())
 			.build();
 	}
 }

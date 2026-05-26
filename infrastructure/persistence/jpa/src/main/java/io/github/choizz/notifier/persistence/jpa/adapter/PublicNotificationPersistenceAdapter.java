@@ -38,6 +38,7 @@ public class PublicNotificationPersistenceAdapter implements PublicNotificationP
 			publicNotification.metadata(),
 			publicNotification.idempotencyKey()
 		);
+		entity.version(publicNotification.version());
 		PublicNotificationEntity savedEntity = publicNotificationJpaRepository.save(entity);
 
 		return PublicNotification.builder()
@@ -47,6 +48,7 @@ public class PublicNotificationPersistenceAdapter implements PublicNotificationP
 			.idempotencyKey(savedEntity.idempotencyKey())
 			.createdAt(savedEntity.createdAt())
 			.updatedAt(savedEntity.updatedAt())
+			.version(savedEntity.version())
 			.build();
 	}
 }

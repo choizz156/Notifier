@@ -18,6 +18,7 @@ public class NotificationMapper {
 			.build();
 		entity.id(notification.id());
 		entity.updatedAt(notification.updatedAt());
+		entity.version(notification.version());
 		return entity;
 	}
 
@@ -34,6 +35,7 @@ public class NotificationMapper {
 			.createdAt(entity.createdAt())
 			.updatedAt(entity.updatedAt())
 			.recoverCount(entity.manualRetryCount())
+			.version(entity.version())
 			.build();
 	}
 }

@@ -1,7 +1,7 @@
 package io.github.choizz.notifier.core.application;
 
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
@@ -47,8 +47,14 @@ public class NotificationLogService implements NotificationLogUseCase {
 	public boolean tryClaim(Long notificationId, ReferenceType referenceType) {
 
 		try {
-			NotificationLog notificationLog =
+			Optional<NotificationLog> optionalLog =
 				notificationLogPersistencePort.findLatestByReferenceId(notificationId, referenceType);
+
+			if (optionalLog.isEmpty()) {
+				return false;
+			}
+
+			NotificationLog notificationLog = optionalLog.get();
 
 			if (notificationLog.eventStatus() != EventStatus.REQUESTED
 				&& notificationLog.eventStatus() != EventStatus.RETRIED) {
@@ -58,7 +64,7 @@ public class NotificationLogService implements NotificationLogUseCase {
 			notificationLog.markAsProcessing();
 			notificationLogPersistencePort.save(notificationLog);
 			return true;
-		} catch (NoSuchElementException | OptimisticLockingFailureException e) {
+		} catch (OptimisticLockingFailureException e) {
 			return false;
 		}
 	}

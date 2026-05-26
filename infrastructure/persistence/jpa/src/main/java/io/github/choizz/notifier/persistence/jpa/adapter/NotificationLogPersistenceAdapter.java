@@ -3,7 +3,7 @@ package io.github.choizz.notifier.persistence.jpa.adapter;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import org.springframework.data.domain.Limit;
 import org.springframework.stereotype.Repository;
@@ -28,7 +28,6 @@ public class NotificationLogPersistenceAdapter implements NotificationLogPersist
 	private final NotificationLogJpaRepository notificationLogJpaRepository;
 
 	@Override
-	@Transactional
 	public void save(NotificationLog notificationLog) {
 
 		log.info("알림 이벤트 이력 저장 - referenceId={}, referenceType={}, channel={}, eventStatus={}",
@@ -49,11 +48,10 @@ public class NotificationLogPersistenceAdapter implements NotificationLogPersist
 	}
 
 	@Override
-	public NotificationLog findLatestByReferenceId(Long referenceId, ReferenceType referenceType) {
+	public Optional<NotificationLog> findLatestByReferenceId(Long referenceId, ReferenceType referenceType) {
 
 		return notificationLogJpaRepository.findFirstByReferenceIdAndReferenceTypeOrderByCreatedAtDesc(referenceId, referenceType)
-			.map(NotificationLogMapper::toDomain)
-			.orElseThrow(() -> new NoSuchElementException("존재하지 않는 알림 정보 입니다. id:%s, type:%s".formatted(referenceId, referenceType)));
+			.map(NotificationLogMapper::toDomain);
 	}
 
 	@Override

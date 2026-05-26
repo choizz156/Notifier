@@ -28,6 +28,7 @@ public class NotificationLog {
 	private String failReason;
 	private LocalDateTime publishedAt;
 	private LocalDateTime updatedAt;
+	private final Long version;
 
 	@Builder
 	private NotificationLog(
@@ -43,7 +44,8 @@ public class NotificationLog {
 		LocalDateTime publishedAt,
 		LocalDateTime createdAt,
 		String metadata,
-		LocalDateTime updatedAt
+		LocalDateTime updatedAt,
+		Long version
 	) {
 
 		this.id = id;
@@ -59,6 +61,7 @@ public class NotificationLog {
 		this.createdAt = createdAt != null ? createdAt : LocalDateTime.now();
 		this.metadata = metadata;
 		this.updatedAt = updatedAt;
+		this.version = version;
 	}
 
 	public static NotificationLog request(Notification notification) {
@@ -72,6 +75,7 @@ public class NotificationLog {
 			.retryCount(0)
 			.published(false)
 			.metadata(notification.metadata())
+			.version(0L)
 			.build();
 	}
 
@@ -86,6 +90,7 @@ public class NotificationLog {
 			.retryCount(0)
 			.published(false)
 			.metadata(publicNotification.metadata())
+			.version(0L)
 			.build();
 	}
 
@@ -102,6 +107,7 @@ public class NotificationLog {
 			.metadata(context.metadata())
 			.published(false)
 			.updatedAt(LocalDateTime.now())
+			.version(0L)
 			.build();
 	}
 
@@ -118,6 +124,7 @@ public class NotificationLog {
 			.published(true)
 			.publishedAt(LocalDateTime.now())
 			.updatedAt(LocalDateTime.now())
+			.version(0L)
 			.build();
 	}
 
@@ -134,6 +141,7 @@ public class NotificationLog {
 			.metadata(context.metadata())
 			.published(false)
 			.updatedAt(LocalDateTime.now())
+			.version(0L)
 			.build();
 	}
 

@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Limit;
 
 import io.github.choizz.notifier.core.application.port.out.MockUserPersistencePort;
 import io.github.choizz.notifier.core.domain.model.Channel;
@@ -48,7 +49,7 @@ public class MockUserPersistenceAdapter implements MockUserPersistencePort {
 	@Override
 	public List<Long> findIdsBySubscribedType(NotificationType type, Long lastId, int chunkSize) {
 
-		return mockUserJpaRepository.findIdsBySubscribedType(type, lastId, org.springframework.data.domain.Limit.of(chunkSize));
+		return mockUserJpaRepository.findIdsBySubscribedType(type, lastId, Limit.of(chunkSize));
 	}
 
 	@Override

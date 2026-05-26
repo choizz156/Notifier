@@ -20,6 +20,7 @@ import io.github.choizz.notifier.core.domain.model.NotificationType;
 import io.github.choizz.notifier.persistence.jpa.entity.MockUserEntity;
 import io.github.choizz.notifier.persistence.jpa.adapter.MockUserPersistenceAdapter;
 import io.github.choizz.notifier.persistence.jpa.repository.MockUserJpaRepository;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
 class MockUserPersistenceAdapterTest {
@@ -38,7 +39,7 @@ class MockUserPersistenceAdapterTest {
 			Map.of(NotificationType.PAYMENT_CONFIRMED, true),
 			Map.of()
 		);
-		org.springframework.test.util.ReflectionTestUtils.setField(user, "id", 1L);
+		ReflectionTestUtils.setField(user, "id", 1L);
 		
 		when(mockUserJpaRepository.findById(1L)).thenReturn(Optional.of(user));
 
@@ -60,7 +61,7 @@ class MockUserPersistenceAdapterTest {
 			),
 			Map.of()
 		);
-		org.springframework.test.util.ReflectionTestUtils.setField(user, "id", 1L);
+		ReflectionTestUtils.setField(user, "id", 1L);
 		
 		when(mockUserJpaRepository.findById(1L)).thenReturn(Optional.of(user));
 
@@ -82,7 +83,7 @@ class MockUserPersistenceAdapterTest {
 				Channel.IN_APP, false
 			)
 		);
-		org.springframework.test.util.ReflectionTestUtils.setField(user, "id", 1L);
+		ReflectionTestUtils.setField(user, "id", 1L);
 		
 		when(mockUserJpaRepository.findById(1L)).thenReturn(Optional.of(user));
 

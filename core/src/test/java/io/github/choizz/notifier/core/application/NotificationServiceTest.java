@@ -21,7 +21,9 @@ import org.springframework.context.ApplicationEventPublisher;
 
 import io.github.choizz.notifier.core.application.dto.NotificationContext;
 import io.github.choizz.notifier.core.application.dto.NotificationDetailResponse;
+import io.github.choizz.notifier.core.application.dto.NotificationResponse;
 import io.github.choizz.notifier.core.application.dto.NotificationStatusResponse;
+import io.github.choizz.notifier.core.application.dto.PageResult;
 import io.github.choizz.notifier.core.application.port.in.NotificationLogUseCase;
 import io.github.choizz.notifier.core.application.port.out.MockUserPersistencePort;
 import io.github.choizz.notifier.core.application.port.out.NotificationPersistencePort;
@@ -220,11 +222,11 @@ class NotificationServiceTest {
 		Boolean isRead = false;
 		int page = 0;
 		int size = 10;
-		io.github.choizz.notifier.core.application.dto.PageResult<io.github.choizz.notifier.core.application.dto.NotificationResponse> expectedResult = new io.github.choizz.notifier.core.application.dto.PageResult<>(List.of(), 0, 0, 0L, 0);
+		PageResult<NotificationResponse> expectedResult = new PageResult<>(List.of(), 0, 0, 0L, 0);
 		when(loadCombinedNotificationPort.loadCombinedNotifications(subscriberId, isRead, page, size)).thenReturn(expectedResult);
 
 		// when
-		io.github.choizz.notifier.core.application.dto.PageResult<io.github.choizz.notifier.core.application.dto.NotificationResponse> result = notificationService.findNotifications(subscriberId, isRead, page, size);
+		PageResult<NotificationResponse> result = notificationService.findNotifications(subscriberId, isRead, page, size);
 
 		// then
 		assertThat(result).isEqualTo(expectedResult);
