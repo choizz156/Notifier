@@ -3,7 +3,7 @@ POST http://localhost:8080/v1/notifications
 Content-Type: application/json
 
 {
-  "subscriberId": 1,
+  "subscriberId": 2,
   "notificationType": "CANCELLATION_PROCESSED",
   "metadata": {
     "courseName": "<테스트 알림>"
@@ -18,7 +18,7 @@ Content-Type: application/json
   "subscriberId": 1,
   "notificationType": "PAYMENT_CONFIRMED",
   "metadata": {
-    "orderId": "테스트 알림"
+    "orderId": "3"
   }
 }
 
@@ -47,7 +47,7 @@ Content-Type: application/json
 {
   "type": "NEW_LECTURE_OPENED",
   "metadata": {
-    "courseName": "A강사"
+    "courseName": "신규 특강"
   }
 }
 
