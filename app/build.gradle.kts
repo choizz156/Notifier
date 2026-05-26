@@ -11,6 +11,7 @@ tasks.named<Jar>("jar") {
 
 dependencies {
     implementation(project(":api"))
+    implementation(project(":admin"))
     implementation(project(":core"))
     implementation(project(":infrastructure:persistence:jpa"))
     implementation(project(":infrastructure:notifier:email"))

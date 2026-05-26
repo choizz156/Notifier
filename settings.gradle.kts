@@ -13,6 +13,7 @@ rootProject.name = "Notifier"
 include(
     "app",
     "api",
+    "admin",
     "core",
 
     "infrastructure:persistence",
