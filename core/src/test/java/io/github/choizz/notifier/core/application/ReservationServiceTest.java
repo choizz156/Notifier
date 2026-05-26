@@ -1,6 +1,7 @@
 package io.github.choizz.notifier.core.application;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
@@ -64,7 +65,7 @@ class ReservationServiceTest {
 			.notificationType(NotificationType.COUPON_ISSUED)
 			.build();
 
-		when(reservationNotificationPersistencePort.findUnpublishedNotificationsBefore(org.mockito.ArgumentMatchers.any(LocalDateTime.class), org.mockito.ArgumentMatchers.any(Long.class), org.mockito.ArgumentMatchers.anyInt()))
+		when(reservationNotificationPersistencePort.findUnpublishedNotificationsBefore(any(LocalDateTime.class), any(Long.class), anyInt()))
 			.thenReturn(List.of(info1, info2))
 			.thenReturn(List.of());
 
@@ -91,7 +92,7 @@ class ReservationServiceTest {
 			.notificationType(NotificationType.COUPON_ISSUED)
 			.build();
 
-		when(reservationNotificationPersistencePort.findUnpublishedNotificationsBefore(org.mockito.ArgumentMatchers.any(LocalDateTime.class), org.mockito.ArgumentMatchers.any(Long.class), org.mockito.ArgumentMatchers.anyInt()))
+		when(reservationNotificationPersistencePort.findUnpublishedNotificationsBefore(any(LocalDateTime.class), any(Long.class), anyInt()))
 			.thenReturn(List.of(info1, info2))
 			.thenReturn(List.of());
 

@@ -13,6 +13,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import io.github.choizz.notifier.core.domain.model.Channel;
+import io.github.choizz.notifier.core.domain.model.NotificationStatus;
 import io.github.choizz.notifier.core.domain.model.NotificationType;
 import io.github.choizz.notifier.core.domain.model.PublicNotification;
 import io.github.choizz.notifier.core.domain.model.PublicNotificationReceipt;
@@ -76,7 +78,12 @@ class PublicNotificationPersistenceAdapterTest {
 			.idempotencyKey("key")
 			.build();
 
-		PublicNotificationEntity savedEntity = new PublicNotificationEntity(NotificationType.PAYMENT_CONFIRMED, "{}", "key");
+		PublicNotificationEntity savedEntity = PublicNotificationEntity.builder()
+			.notificationType(NotificationType.PAYMENT_CONFIRMED)
+			.metadata("{}")
+			.idempotencyKey("key")
+			.status(NotificationStatus.PENDING)
+			.build();
 		when(publicNotificationJpaRepository.save(any(PublicNotificationEntity.class))).thenReturn(savedEntity);
 
 		// when
