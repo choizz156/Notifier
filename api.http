@@ -64,3 +64,30 @@ Content-Type: application/json
   "type": "EMAIL",
   "reservationTime": "2026-05-26T10:00:00"
 }
+
+### 11. 메시지 템플릿 생성 (Admin)
+POST http://localhost:8080/v1/admin/templates
+Content-Type: application/json
+
+{
+  "channel": "IN_APP",
+  "type": "PAYMENT_CONFIRMED",
+  "content": "결제가 완료되었습니다. 주문 번호: {{orderId}}"
+}
+
+### 12. 메시지 템플릿 수정 (Admin)
+PUT http://localhost:8080/v1/admin/templates/1
+Content-Type: application/json
+
+{
+  "content": "결제가 정상적으로 처리되었습니다. 주문 번호: {{orderId}}"
+}
+
+### 13. 메시지 템플릿 전체 조회 (Admin)
+GET http://localhost:8080/v1/admin/templates
+
+### 14. 특정 메시지 템플릿 상세 조회 (Admin)
+GET http://localhost:8080/v1/admin/templates/1
+
+### 15. 메시지 템플릿 변경 이력 조회 (Admin)
+GET http://localhost:8080/v1/admin/templates/1/histories
