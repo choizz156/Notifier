@@ -72,4 +72,22 @@ class PublicNotifierControllerTest {
 
 		verify(publicNotificationUseCase, times(1)).markAsRead(subscriberId, publicNotificationId);
 	}
+
+	@DisplayName("이메일에서 홈페이지로 이동 시 공통 알림을 읽음 처리하고 리다이렉트한다.")
+	@Test
+	void test3() throws Exception {
+		// given
+		Long publicNotificationId = 100L;
+		Long subscriberId = 1L;
+
+		// when & then
+		mockMvc.perform(
+				org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get("/v1/notifications/public/{id}/read", publicNotificationId)
+					.param("subscriberId", String.valueOf(subscriberId))
+			)
+			.andExpect(status().isFound())
+			.andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.header().string("Location", "http://localhost:8080/"));
+
+		verify(publicNotificationUseCase, times(1)).markAsRead(subscriberId, publicNotificationId);
+	}
 }

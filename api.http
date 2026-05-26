@@ -47,13 +47,15 @@ Content-Type: application/json
 {
   "type": "NEW_LECTURE_OPENED",
   "metadata": {
-    "courseName": "공지사항",
-    "content": "새로운 기능이 추가되었습니다."
+    "courseName": "A강사"
   }
 }
 
-### 9. 대량(Public) 알림 읽음 처리
+### 9. 대량(Public) 알림 읽음 처리 (App)
 PATCH http://localhost:8080/v1/notifications/public/1/read?subscriberId=1
+
+### 9-1. 대량(Public) 알림 읽음 처리 (Email - 리다이렉트)
+GET http://localhost:8080/v1/notifications/public/1/read?subscriberId=1
 
 ### 10. 알림 예약 생성
 POST http://localhost:8080/v1/reservations

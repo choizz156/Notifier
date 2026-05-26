@@ -1,6 +1,8 @@
 package io.github.choizz.notifier.api;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,5 +41,20 @@ public class PublicNotifierController {
 	) {
 
 		publicNotificationUseCase.markAsRead(subscriberId, id);
+	}
+
+	@GetMapping("/{id}/read")
+	public ResponseEntity<Void> markAsReadFromEmail(
+		@PathVariable("id") Long id,
+		@RequestParam("subscriberId") Long subscriberId
+	) {
+
+		publicNotificationUseCase.markAsRead(subscriberId, id);
+
+		java.net.URI homepageUri = java.net.URI.create("http://localhost:8080/");
+
+		return ResponseEntity.status(HttpStatus.FOUND)
+			.location(homepageUri)
+			.build();
 	}
 }
