@@ -95,14 +95,7 @@ public class Notification {
 		updateDate();
 	}
 
-	public void markAsRetrying() {
 
-		if (this.status == NotificationStatus.COMPLETED || this.status == NotificationStatus.FAILED) {
-			throw new IllegalStateException("재시도는 준비 중 이거나 재시도 중인 알림에 대해서만 가능합니다.");
-		}
-		this.status = NotificationStatus.RETRYING;
-		updateDate();
-	}
 
 	public void markAsPendingForRecover() {
 

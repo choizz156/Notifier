@@ -89,37 +89,6 @@ class NotificationTest {
 			.hasMessage("이미 실패한 알림입니다.");
 	}
 
-	@DisplayName("알림을 재시도 상태로 변경한다.")
-	@Test
-	void test6() {
-		// given
-		Notification notification = Notification.builder()
-			.status(NotificationStatus.PENDING)
-			.build();
-
-		// when
-		notification.markAsRetrying();
-
-		// then
-		assertThat(notification.status()).isEqualTo(NotificationStatus.RETRYING);
-	}
-
-	@DisplayName("성공이나 실패 상태인 알림을 재시도 상태로 변경하려 하면 예외가 발생한다.")
-	@Test
-	void test7() {
-		// given
-		Notification completed = Notification.builder().status(NotificationStatus.COMPLETED).build();
-		Notification failed = Notification.builder().status(NotificationStatus.FAILED).build();
-
-		// when & then
-		assertThatThrownBy(completed::markAsRetrying)
-			.isInstanceOf(IllegalStateException.class)
-			.hasMessage("재시도는 준비 중 이거나 재시도 중인 알림에 대해서만 가능합니다.");
-
-		assertThatThrownBy(failed::markAsRetrying)
-			.isInstanceOf(IllegalStateException.class)
-			.hasMessage("재시도는 준비 중 이거나 재시도 중인 알림에 대해서만 가능합니다.");
-	}
 
 	@DisplayName("알림을 복구 대기 상태로 변경하면 상태가 PENDING이 되고 복구 횟수가 증가한다.")
 	@Test
