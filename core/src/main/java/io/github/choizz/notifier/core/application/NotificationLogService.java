@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.github.choizz.notifier.core.application.dto.PublicationContext;
+import io.github.choizz.notifier.core.application.dto.ClaimContext;
 import io.github.choizz.notifier.core.application.factory.NotificationLogFactory;
 import io.github.choizz.notifier.core.application.port.in.NotificationLogUseCase;
 import io.github.choizz.notifier.core.application.port.out.NotificationLogPersistencePort;
@@ -44,11 +45,11 @@ public class NotificationLogService implements NotificationLogUseCase {
 	}
 
 	@Override
-	public boolean tryClaim(Long notificationId, ReferenceType referenceType) {
+	public boolean tryClaim(ClaimContext context) {
 
 		try {
 			Optional<NotificationLog> optionalLog =
-				notificationLogPersistencePort.findLatestByReferenceId(notificationId, referenceType);
+				notificationLogPersistencePort.findByUniqueKey(context);
 
 			if (optionalLog.isEmpty()) {
 				return false;

@@ -21,6 +21,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.OptimisticLockingFailureException;
 
 import io.github.choizz.notifier.core.application.dto.PublicationContext;
+import io.github.choizz.notifier.core.application.dto.ClaimContext;
 import io.github.choizz.notifier.core.application.factory.NotificationLogFactory;
 import io.github.choizz.notifier.core.application.port.out.NotificationLogPersistencePort;
 import io.github.choizz.notifier.core.domain.model.Notification;
@@ -78,10 +79,11 @@ class NotificationLogServiceTest {
 			.metadata("{}")
 			.build();
 		NotificationLog log = NotificationLog.request(notification);
-		when(notificationLogPersistencePort.findLatestByReferenceId(1L, ReferenceType.PERSONAL)).thenReturn(Optional.of(log));
+		ClaimContext claimContext = new ClaimContext(1L, ReferenceType.PERSONAL, Channel.EMAIL, 2L);
+		when(notificationLogPersistencePort.findByUniqueKey(claimContext)).thenReturn(Optional.of(log));
 
 		// when
-		boolean result = notificationLogService.tryClaim(1L, ReferenceType.PERSONAL);
+		boolean result = notificationLogService.tryClaim(claimContext);
 
 		// then
 		assertThat(result).isTrue();
@@ -102,7 +104,8 @@ class NotificationLogServiceTest {
 			.build();
 		NotificationLog processingLog = NotificationLog.request(notification);
 		processingLog.markAsProcessing();
-		when(notificationLogPersistencePort.findLatestByReferenceId(1L, ReferenceType.PERSONAL)).thenReturn(Optional.of(processingLog));
+		ClaimContext ctx1 = new ClaimContext(1L, ReferenceType.PERSONAL, Channel.EMAIL, 2L);
+		when(notificationLogPersistencePort.findByUniqueKey(ctx1)).thenReturn(Optional.of(processingLog));
 
 		PublicationContext sentContext = PublicationContext.builder()
 			.notificationId(2L)
@@ -113,11 +116,12 @@ class NotificationLogServiceTest {
 			.retryCount(0)
 			.build();
 		NotificationLog sentLog = NotificationLog.sent(sentContext);
-		when(notificationLogPersistencePort.findLatestByReferenceId(2L, ReferenceType.PERSONAL)).thenReturn(Optional.of(sentLog));
+		ClaimContext ctx2 = new ClaimContext(2L, ReferenceType.PERSONAL, Channel.EMAIL, null);
+		when(notificationLogPersistencePort.findByUniqueKey(ctx2)).thenReturn(Optional.of(sentLog));
 
 		// when
-		boolean result1 = notificationLogService.tryClaim(1L, ReferenceType.PERSONAL);
-		boolean result2 = notificationLogService.tryClaim(2L, ReferenceType.PERSONAL);
+		boolean result1 = notificationLogService.tryClaim(ctx1);
+		boolean result2 = notificationLogService.tryClaim(ctx2);
 
 		// then
 		assertThat(result1).isFalse();
@@ -137,11 +141,12 @@ class NotificationLogServiceTest {
 			.metadata("{}")
 			.build();
 		NotificationLog log = NotificationLog.request(notification);
-		when(notificationLogPersistencePort.findLatestByReferenceId(1L, ReferenceType.PERSONAL)).thenReturn(Optional.of(log));
+		ClaimContext claimContext = new ClaimContext(1L, ReferenceType.PERSONAL, Channel.EMAIL, 2L);
+		when(notificationLogPersistencePort.findByUniqueKey(claimContext)).thenReturn(Optional.of(log));
 		doThrow(OptimisticLockingFailureException.class).when(notificationLogPersistencePort).save(log);
 
 		// when
-		boolean result = notificationLogService.tryClaim(1L, ReferenceType.PERSONAL);
+		boolean result = notificationLogService.tryClaim(claimContext);
 
 		// then
 		assertThat(result).isFalse();

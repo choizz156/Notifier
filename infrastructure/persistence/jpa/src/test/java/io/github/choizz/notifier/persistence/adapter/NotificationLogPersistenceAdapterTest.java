@@ -23,6 +23,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Limit;
 
+import io.github.choizz.notifier.core.application.dto.ClaimContext;
+import io.github.choizz.notifier.core.domain.model.Channel;
 import io.github.choizz.notifier.core.domain.model.EventStatus;
 import io.github.choizz.notifier.core.domain.model.NotificationLog;
 import io.github.choizz.notifier.core.domain.model.NotificationType;
@@ -84,10 +86,11 @@ class NotificationLogPersistenceAdapterTest {
 	void test3() {
 		// given
 		NotificationLogEntity entity = NotificationLogEntity.builder().referenceId(10L).referenceType(ReferenceType.PERSONAL).build();
-		when(notificationLogJpaRepository.findFirstByReferenceIdAndReferenceTypeOrderByCreatedAtDesc(10L, ReferenceType.PERSONAL)).thenReturn(Optional.of(entity));
+		ClaimContext context = new ClaimContext(10L, ReferenceType.PERSONAL, Channel.EMAIL, 1L);
+		when(notificationLogJpaRepository.findByReferenceIdAndReferenceTypeAndChannelTypeAndSubscriberId(10L, ReferenceType.PERSONAL, Channel.EMAIL, 1L)).thenReturn(Optional.of(entity));
 
 		// when
-		Optional<NotificationLog> result = adapter.findLatestByReferenceId(10L, ReferenceType.PERSONAL);
+		Optional<NotificationLog> result = adapter.findByUniqueKey(context);
 
 		// then
 		assertThat(result).isPresent();
@@ -98,10 +101,11 @@ class NotificationLogPersistenceAdapterTest {
 	@Test
 	void test4() {
 		// given
-		when(notificationLogJpaRepository.findFirstByReferenceIdAndReferenceTypeOrderByCreatedAtDesc(10L, ReferenceType.PERSONAL)).thenReturn(Optional.empty());
+		ClaimContext context = new ClaimContext(10L, ReferenceType.PERSONAL, Channel.EMAIL, 1L);
+		when(notificationLogJpaRepository.findByReferenceIdAndReferenceTypeAndChannelTypeAndSubscriberId(10L, ReferenceType.PERSONAL, Channel.EMAIL, 1L)).thenReturn(Optional.empty());
 
 		// when
-		Optional<NotificationLog> result = adapter.findLatestByReferenceId(10L, ReferenceType.PERSONAL);
+		Optional<NotificationLog> result = adapter.findByUniqueKey(context);
 		
 		// then
 		assertThat(result).isEmpty();

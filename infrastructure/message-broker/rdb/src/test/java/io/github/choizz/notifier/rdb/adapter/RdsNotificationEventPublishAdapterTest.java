@@ -54,7 +54,7 @@ class RdsNotificationEventPublishAdapterTest {
 			ReferenceType.PERSONAL.name()
 		);
 
-		when(notificationLogUseCase.tryClaim(eq(1L), any())).thenReturn(true);
+		when(notificationLogUseCase.tryClaim(any())).thenReturn(true);
 		NotifierPort notifierPort = mock(NotifierPort.class);
 		when(notifierFacade.getNotifierPort(Channel.EMAIL.name())).thenReturn(notifierPort);
 
@@ -62,7 +62,7 @@ class RdsNotificationEventPublishAdapterTest {
 		adapter.publish(event);
 
 		// then
-		verify(notificationLogUseCase, times(1)).tryClaim(eq(1L), any());
+		verify(notificationLogUseCase, times(1)).tryClaim(any());
 		verify(notifierFacade, times(1)).getNotifierPort(Channel.EMAIL.name());
 		verify(notificationDispatcher, times(1)).dispatch(eq(notifierPort), any(PublicationContext.class));
 	}
@@ -80,7 +80,7 @@ class RdsNotificationEventPublishAdapterTest {
 			ReferenceType.PERSONAL.name()
 		);
 
-		when(notificationLogUseCase.tryClaim(eq(1L), any())).thenReturn(false);
+		when(notificationLogUseCase.tryClaim(any())).thenReturn(false);
 
 		// when & then
 		assertThatThrownBy(() -> adapter.publish(event))

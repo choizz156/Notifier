@@ -10,13 +10,19 @@ import io.github.choizz.notifier.core.domain.model.NotificationLog;
 import io.github.choizz.notifier.core.domain.model.NotificationType;
 import io.github.choizz.notifier.core.domain.model.ReferenceType;
 
+import io.github.choizz.notifier.core.application.dto.ClaimContext;
+import io.github.choizz.notifier.core.domain.model.Channel;
+
 public interface NotificationLogPersistencePort {
 
 	void save(NotificationLog notificationLog);
 	void saveAll(List<NotificationLog> notificationLogs);
-	Optional<NotificationLog> findLatestByReferenceId(Long referenceId, ReferenceType referenceType);
+	Optional<NotificationLog> findByUniqueKey(ClaimContext context);
 	List<Long> findUnprocessedNotificationIds(List<EventStatus> statuses, long lastId, int chunkSize);
 	List<NotificationLog> findAllByEventStatus(EventStatus eventStatus);
 	List<NotificationLog> findStuckLogs(long lastId, EventStatus status, Collection<NotificationType> types, LocalDateTime thresholdTime, int chunkSize);
-	}
+	long countByReferenceIdAndReferenceType(Long referenceId, ReferenceType referenceType);
+	long countTerminatedByReferenceIdAndReferenceType(Long referenceId, ReferenceType referenceType);
+}
+
 
