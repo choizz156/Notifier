@@ -2,12 +2,12 @@ package io.github.choizz.notifier.core.application.support;
 
 import java.util.Set;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.github.choizz.notifier.core.application.port.in.NotificationLogUseCase;
 import io.github.choizz.notifier.core.application.port.out.MockUserPersistencePort;
-import io.github.choizz.notifier.core.application.port.out.NotificationEventPublisher;
 import io.github.choizz.notifier.core.application.port.out.PublicNotificationPersistencePort;
 import io.github.choizz.notifier.core.domain.event.PublicNotificationRequestedEvent;
 import io.github.choizz.notifier.core.domain.event.PublishCommandEvent;
@@ -23,7 +23,7 @@ public class PublicNotificationBulkProcessor {
 	private final MockUserPersistencePort mockUserPersistencePort;
 	private final PublicNotificationPersistencePort publicNotificationPersistencePort;
 	private final NotificationLogUseCase notificationLogUseCase;
-	private final NotificationEventPublisher notificationEventPublisher;
+	private final ApplicationEventPublisher applicationEventPublisher;
 
 	@Transactional
 	public void chunkToPublic(PublicNotificationRequestedEvent event) {
@@ -38,8 +38,8 @@ public class PublicNotificationBulkProcessor {
 			}
 
 			subscribedChannels.forEach(channel -> {
-					notificationLogUseCase.save(NotificationLog.requestToPublic(publicNotification, channel));
-					notificationEventPublisher.publish(
+					notificationLogUseCase.save(NotificationLog.requestToPublic(publicNotification, channel, subscriberId));
+					applicationEventPublisher.publishEvent(
 						PublishCommandEvent.toPublic(publicNotification, subscriberId, channel.name())
 					);
 				}

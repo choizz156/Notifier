@@ -9,6 +9,7 @@ import org.springframework.data.domain.Limit;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import io.github.choizz.notifier.core.application.dto.ClaimContext;
 import io.github.choizz.notifier.core.application.port.out.NotificationLogPersistencePort;
 import io.github.choizz.notifier.core.domain.model.EventStatus;
 import io.github.choizz.notifier.core.domain.model.NotificationLog;
@@ -48,10 +49,14 @@ public class NotificationLogPersistenceAdapter implements NotificationLogPersist
 	}
 
 	@Override
-	public Optional<NotificationLog> findLatestByReferenceId(Long referenceId, ReferenceType referenceType) {
+	public Optional<NotificationLog> findByUniqueKey(ClaimContext context) {
 
-		return notificationLogJpaRepository.findFirstByReferenceIdAndReferenceTypeOrderByCreatedAtDesc(referenceId, referenceType)
-			.map(NotificationLogMapper::toDomain);
+		return notificationLogJpaRepository.findByReferenceIdAndReferenceTypeAndChannelTypeAndSubscriberId(
+			context.notificationId(), 
+			context.referenceType(), 
+			context.channel(), 
+			context.subscriberId()
+		).map(NotificationLogMapper::toDomain);
 	}
 
 	@Override
@@ -74,5 +79,19 @@ public class NotificationLogPersistenceAdapter implements NotificationLogPersist
 			.map(NotificationLogMapper::toDomain)
 			.toList();
 	}
+
+	@Override
+	public long countByReferenceIdAndReferenceType(Long referenceId, ReferenceType referenceType) {
+		return notificationLogJpaRepository.countByReferenceIdAndReferenceType(referenceId, referenceType);
 	}
+
+	@Override
+	public long countTerminatedByReferenceIdAndReferenceType(Long referenceId, ReferenceType referenceType) {
+		return notificationLogJpaRepository.countByReferenceIdAndReferenceTypeAndEventStatusIn(
+			referenceId,
+			referenceType,
+			List.of(EventStatus.SENT, EventStatus.FAILED)
+		);
+	}
+}
 

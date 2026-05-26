@@ -18,6 +18,7 @@ public class NotificationLog {
 	private final Long id;
 	private final Long referenceId;
 	private final ReferenceType referenceType;
+	private final Long subscriberId;
 	private final NotificationType notificationType;
 	private final Channel channelType;
 	private final LocalDateTime createdAt;
@@ -35,6 +36,7 @@ public class NotificationLog {
 		Long id,
 		Long referenceId,
 		ReferenceType referenceType,
+		Long subscriberId,
 		NotificationType notificationType,
 		Channel channelType,
 		EventStatus eventStatus,
@@ -51,6 +53,7 @@ public class NotificationLog {
 		this.id = id;
 		this.referenceId = referenceId;
 		this.referenceType = referenceType;
+		this.subscriberId = subscriberId;
 		this.notificationType = notificationType;
 		this.channelType = channelType;
 		this.eventStatus = eventStatus;
@@ -69,6 +72,7 @@ public class NotificationLog {
 		return NotificationLog.builder()
 			.referenceId(notification.id())
 			.referenceType((ReferenceType.PERSONAL))
+			.subscriberId(notification.subscriberId())
 			.notificationType(notification.notificationType())
 			.channelType(notification.channel())
 			.eventStatus(EventStatus.REQUESTED)
@@ -79,11 +83,12 @@ public class NotificationLog {
 			.build();
 	}
 
-	public static NotificationLog requestToPublic(PublicNotification publicNotification, Channel channel) {
+	public static NotificationLog requestToPublic(PublicNotification publicNotification, Channel channel, Long subscriberId) {
 
 		return NotificationLog.builder()
 			.referenceId(publicNotification.id())
 			.referenceType(ReferenceType.PUBLIC)
+			.subscriberId(subscriberId)
 			.notificationType(publicNotification.notificationType())
 			.channelType(channel)
 			.eventStatus(EventStatus.REQUESTED)
@@ -99,6 +104,7 @@ public class NotificationLog {
 		return NotificationLog.builder()
 			.referenceId(context.notificationId())
 			.referenceType(ReferenceType.valueOf(context.referenceType()))
+			.subscriberId(context.subscriberId())
 			.notificationType(NotificationType.valueOf(context.notificationType()))
 			.channelType(Channel.valueOf(context.channel()))
 			.eventStatus(EventStatus.RETRIED)
@@ -116,6 +122,7 @@ public class NotificationLog {
 		return NotificationLog.builder()
 			.referenceId(context.notificationId())
 			.referenceType(ReferenceType.valueOf(context.referenceType()))
+			.subscriberId(context.subscriberId())
 			.notificationType(NotificationType.valueOf(context.notificationType()))
 			.channelType(Channel.valueOf(context.channel()))
 			.eventStatus(EventStatus.SENT)
@@ -133,6 +140,7 @@ public class NotificationLog {
 		return NotificationLog.builder()
 			.referenceId(context.notificationId())
 			.referenceType(ReferenceType.valueOf(context.referenceType()))
+			.subscriberId(context.subscriberId())
 			.notificationType(NotificationType.valueOf(context.notificationType()))
 			.channelType(Channel.valueOf(context.channel()))
 			.eventStatus(EventStatus.FAILED)

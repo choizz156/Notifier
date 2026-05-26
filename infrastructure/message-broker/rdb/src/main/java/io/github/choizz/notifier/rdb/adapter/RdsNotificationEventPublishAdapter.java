@@ -5,10 +5,12 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import io.github.choizz.notifier.core.application.dto.PublicationContext;
+import io.github.choizz.notifier.core.application.dto.ClaimContext;
 import io.github.choizz.notifier.core.application.port.in.NotificationLogUseCase;
 import io.github.choizz.notifier.core.application.port.out.NotificationEventPublisher;
 import io.github.choizz.notifier.core.application.port.out.NotifierPort;
 import io.github.choizz.notifier.core.domain.event.PublishCommandEvent;
+import io.github.choizz.notifier.core.domain.model.Channel;
 import io.github.choizz.notifier.core.domain.model.ReferenceType;
 import io.github.choizz.notifier.infrastructure.messagebroker.NotificationDispatcher;
 import io.github.choizz.notifier.infrastructure.messagebroker.NotifierFacade;
@@ -28,7 +30,14 @@ public class RdsNotificationEventPublishAdapter implements NotificationEventPubl
 	@Override
 	public void publish(PublishCommandEvent event) {
 
-		boolean isClaim = notificationLogUseCase.tryClaim(event.referencedId(), ReferenceType.valueOf(event.referenceType()));
+		ClaimContext claimContext = new ClaimContext(
+			event.referencedId(),
+			ReferenceType.valueOf(event.referenceType()),
+			Channel.valueOf(event.channel()),
+			event.subscriberId()
+		);
+
+		boolean isClaim = notificationLogUseCase.tryClaim(claimContext);
 		if(!isClaim){
 			throw new OptimisticLockingFailureException("이미 처리 중인 알람입니다.");
 		}

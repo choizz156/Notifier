@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import io.github.choizz.notifier.core.domain.model.Channel;
 import io.github.choizz.notifier.core.domain.model.EventStatus;
 import io.github.choizz.notifier.core.domain.model.NotificationType;
 import io.github.choizz.notifier.core.domain.model.ReferenceType;
@@ -18,6 +19,13 @@ import io.github.choizz.notifier.persistence.jpa.entity.NotificationLogEntity;
 public interface NotificationLogJpaRepository extends JpaRepository<NotificationLogEntity, Long> {
 
 	Optional<NotificationLogEntity> findFirstByReferenceIdAndReferenceTypeOrderByCreatedAtDesc(Long referenceId, ReferenceType referenceType);
+
+	Optional<NotificationLogEntity> findByReferenceIdAndReferenceTypeAndChannelTypeAndSubscriberId(
+		Long referenceId, 
+		ReferenceType referenceType, 
+		Channel channelType, 
+		Long subscriberId
+	);
 
 	@Query("""
         SELECT e.referenceId 
@@ -54,4 +62,13 @@ public interface NotificationLogJpaRepository extends JpaRepository<Notification
 		@Param("thresholdTime") LocalDateTime thresholdTime,
 		Limit limit
 	);
+
+	long countByReferenceIdAndReferenceType(Long referenceId, ReferenceType referenceType);
+
+	long countByReferenceIdAndReferenceTypeAndEventStatusIn(
+		Long referenceId,
+		ReferenceType referenceType,
+		Collection<EventStatus> eventStatuses
+	);
 }
+

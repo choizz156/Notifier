@@ -25,7 +25,7 @@ import lombok.experimental.Accessors;
 	uniqueConstraints = {
 		@UniqueConstraint(
 			name = "uk_notification_event_logs_duplicate",
-			columnNames = {"reference_id", "reference_type", "event_status", "retry_count"}
+			columnNames = {"reference_id", "reference_type", "channel_type", "subscriber_id", "event_status", "retry_count"}
 		)
 	}
 )
@@ -38,6 +38,8 @@ public class NotificationLogEntity extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	private ReferenceType referenceType;
+
+	private Long subscriberId;
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
@@ -66,6 +68,7 @@ public class NotificationLogEntity extends BaseEntity {
 	private NotificationLogEntity(
 		Long referenceId,
 		ReferenceType referenceType,
+		Long subscriberId,
 		NotificationType notificationType,
 		Channel channelType,
 		EventStatus eventStatus,
@@ -77,6 +80,7 @@ public class NotificationLogEntity extends BaseEntity {
 	) {
 		this.referenceId = referenceId;
 		this.referenceType = referenceType;
+		this.subscriberId = subscriberId;
 		this.notificationType = notificationType;
 		this.channelType = channelType;
 		this.eventStatus = eventStatus;
