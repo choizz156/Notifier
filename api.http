@@ -1,40 +1,51 @@
-### 1. 단일 알림 생성 (Push Event)
-POST http://localhost:8080/v1/notification
+### 1 단일 알림 생성 (Push Event)
+POST http://localhost:8080/v1/notifications
 Content-Type: application/json
 
 {
   "subscriberId": 1,
   "notificationType": "CANCELLATION_PROCESSED",
   "metadata": {
-    "title": "테스트 알림",
-    "content": "이것은 테스트 알림입니다."
+    "courseName": "<테스트 알림>"
+  }
+}
+
+### 1-2 단일 알림 생성 (Push Event)
+POST http://localhost:8080/v1/notifications
+Content-Type: application/json
+
+{
+  "subscriberId": 1,
+  "notificationType": "PAYMENT_CONFIRMED",
+  "metadata": {
+    "orderId": "테스트 알림"
   }
 }
 
 ### 2. 알림 상태 조회
-GET http://localhost:8080/v1/notification/1/status
+GET http://localhost:8080/v1/notifications/1/status
 
 ### 3. 구독자 알림 목록 조회
-GET http://localhost:8080/v1/notification/subscribers/1?page=0&size=20&isRead=false
+GET http://localhost:8080/v1/notifications/subscribers/1?page=0&size=20
 
 ### 4. 알림 상세 정보 조회
-GET http://localhost:8080/v1/notification/1
+GET http://localhost:8080/v1/notifications/1
 
 ### 5. 알림 읽음 처리 (App)
-PATCH http://localhost:8080/v1/notification/1/read
+PATCH http://localhost:8080/v1/notifications/1/read
 
 ### 6. 알림 읽음 처리 (Email - 리다이렉트)
-GET http://localhost:8080/v1/notification/1/read
+GET http://localhost:8080/v1/notifications/2/read
 
 ### 7. 실패 알림 재시도
-POST http://localhost:8080/v1/notification/retry
+POST http://localhost:8080/v1/notifications/retry
 
 ### 8. 대량(Public) 알림 생성
-POST http://localhost:8080/v1/notification/public
+POST http://localhost:8080/v1/notifications/public
 Content-Type: application/json
 
 {
-  "type": "NOTICE",
+  "type": "NEW_LECTURE_OPENED",
   "metadata": {
     "title": "공지사항",
     "content": "새로운 기능이 추가되었습니다."
@@ -42,7 +53,7 @@ Content-Type: application/json
 }
 
 ### 9. 대량(Public) 알림 읽음 처리
-PATCH http://localhost:8080/v1/notification/public/1/read?subscriberId=1
+PATCH http://localhost:8080/v1/notifications/public/1/read?subscriberId=1
 
 ### 10. 알림 예약 생성
 POST http://localhost:8080/v1/reservations

@@ -62,7 +62,7 @@ class NotifierControllerTest {
 				String requestJson = "{\"subscriberId\": 1, \"notificationType\": \"PAYMENT_CONFIRMED\", \"metadata\": {\"message\": \"테스트 알림입니다.\"}}";
 
 				// when & then
-				mockMvc.perform(post("/v1/notification")
+				mockMvc.perform(post("/v1/notifications")
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(requestJson))
 					.andDo(MockMvcResultHandlers.print())
@@ -74,7 +74,7 @@ class NotifierControllerTest {
 				String requestJson = "{\"subscriberId\": null, \"NotificationType\": null, \"metadata\": null}";
 
 				// when & then
-				mockMvc.perform(post("/v1/notification")
+				mockMvc.perform(post("/v1/notifications")
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(requestJson))
 					.andExpect(status().isBadRequest());
@@ -92,7 +92,7 @@ class NotifierControllerTest {
 		when(notificationUseCase.findStatus(notificationId)).thenReturn(response);
 
 		// when & then
-		mockMvc.perform(get("/v1/notification/{id}/status", notificationId))
+		mockMvc.perform(get("/v1/notifications/{id}/status", notificationId))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.notificationId").value(notificationId))
 			.andExpect(jsonPath("$.status").value("PENDING"));
@@ -117,7 +117,7 @@ class NotifierControllerTest {
 			.thenReturn(pageResult);
 
 		// when & then
-		mockMvc.perform(get("/v1/notification/subscribers/{subscriberId}", subscriberId)
+		mockMvc.perform(get("/v1/notifications/subscribers/{subscriberId}", subscriberId)
 				.param("page", "0")
 				.param("size", "20"))
 			.andExpect(status().isOk())
@@ -140,7 +140,7 @@ class NotifierControllerTest {
 		when(notificationUseCase.findNotificationDetail(notificationId)).thenReturn(detailResponse);
 
 		// when & then
-		mockMvc.perform(get("/v1/notification/{id}", notificationId))
+		mockMvc.perform(get("/v1/notifications/{id}", notificationId))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.id").value(notificationId))
 			.andExpect(jsonPath("$.content").value("결제가 완료되었습니다."));
@@ -157,7 +157,7 @@ class NotifierControllerTest {
 		doNothing().when(notificationUseCase).markAsRead(notificationId);
 
 		// when & then
-		mockMvc.perform(patch("/v1/notification/{id}/read", notificationId))
+		mockMvc.perform(patch("/v1/notifications/{id}/read", notificationId))
 			.andExpect(status().isNoContent());
 
 		verify(notificationUseCase, times(1)).markAsRead(notificationId);
@@ -172,7 +172,7 @@ class NotifierControllerTest {
 		doNothing().when(notificationUseCase).markAsRead(notificationId);
 
 		// when & then
-		mockMvc.perform(get("/v1/notification/{id}/read", notificationId))
+		mockMvc.perform(get("/v1/notifications/{id}/read", notificationId))
 			.andExpect(status().isFound())
 			.andExpect(header().string("Location", "http://localhost:8080/"));
 
@@ -186,7 +186,7 @@ class NotifierControllerTest {
 		doNothing().when(notificationUseCase).retry();
 
 		// when & then
-		mockMvc.perform(post("/v1/notification/retry"))
+		mockMvc.perform(post("/v1/notifications/retry"))
 			.andExpect(status().isAccepted());
 
 		verify(notificationUseCase, times(1)).retry();

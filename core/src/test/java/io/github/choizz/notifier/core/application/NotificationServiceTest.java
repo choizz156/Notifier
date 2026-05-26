@@ -173,7 +173,7 @@ class NotificationServiceTest {
 			.status(NotificationStatus.COMPLETED)
 			.build();
 		when(notificationPersistencePort.findById(1L)).thenReturn(notification);
-		when(templateRendererPort.render(Channel.EMAIL, NotificationType.PAYMENT_CONFIRMED, Map.of())).thenReturn("rendered content");
+		when(templateRendererPort.render(Channel.EMAIL, NotificationType.PAYMENT_CONFIRMED, Map.of("notificationId", "1"))).thenReturn("rendered content");
 
 		// when
 		NotificationDetailResponse response = notificationService.findNotificationDetail(1L);

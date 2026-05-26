@@ -25,7 +25,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/v1/notification")
+@RequestMapping("/v1/notifications")
 public class NotifierController {
 
 	private final NotificationUseCase notificationUseCase;
@@ -80,7 +80,7 @@ public class NotifierController {
 
 		notificationUseCase.markAsRead(id);
 
-		URI homepageUri = URI.create("http://localhost:8080/");
+		URI homepageUri = URI.create("http://localhost:8080");
 
 		return ResponseEntity.status(HttpStatus.FOUND)
 			.location(homepageUri)

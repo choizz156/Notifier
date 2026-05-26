@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/v1/notification/public")
+@RequestMapping("/v1/notifications/public")
 public class PublicNotifierController {
 
 	private final PublicNotificationUseCase publicNotificationUseCase;

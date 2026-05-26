@@ -1,5 +1,8 @@
 package io.github.choizz.notifier.adapter;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import io.github.choizz.notifier.core.application.dto.PublicationContext;
 import io.github.choizz.notifier.core.application.port.out.NotifierPort;
 import io.github.choizz.notifier.core.application.port.out.TemplateRendererPort;
@@ -21,7 +24,9 @@ public abstract class AbstractNotifierAdapter implements NotifierPort {
 		try {
 			Channel channel = Channel.valueOf(getChannelName().toUpperCase());
 			NotificationType type = NotificationType.valueOf(context.notificationType());
-			String content = templateRendererPort.render(channel, type, JsonUtils.toMap(context.metadata()));
+			Map<String, String> variables = new HashMap<>(JsonUtils.toMap(context.metadata()));
+			variables.put("notificationId", String.valueOf(context.notificationId()));
+			String content = templateRendererPort.render(channel, type, variables);
 			doSend(context.subscriberId(), content);
 		} catch (Exception e) {
 			log.error("[{}] 템플릿 처리 중 오류 발생", getChannelName(), e);

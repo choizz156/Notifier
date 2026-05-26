@@ -1,7 +1,9 @@
 package io.github.choizz.notifier.core.application;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.context.ApplicationEventPublisher;
@@ -139,10 +141,12 @@ public class NotificationService implements NotificationUseCase {
 	public NotificationDetailResponse findNotificationDetail(Long notificationId) {
 
 		Notification notification = notificationPersistencePort.findById(notificationId);
+		Map<String, String> variables = new HashMap<>(JsonUtils.toMap(notification.metadata()));
+		variables.put("notificationId", String.valueOf(notificationId));
 		String content = templateRendererPort.render(
 			notification.channel(),
 			notification.notificationType(),
-			JsonUtils.toMap(notification.metadata())
+			variables
 		);
 		return NotificationDetailResponse.of(notification, content);
 	}

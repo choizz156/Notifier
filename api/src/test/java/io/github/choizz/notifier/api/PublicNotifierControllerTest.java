@@ -48,7 +48,7 @@ class PublicNotifierControllerTest {
 		doNothing().when(publicNotificationUseCase).pushToPublic(any());
 
 		// when & then
-		mockMvc.perform(post("/v1/notification/public")
+		mockMvc.perform(post("/v1/notifications/public")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(requestJson))
 			.andExpect(status().isAccepted());
@@ -65,7 +65,7 @@ class PublicNotifierControllerTest {
 
 		// when & then
 		mockMvc.perform(
-				patch("/v1/notification/public/{id}/read", publicNotificationId)
+				patch("/v1/notifications/public/{id}/read", publicNotificationId)
 					.param("subscriberId", String.valueOf(subscriberId))
 			)
 			.andExpect(status().isOk());
