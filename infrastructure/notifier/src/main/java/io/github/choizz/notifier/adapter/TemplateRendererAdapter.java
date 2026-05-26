@@ -37,10 +37,37 @@ public class TemplateRendererAdapter implements TemplateRendererPort {
 		}
 
 		try {
-			return replaceVariables(content, metadata);
+			String renderedContent = replaceVariables(content, metadata);
+			return applyBaseLayout(channel, renderedContent);
 		} catch (Exception e) {
 			log.error("[{}] 템플릿 변수 치환 중 오류 발생", channel, e);
 			throw new IllegalStateException("템플릿 변수 치환 중 오류 발생", e);
+		}
+	}
+
+	private String applyBaseLayout(Channel channel, String content) {
+		if (channel == Channel.EMAIL || channel == Channel.IN_APP) {
+			String baseLayout = loadBaseLayoutFromClassPath(channel);
+			return baseLayout.replace("{body_content}", content);
+		}
+		return content;
+	}
+
+	private String loadBaseLayoutFromClassPath(Channel channel) {
+		String templateName = channel == Channel.EMAIL ? "email-base.html" : "inapp-base.txt";
+		String templatePath = "templates/layout/" + templateName;
+		ClassPathResource resource = new ClassPathResource(templatePath);
+
+		if (!resource.exists()) {
+			log.warn("[{}] 공통 레이아웃을 찾을 수 없습니다: {}", channel, templatePath);
+			return "{body_content}";
+		}
+
+		try {
+			return new String(resource.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+		} catch (Exception e) {
+			log.error("[{}] 공통 레이아웃 읽기 중 오류 발생: {}", channel, templatePath, e);
+			throw new IllegalStateException("공통 레이아웃 읽기 중 오류 발생", e);
 		}
 	}
 
