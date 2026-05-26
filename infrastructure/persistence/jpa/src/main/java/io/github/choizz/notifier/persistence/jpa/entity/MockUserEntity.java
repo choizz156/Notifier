@@ -34,7 +34,6 @@ public class MockUserEntity extends BaseEntity {
 
 	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(name = "mock_user_channel_settings", joinColumns = @JoinColumn(name = "mock_user_id"))
-	@MapKeyEnumerated(EnumType.STRING)
 	@Column(name = "is_active", nullable = false)
 	private Map<Channel, Boolean> channelSettings = new HashMap<>();
 
