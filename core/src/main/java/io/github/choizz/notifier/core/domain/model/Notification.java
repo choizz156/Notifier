@@ -19,6 +19,7 @@ public class Notification {
 	private final Long subscriberId;
 	private final NotificationType notificationType;
 	private final Channel channel;
+	private final String idempotencyKey;
 	private final String metadata;
 	private NotificationStatus status;
 	private String failMessage;
@@ -34,6 +35,7 @@ public class Notification {
 		Long subscriberId,
 		NotificationType notificationType,
 		Channel channel,
+		String idempotencyKey,
 		String metadata,
 		NotificationStatus status,
 		String failMessage,
@@ -48,6 +50,7 @@ public class Notification {
 		this.subscriberId = subscriberId;
 		this.notificationType = notificationType;
 		this.channel = channel;
+		this.idempotencyKey = idempotencyKey;
 		this.metadata = metadata;
 		this.status = status != null ? status : NotificationStatus.PENDING;
 		this.failMessage = failMessage;
@@ -64,6 +67,7 @@ public class Notification {
 			.subscriberId(context.subscriberId())
 			.notificationType(context.notificationType())
 			.channel(channel)
+			.idempotencyKey(context.idempotencyKey())
 			.status(NotificationStatus.PENDING)
 			.metadata(context.metadataToJson())
 			.isRead(false)

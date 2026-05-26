@@ -1,6 +1,8 @@
 package io.github.choizz.notifier.core.application.dto;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.util.UUID;
 
 import io.github.choizz.notifier.core.domain.model.NotificationType;
 import io.github.choizz.notifier.core.domain.util.JsonUtils;
@@ -10,6 +12,7 @@ import lombok.Builder;
 public record NotificationContext(
 	Long subscriberId,
 	NotificationType notificationType,
+	String idempotencyKey,
 	Map<String, String> metadata
 ) {
 
@@ -18,6 +21,7 @@ public record NotificationContext(
 		this(
 			validateSubscriberId(subscriberId),
 			parseNotificationType(notificationType),
+			generateIdempotencyKey(subscriberId, notificationType, metadata),
 			metadata == null ? Map.of() : Map.copyOf(metadata)
 		);
 	}
@@ -27,8 +31,14 @@ public record NotificationContext(
 		this(
 			null,
 			parseNotificationType(notificationType),
+			generateIdempotencyKey(null, notificationType, metadata),
 			metadata == null ? Map.of() : Map.copyOf(metadata)
 		);
+	}
+
+	private static String generateIdempotencyKey(Long subscriberId, String type, Map<String, String> metadata) {
+		String payload = (subscriberId != null ? subscriberId : "") + ":" + type + ":" + (metadata != null ? metadata.toString() : "");
+		return UUID.nameUUIDFromBytes(payload.getBytes(StandardCharsets.UTF_8)).toString();
 	}
 
 	private static long validateSubscriberId(Long subscriberId) {

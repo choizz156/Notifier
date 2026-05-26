@@ -1,5 +1,7 @@
 package io.github.choizz.notifier.api;
 
+import java.net.URI;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -51,7 +53,7 @@ public class PublicNotifierController {
 
 		publicNotificationUseCase.markAsRead(subscriberId, id);
 
-		java.net.URI homepageUri = java.net.URI.create("http://localhost:8080/");
+		URI homepageUri = URI.create("http://localhost:8080/");
 
 		return ResponseEntity.status(HttpStatus.FOUND)
 			.location(homepageUri)

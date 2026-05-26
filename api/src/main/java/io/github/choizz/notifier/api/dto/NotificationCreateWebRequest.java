@@ -6,6 +6,5 @@ public record NotificationCreateWebRequest(
 	Long subscriberId,
 	String notificationType,
 	Map<String, String> metadata
-	) {
-
+) {
 }

@@ -21,8 +21,8 @@ import lombok.experimental.Accessors;
 	name = "notifications",
 	uniqueConstraints = {
 		@UniqueConstraint(
-			name = "uk_notification_duplicate",
-			columnNames = {"subscriber_id", "notification_type", "channel", "status"}
+			name = "uk_notification_idempotency",
+			columnNames = {"subscriber_id", "notification_type", "channel", "idempotency_key"}
 		)
 	}
 )
@@ -39,6 +39,9 @@ public class NotificationEntity extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	private Channel channel;
+
+	@Column(name = "idempotency_key")
+	private String idempotencyKey;
 
 	@Column(columnDefinition = "json")
 	private String metadata;
@@ -60,6 +63,7 @@ public class NotificationEntity extends BaseEntity {
 		Long subscriberId,
 		NotificationType notificationType,
 		Channel channel,
+		String idempotencyKey,
 		String metadata,
 		NotificationStatus status,
 		String message,
@@ -70,6 +74,7 @@ public class NotificationEntity extends BaseEntity {
 		this.subscriberId = subscriberId;
 		this.notificationType = notificationType;
 		this.channel = channel;
+		this.idempotencyKey = idempotencyKey;
 		this.metadata = metadata;
 		this.status = status;
 		this.message = message;

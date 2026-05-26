@@ -4,8 +4,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -82,11 +84,11 @@ class PublicNotifierControllerTest {
 
 		// when & then
 		mockMvc.perform(
-				org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get("/v1/notifications/public/{id}/read", publicNotificationId)
+				get("/v1/notifications/public/{id}/read", publicNotificationId)
 					.param("subscriberId", String.valueOf(subscriberId))
 			)
 			.andExpect(status().isFound())
-			.andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.header().string("Location", "http://localhost:8080/"));
+			.andExpect(header().string("Location", "http://localhost:8080/"));
 
 		verify(publicNotificationUseCase, times(1)).markAsRead(subscriberId, publicNotificationId);
 	}
