@@ -75,7 +75,7 @@
         message varchar(255),
         channel enum ('EMAIL','IN_APP') not null,
         notification_type enum ('CANCELLATION_PROCESSED','COUPON_EXPIRY_REMINDER','COUPON_ISSUED','COURSE_START_REMINDER','NEW_LECTURE_OPENED','PAYMENT_CONFIRMED') not null,
-        status enum ('COMPLETED','FAILED','PENDING','RETRYING') not null,
+        status enum ('COMPLETED','FAILED','PENDING') not null,
         primary key (id),
         constraint uk_notification_idempotency unique (subscriber_id, notification_type, channel, idempotency_key)
     );
@@ -108,7 +108,7 @@
         metadata varchar(2000),
         idempotency_key varchar(255) not null unique,
         notification_type enum ('CANCELLATION_PROCESSED','COUPON_EXPIRY_REMINDER','COUPON_ISSUED','COURSE_START_REMINDER','NEW_LECTURE_OPENED','PAYMENT_CONFIRMED') not null,
-        status enum ('COMPLETED','FAILED','PENDING','RETRYING') not null,
+        status enum ('COMPLETED','FAILED','PENDING') not null,
         primary key (id)
     );
 
