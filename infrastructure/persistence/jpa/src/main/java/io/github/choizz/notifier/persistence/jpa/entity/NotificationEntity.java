@@ -36,7 +36,6 @@ public class NotificationEntity extends BaseEntity {
 	@Column(nullable = false)
 	private NotificationType notificationType;
 
-	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	private Channel channel;
 

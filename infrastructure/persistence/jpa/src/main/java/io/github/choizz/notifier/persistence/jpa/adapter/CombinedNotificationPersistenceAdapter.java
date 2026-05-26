@@ -46,7 +46,7 @@ public class CombinedNotificationPersistenceAdapter implements LoadCombinedNotif
 		Channel channel = null;
 		try {
 			if (!"NONE".equals(channelStr) && channelStr != null) {
-				channel = Channel.valueOf(channelStr);
+				channel = Channel.of(channelStr);
 			}
 		} catch (IllegalArgumentException ignored) {}
 

@@ -46,7 +46,7 @@ public class TemplateRendererAdapter implements TemplateRendererPort {
 	}
 
 	private String applyBaseLayout(Channel channel, String content) {
-		if (channel == Channel.EMAIL || channel == Channel.IN_APP) {
+		if (Channel.EMAIL.equals(channel) || Channel.IN_APP.equals(channel)) {
 			String baseLayout = loadBaseLayoutFromClassPath(channel);
 			return baseLayout.replace("{body_content}", content);
 		}
@@ -54,7 +54,7 @@ public class TemplateRendererAdapter implements TemplateRendererPort {
 	}
 
 	private String loadBaseLayoutFromClassPath(Channel channel) {
-		String templateName = channel == Channel.EMAIL ? "email-base.html" : "inapp-base.txt";
+		String templateName = Channel.EMAIL.equals(channel) ? "email-base.html" : "inapp-base.txt";
 		String templatePath = "templates/layout/" + templateName;
 		ClassPathResource resource = new ClassPathResource(templatePath);
 
@@ -99,6 +99,6 @@ public class TemplateRendererAdapter implements TemplateRendererPort {
 
 	private String getExtension(Channel channel) {
 
-		return channel == Channel.EMAIL ? "html" : "txt";
+		return Channel.EMAIL.equals(channel) ? "html" : "txt";
 	}
 }

@@ -33,7 +33,7 @@ public class RdsNotificationEventPublishAdapter implements NotificationEventPubl
 		ClaimContext claimContext = new ClaimContext(
 			event.referencedId(),
 			ReferenceType.valueOf(event.referenceType()),
-			Channel.valueOf(event.channel()),
+			Channel.of(event.channel()),
 			event.subscriberId()
 		);
 

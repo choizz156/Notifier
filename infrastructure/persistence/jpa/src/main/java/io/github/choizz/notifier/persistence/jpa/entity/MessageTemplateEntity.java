@@ -28,7 +28,6 @@ import lombok.experimental.Accessors;
 @Entity
 public class MessageTemplateEntity extends BaseEntity {
 
-	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	private Channel channel;
 

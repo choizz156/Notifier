@@ -22,7 +22,7 @@ public abstract class AbstractNotifierAdapter implements NotifierPort {
 	public void publish(PublicationContext context) {
 
 		try {
-			Channel channel = Channel.valueOf(getChannelName().toUpperCase());
+			Channel channel = Channel.of(getChannelName().toUpperCase());
 			NotificationType type = NotificationType.valueOf(context.notificationType());
 			Map<String, String> variables = new HashMap<>(JsonUtils.toMap(context.metadata()));
 			variables.put("notificationId", String.valueOf(context.notificationId()));
