@@ -3,7 +3,9 @@ package io.github.choizz.notifier.persistence.jpa.entity;
 import io.github.choizz.notifier.core.domain.model.NotificationStatus;
 import io.github.choizz.notifier.core.domain.model.NotificationType;
 import io.github.choizz.notifier.core.domain.model.Channel;
+import io.github.choizz.notifier.persistence.jpa.converter.ChannelConverter;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -36,6 +38,7 @@ public class NotificationEntity extends BaseEntity {
 	@Column(nullable = false)
 	private NotificationType notificationType;
 
+	@Convert(converter = ChannelConverter.class)
 	@Column(nullable = false)
 	private Channel channel;
 
