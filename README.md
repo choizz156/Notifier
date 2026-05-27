@@ -1,6 +1,7 @@
 # 📬 Notifier — 알림 발송 시스템
 
 ## 📑 목차
+
 - [1. 프로젝트 개요](#1-프로젝트-개요)
 - [2. 기술 스택](#2-기술-스택)
 - [3. 실행 방법](#3-실행-방법)
@@ -14,6 +15,7 @@
 - [11. 테스트 실행 방법](#11-테스트-실행-방법)
 
 ---
+
 ## 1. 프로젝트 개요
 
 수강 신청 완료, 결제 확정, 강의 시작 D-1, 취소 처리 등 다양한 비즈니스 이벤트 발생 시 사용자에게 **이메일(EMAIL)** 또는 **인앱(IN\_APP)** 알림 발송하는 시스템입니다. 알림 채널을 확장할 수 있도록 설계했습니다.
@@ -29,7 +31,6 @@
 ---
 
 ## 2. 기술 스택
-
 
 | 구분          | 기술                                         |
 | ------------- | -------------------------------------------- |
@@ -201,7 +202,6 @@ Notifier/
 
 하나의 테이블에서 알림 데이터와 발송 이력을 모두 관리할 경우 발생하는 **DB 쓰기 병목 현상과 상태 관리의 복잡성을 해결하기 위해**, 데이터의 목적과 생명 주기에 따라 엔티티를 3가지(`Notification`, `PublicNotification`, `NotificationLog`)로 분리 설계했습니다.
 
-
 | 모델                 | 설명                                                         |
 | -------------------- | ------------------------------------------------------------ |
 | `Notification`       | 사용자에게 보여지는 알림 자체 (읽음/안읽음, 상태 등)         |
@@ -231,7 +231,6 @@ Notifier/
 
 **발송 대상 및 목적 (도메인 관점)**
 
-
 | 구분                     | 설명                                                               |
 | ------------------------ | ------------------------------------------------------------------ |
 | **개인 알림 (Personal)** | 특정 수신자 1명에게 발송하는 알림 (결제 완료, 취소 처리 등)        |
@@ -259,7 +258,7 @@ Notifier/
   * **DB 적재:**
     * 수신자나 채널 정보 없이 알림의 원본 내용만 담긴 `PublicNotification` 엔티티 **단 1건**을 `public_notifications` 테이블에 저장합니다.
   * **대상자 분리 및 로그 적재:**
-    * `PublicNotificationBulkProcessor`가 전체 구독자(`subscriberIds`)를 순회하며 개개인이 켜둔 알림 채널을 조회합니다. 그 후 각 유저/채널 단위로 무수히 많은 `NotificationLog`를 PENDING 상태로 선적재합니다.
+    * `PublicNotificationBulkProcessor`가 전체 구독자(`subscriberIds`)를 순회하며 개개인이 켜둔 알림 채널을 조회합니다. 그 후 각 유저/채널 단위로 무수히 많은 `NotificationLog`를 PENDING 상태로 선적재합니다.
   * **대량 이벤트 쪼개기:**
     * 각 유저/채널별로 `PublishCommandEvent.toPublic()`을 개별 생성하여 **이벤트를 쪼개어 발행**합니다.
   * **안전망 (DLQ):**
@@ -285,7 +284,6 @@ Notifier/
   **비즈니스 임팩트를 고려한 재시도 수준(Level) 차등화**
 * **금전/결제 알림(Aggressive)** : 유저의 금전과 직결된 이벤트는 서비스 신뢰도와 직결된다고 생각하여, 가장 공격적인 재시도 정책을 적용하여 알림 유실을 원천 차단했습니다.
 * **마케팅/공지 알림(Minimum)**: 단순 브로드캐스트 알림은 실패가 비즈니스에 미치는 타격이 상대적으로 적으므로(상황에 따라 다를 수 있음), 불필요한 시스템 부하를 막기 위해 최소한의 재시도만 허용하도록 리소스를 최적화했습니다.
-
 
 | 레벨           | 대상 알림 타입                               | 최대 재시도 | 백오프                | 최대 대기 |
 | -------------- | -------------------------------------------- | ----------- | --------------------- | --------- |
@@ -500,10 +498,10 @@ uniqueConstraints = {
 * 메시지 템플릿과 공통 레이아웃은 변경 주기가 길고 조회 빈도가 매우 높은 전형적인 데이터입니다. 대량 발송 시 매번 DB나 파일 시스템에 접근하면 심각한 I/O 병목이 발생할 가능성이 있습니다.
 * 이를 방지하기 위해 다음과 같은 **캐싱 전략**을 적용했습니다.
 * **DB 활성 템플릿 캐싱**:
-
+  
   * Spring Cache(`@Cacheable`)를 적용하여 한 번 조회한 템플릿은 메모리에 캐싱합니다. 백오피스(Admin)에서 템플릿 수정이 발생하면 즉시 `@CacheEvict`를 통해 전체 캐시를 무효화(allEntries=true)하여 데이터 정합성을 완벽히 보장합니다.
 * **정적 레이아웃/폴백 파일 캐싱**:
-
+  
   * 폴백용 정적 템플릿과 베이스 레이아웃은 `ConcurrentHashMap`을 이용해 최초 1회만 디스크에서 로드하고, 이후에는 메모리에서 즉시 꺼내어 쓰도록 최적화했습니다.
 
 ```mermaid
@@ -565,7 +563,9 @@ sequenceDiagram
 1. **다량의 스레드 생성:** 수만 건의 `PublishCommandEvent`가 동시에 발생해도, OS 스레드에 의존하지 않고 JVM 단에서 가벼운 가상 스레드를 수만 개 즉시 생성하여 각각 할당할 수 있습니다.
 2. **블로킹(Blocking) 비용 감소:** 가상 스레드가 외부 API 응답을 기다리며 대기(Block) 상태에 빠질 때, 기반이 되는 캐리어 스레드(OS 스레드)는 멈추지 않고 즉시 다른 가상 스레드의 작업을 처리하러 넘어갑니다.
 
-![notify.png](assets/notify.png)
+![notify.png](images/notify.png)
+
+
 
 ### 개인 알림 비동기 처리 흐름
 
@@ -613,7 +613,7 @@ sequenceDiagram
 
 ---
 
-## 7. 미구현 / 제약사항/개선할 점
+## 7. 미구현 / 제약사항/ 개선할 점
 
 * **모니터링 제약**
   * 에러 로그가 생겼을때, 모니터링을 하거나 알림을 보내는 인프라가 없습니다.
@@ -657,7 +657,7 @@ sequenceDiagram
 ### 알림 발송 요청
 
 ```
-POST /v1/notifications  
+POST /v1/notifications
 ```
 
 **Request Body**
@@ -669,7 +669,7 @@ POST /v1/notifications
   "metadata": {  
     "orderId": "3"  
   }  
-}  
+}
 ```
 
 **Response**: `202 Accepted` (본문 없음)
@@ -679,7 +679,7 @@ POST /v1/notifications
 발행 로그
 
 ```
-[Mock In-App] 수신자: 1, 메시지: [학습 플랫폼] 결제가 확정되었습니다!  
+[Mock In-App] 수신자: 1, 메시지: [학습 플랫폼] 결제가 확정되었습니다!
 ```
 
 ```html
@@ -710,7 +710,7 @@ POST /v1/notifications
         </div>  
     </div>  
 </body>  
-</html>  
+</html>
 ```
 
 ---
@@ -718,7 +718,7 @@ POST /v1/notifications
 ### 알림 상태 조회
 
 ```
-GET /v1/notifications/{id}/status  
+GET /v1/notifications/{id}/status
 ```
 
 **Response**: `200 OK`
@@ -727,7 +727,7 @@ GET /v1/notifications/{id}/status
 {  
   "notificationId": 1,  
   "status": "COMPLETED" //"PENDING", "FAILED"
-}  
+}
 ```
 
 ---
@@ -735,11 +735,10 @@ GET /v1/notifications/{id}/status
 ### 사용자 알림 목록 조회
 
 ```
-GET /v1/notifications/subscribers/{subscriberId}?isRead=false&page=0&size=20  
+GET /v1/notifications/subscribers/{subscriberId}?isRead=false&page=0&size=20
 ```
 
 **Query Parameters**
-
 
 | 파라미터 | 필수 | 설명                                 |
 | -------- | ---- | ------------------------------------ |
@@ -766,7 +765,7 @@ GET /v1/notifications/subscribers/{subscriberId}?isRead=false&page=0&size=20
   "size": 20,  
   "totalElements": 1,  
   "totalPages": 1  
-}  
+}
 ```
 
 > 개인 알림과 공개 알림을 통합하여 조회합니다.
@@ -776,7 +775,7 @@ GET /v1/notifications/subscribers/{subscriberId}?isRead=false&page=0&size=20
 ### 알림 상세 조회
 
 ```
-GET /v1/notifications/{id}  
+GET /v1/notifications/{id}
 ```
 
 **Response**: `200 OK`
@@ -791,7 +790,7 @@ GET /v1/notifications/{id}
   "content": "결제가 완료되었습니다. 주문 번호: 3",  
   "isRead": false,  
   "createdAt": "2026-05-26T10:00:00"  
-}  
+}
 ```
 
 ---
@@ -799,7 +798,7 @@ GET /v1/notifications/{id}
 ### 알림 읽음 처리 (인앱)
 
 ```
-PATCH /v1/notifications/{id}/read  
+PATCH /v1/notifications/{id}/read
 ```
 
 **Response**: `204 No Content`
@@ -809,7 +808,7 @@ PATCH /v1/notifications/{id}/read
 ### 알림 읽음 처리 (이메일 — 리다이렉트)
 
 ```
-GET /v1/notifications/{id}/read  
+GET /v1/notifications/{id}/read
 ```
 
 **Response**: `302 Found` → 홈페이지로 리다이렉트
@@ -819,7 +818,7 @@ GET /v1/notifications/{id}/read
 ### 실패 알림 수동 재시도
 
 ```
-POST /v1/notifications/retry  
+POST /v1/notifications/retry
 ```
 
 **Response**: `202 Accepted`
@@ -829,7 +828,7 @@ POST /v1/notifications/retry
 ### 대량(공개) 알림 발송
 
 ```
-POST /v1/notifications/public  
+POST /v1/notifications/public
 ```
 
 **Request Body**
@@ -840,7 +839,7 @@ POST /v1/notifications/public
   "metadata": {  
     "courseName": "신규 특강"  
   }  
-}  
+}
 ```
 
 **Response**: `202 Accepted`
@@ -850,7 +849,7 @@ POST /v1/notifications/public
 ### 공개 알림 읽음 처리 (인앱)
 
 ```
-PATCH /v1/notifications/public/{id}/read?subscriberId=1  
+PATCH /v1/notifications/public/{id}/read?subscriberId=1
 ```
 
 **Response**: `200 OK`
@@ -860,7 +859,7 @@ PATCH /v1/notifications/public/{id}/read?subscriberId=1
 ### 공개 알림 읽음 처리 (이메일 — 리다이렉트)
 
 ```
-GET /v1/notifications/public/{id}/read?subscriberId=1  
+GET /v1/notifications/public/{id}/read?subscriberId=1
 ```
 
 **Response**: `302 Found` → 홈페이지로 리다이렉트
@@ -870,7 +869,7 @@ GET /v1/notifications/public/{id}/read?subscriberId=1
 ### 알림 예약 발송
 
 ```
-POST /v1/reservations/public  
+POST /v1/reservations/public
 ```
 
 **Request Body**
@@ -882,7 +881,7 @@ POST /v1/reservations/public
     "courseName": "신규 특강"  
   },  
   "reservationTime": "2026-05-28T10:00:00"  
-}  
+}
 ```
 
 **Response**: `202 Accepted`
@@ -894,7 +893,7 @@ POST /v1/reservations/public
 ### 메시지 템플릿 생성 (Admin)
 
 ```
-POST /v1/admin/templates  
+POST /v1/admin/templates
 ```
 
 **Request Body**
@@ -904,7 +903,7 @@ POST /v1/admin/templates
   "channel": "IN_APP",  
   "type": "PAYMENT_CONFIRMED",  
   "content": "결제가 완료되었습니다. 주문 번호: {orderId}"  
-}  
+}
 ```
 
 **Response**: `200 OK`
@@ -918,7 +917,7 @@ POST /v1/admin/templates
   "active": true,  
   "createdAt": "2026-05-26T10:00:00",  
   "updatedAt": "2026-05-26T10:00:00"  
-}  
+}
 ```
 
 ---
@@ -926,7 +925,7 @@ POST /v1/admin/templates
 ### 메시지 템플릿 수정 (Admin)
 
 ```
-PUT /v1/admin/templates/{id}  
+PUT /v1/admin/templates/{id}
 ```
 
 **Request Body**
@@ -934,7 +933,7 @@ PUT /v1/admin/templates/{id}
 ```json
 {  
   "content": "결제가 정상적으로 처리되었습니다. 주문 번호: {orderId}"  
-}  
+}
 ```
 
 **Response**: `200 OK` (수정된 템플릿 정보 반환)
@@ -946,7 +945,7 @@ PUT /v1/admin/templates/{id}
 ### 메시지 템플릿 전체 조회 (Admin)
 
 ```
-GET /v1/admin/templates  
+GET /v1/admin/templates
 ```
 
 **Response**: `200 OK`
@@ -962,7 +961,7 @@ GET /v1/admin/templates
     "createdAt": "2026-05-26T10:00:00",  
     "updatedAt": "2026-05-26T10:00:00"  
   }  
-]  
+]
 ```
 
 ---
@@ -970,7 +969,7 @@ GET /v1/admin/templates
 ### 메시지 템플릿 단건 조회 (Admin)
 
 ```
-GET /v1/admin/templates/{id}  
+GET /v1/admin/templates/{id}
 ```
 
 **Response**: `200 OK`
@@ -984,7 +983,7 @@ GET /v1/admin/templates/{id}
   "active": true,  
   "createdAt": "2026-05-26T10:00:00",  
   "updatedAt": "2026-05-26T10:00:00"  
-}  
+}
 ```
 
 ---
@@ -992,7 +991,7 @@ GET /v1/admin/templates/{id}
 ### 메시지 템플릿 변경 이력 조회 (Admin)
 
 ```
-GET /v1/admin/templates/{id}/histories  
+GET /v1/admin/templates/{id}/histories
 ```
 
 **Response**: `200 OK`
@@ -1005,7 +1004,7 @@ GET /v1/admin/templates/{id}/histories
     "content": "기존 메시지 내용",  
     "createdAt": "2026-05-26T09:00:00"  
   }  
-]  
+]
 ```
 
 ---
@@ -1049,3 +1048,4 @@ GET /v1/admin/templates/{id}/histories
 - 프로젝트 내에 포함된 `api.http` 파일을 활용하여 Postman 같은 외부 도구 없이 손쉽게 수동 API 테스트를 진행할 수 있습니다.
 - 서버가 실행 중인 상태(`http://localhost:8080`)에서만 정상적으로 응답을 받을 수 있습니다.
 ```
+
