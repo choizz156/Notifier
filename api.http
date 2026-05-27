@@ -1,3 +1,14 @@
+### ============================================================================
+### 🧪 Notifier API 수동 테스트 파일 (HTTP Client)
+###
+### [사용 방법]
+### 1. IntelliJ IDEA: 각 요청(메서드) 옆의 초록색 ▶ (Run) 버튼을 클릭하여 실행하세요.
+### 2. VS Code: 'REST Client' 확장 프로그램 설치 후, 위에 뜨는 'Send Request'를 클릭하세요.
+###
+### * 주의: 반드시 로컬 서버(http://localhost:8080)가 켜져 있어야 합니다.
+### * DB에 초기 Mock 데이터가 자동 세팅된 상태를 기준으로 작성되었습니다.
+### ============================================================================
+
 ### 1 단일 알림 생성
 POST http://localhost:8080/v1/notifications
 Content-Type: application/json
@@ -40,6 +51,13 @@ GET http://localhost:8080/v1/notifications/2/read
 ### 7. 실패 알림 재시도
 POST http://localhost:8080/v1/notifications/retry
 
+### =====================================
+### 아래와 같은 로그가 나오면 자동 재발송 로직이 실행 된 것 입니다.
+### 수동 재시작은 자동 재시작과 로직이 같습니다.
+### [Notifier] [publish-async-1] .r.UnprocessedNotificationRecoveryRunner : 미처리 알림 복구 작업을 시작합니다.
+#  2026-05-27T21:17:30.325+09:00  INFO 7833 --- [Notifier] [publish-async-1] i.g.c.n.c.a.s.NotificationRetryProcessor : 알림 재시도 처리 완료: 총 1건 발송 큐에 적재됨
+###
+
 ### 8. 대량(Public) 알림 생성
 POST http://localhost:8080/v1/notifications/public
 Content-Type: application/json
@@ -58,12 +76,14 @@ PATCH http://localhost:8080/v1/notifications/public/1/read?subscriberId=1
 GET http://localhost:8080/v1/notifications/public/1/read?subscriberId=1
 
 ### 10. 알림 예약 생성
-POST http://localhost:8080/v1/reservations
+POST http://localhost:8080/v1/reservations/public
 Content-Type: application/json
 
 {
-  "subscriberIds": [1, 2, 3],
   "type": "NEW_LECTURE_OPENED",
+  "metadata": {
+    "courseName": "신규 특강"
+  },
   "reservationTime": "2026-05-28T10:00:00"
 }
 
