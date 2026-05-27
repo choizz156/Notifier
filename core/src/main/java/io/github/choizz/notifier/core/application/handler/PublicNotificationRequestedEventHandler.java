@@ -28,5 +28,4 @@ public class PublicNotificationRequestedEventHandler {
 			dlqPort.saveDlq(event, e);
 		}
 	}
-
 }

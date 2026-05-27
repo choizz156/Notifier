@@ -23,6 +23,9 @@ import io.github.choizz.notifier.core.application.dto.PageResult;
 import io.github.choizz.notifier.core.application.port.in.NotificationUseCase;
 import lombok.RequiredArgsConstructor;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/v1/notifications")
@@ -90,6 +93,7 @@ public class NotifierController {
 	@ResponseStatus(HttpStatus.ACCEPTED)
 	@PostMapping("/retry")
 	public void retryNotification() {
+		log.info("수동 알림 재시도(API) 호출됨");
 		notificationUseCase.retry();
 	}
 }

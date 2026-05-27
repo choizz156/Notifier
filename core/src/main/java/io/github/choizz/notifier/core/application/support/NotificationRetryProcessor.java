@@ -48,6 +48,9 @@ public class NotificationRetryProcessor {
 
 		if (!successfulNotifications.isEmpty()) {
 			notificationPersistencePort.saveAll(successfulNotifications);
+			log.info("알림 재시도 처리 완료: 총 {}건 발송 큐에 적재됨", successfulNotifications.size());
+		} else {
+			log.info("재시도할 알림이 없습니다.");
 		}
 	}
 }

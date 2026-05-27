@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 public class NotificationLogService implements NotificationLogUseCase {
 
 	public static final List<EventStatus> TARGET_STATUSES = List.of(
-		EventStatus.REQUESTED, EventStatus.RETRIED
+		EventStatus.REQUESTED, EventStatus.RETRIED, EventStatus.FAILED
 	);
 
 	private final NotificationLogPersistencePort notificationLogPersistencePort;
@@ -57,7 +57,8 @@ public class NotificationLogService implements NotificationLogUseCase {
 			NotificationLog notificationLog = optionalLog.get();
 
 			if (notificationLog.eventStatus() != EventStatus.REQUESTED
-				&& notificationLog.eventStatus() != EventStatus.RETRIED) {
+				&& notificationLog.eventStatus() != EventStatus.RETRIED
+				&& notificationLog.eventStatus() != EventStatus.FAILED) {
 				return false;
 			}
 
@@ -72,10 +73,11 @@ public class NotificationLogService implements NotificationLogUseCase {
 	@Override
 	@Transactional(readOnly = true)
 	public List<Long> findUnprocessedNotificationIds(Long lastId, int chunkSize) {
-
-		return notificationLogPersistencePort.findUnprocessedNotificationIds(
+		List<Long> ids = notificationLogPersistencePort.findUnprocessedNotificationIds(
 			TARGET_STATUSES, lastId, chunkSize
 		);
+		log.info("findUnprocessedNotificationIds(lastId={}, chunkSize={}) 반환 결과: {}", lastId, chunkSize, ids);
+		return ids;
 	}
 
 	@Override
