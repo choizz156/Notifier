@@ -480,7 +480,36 @@ uniqueConstraints = {
 * 템플릿 본문 내의 `{name}`, `{amount}` 등의 예약어를 발송 요청 시 전달받은 `metadata`와 매핑하여, 발송 직전에 완벽하게 개인화된 메시지로 치환합니다.
 * 또한 채널별(Email, In-App 등)로 공통적으로 들어가는 헤더, 푸터, HTML 스타일링 코드를 개별 템플릿마다 중복 작성하지 않도록 개선했습니다.
 * 공통 베이스 레이아웃(`email-base.html` )을 선행 로드한 뒤, `{body_content}` 영역에 렌더링된 본문을 주입하는 조립식 구조를 사용하여 코드의 중복을 제거하고 유지보수성을 확보했습니다.
-  ![message](./images/message.png)
+
+**캐싱 최적화**
+
+* 메시지 템플릿과 공통 레이아웃은 변경 주기가 길고 조회 빈도가 매우 높은 전형적인 데이터입니다. 대량 발송 시 매번 DB나 파일 시스템에 접근하면 심각한 I/O 병목이 발생할 가능성이 있습니다.
+* 이를 방지하기 위해 다음과 같은 **캐싱 전략**을 적용했습니다.
+* **DB 활성 템플릿 캐싱**:
+
+  - Spring Cache(`@Cacheable`)를 적용하여 한 번 조회한 템플릿은 메모리에 캐싱합니다. 백오피스(Admin)에서 템플릿 수정이 발생하면 즉시 `@CacheEvict`를 통해 전체 캐시를 무효화(allEntries=true)하여 데이터 정합성을 완벽히 보장합니다.**정적 레이아웃/폴백 파일 캐싱**:
+* * 폴백용 정적 템플릿과 베이스 레이아웃은 `ConcurrentHashMap`을 이용해 최초 1회만 디스크에서 로드하고, 이후에는 메모리에서 즉시 꺼내어 쓰도록 최적화했습니다.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Admin as 백오피스 (Admin)
+    participant Sender as 템플릿 렌더러
+    participant Cache as 캐시 (Memory)
+    participant DB as DB / File System
+
+    Admin->>DB: 템플릿 내용 수정 (PUT)
+    Admin->>Cache: 기존 템플릿 캐시 무효화 (@CacheEvict)
+  
+    Sender->>Cache: 템플릿 및 레이아웃 렌더링 요청
+    alt Cache Hit (캐시 적중)
+        Cache-->>Sender: 메모리에서 즉시 반환 (I/O 없음)
+    else Cache Miss (캐시 미적중)
+        Cache->>DB: DB 조회 또는 파일 로드
+        DB-->>Cache: 데이터 반환 및 새로운 캐시 저장
+        Cache-->>Sender: 내용 병합 후 렌더링 완료
+    end
+```
 
 ### (13) JPA 연관관계 매핑(@OneToMany)을 배제하고 ID 기반 참조를 선택한 이유
 
