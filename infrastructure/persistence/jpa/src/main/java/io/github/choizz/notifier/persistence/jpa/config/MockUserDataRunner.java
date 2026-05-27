@@ -40,26 +40,28 @@ public class MockUserDataRunner implements ApplicationRunner {
 		for (int i = 0; i < 100; i++) {
 			Map<NotificationType, Boolean> settings = new HashMap<>();
 			Map<Channel, Boolean> channelSettings = new HashMap<>();
-			
+
 			int typePattern = i % 4;
-			
+
 			for (NotificationType type : NotificationType.values()) {
 				boolean isSubscribed = false;
-				
+
 				if (typePattern == 0) {
 					// 1. 모두 동의 (25명)
 					isSubscribed = true;
 				} else if (typePattern == 1) {
 					// 2. 필수 알림(결제/취소)만 동의 (25명)
-					isSubscribed = type == NotificationType.PAYMENT_CONFIRMED || type == NotificationType.CANCELLATION_PROCESSED;
+					isSubscribed =
+						type == NotificationType.PAYMENT_CONFIRMED || type == NotificationType.CANCELLATION_PROCESSED;
 				} else if (typePattern == 2) {
 					// 3. 마케팅/기타 알림만 동의 (25명)
-					isSubscribed = type != NotificationType.PAYMENT_CONFIRMED && type != NotificationType.CANCELLATION_PROCESSED;
+					isSubscribed =
+						type != NotificationType.PAYMENT_CONFIRMED && type != NotificationType.CANCELLATION_PROCESSED;
 				} else {
 					// 4. 모두 거부 (25명)
 					isSubscribed = false;
 				}
-				
+
 				settings.put(type, isSubscribed);
 			}
 
@@ -77,7 +79,7 @@ public class MockUserDataRunner implements ApplicationRunner {
 				channelSettings.put(Channel.EMAIL, false);
 				channelSettings.put(Channel.IN_APP, false);
 			}
-			
+
 			users.add(new MockUserEntity(settings, channelSettings));
 		}
 

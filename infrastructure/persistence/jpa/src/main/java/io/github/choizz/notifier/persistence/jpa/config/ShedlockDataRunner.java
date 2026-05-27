@@ -22,10 +22,6 @@ public class ShedlockDataRunner implements ApplicationRunner {
 	@Transactional
 	@Override
 	public void run(ApplicationArguments args) {
-		if (shedlockJpaRepository.count() > 0) {
-			log.info("ShedLock 데이터가 이미 존재합니다. 초기화를 건너뜁니다.");
-			return;
-		}
 
 		log.info("ShedLock 초기 데이터 삽입을 시작합니다...");
 
@@ -47,9 +43,17 @@ public class ShedlockDataRunner implements ApplicationRunner {
 			"init"
 		);
 
+		ShedlockEntity lock3 = new ShedlockEntity(
+			"recoverUnprocessedNotifications",
+			lockUntil,
+			now,
+			"init"
+		);
+
 		shedlockJpaRepository.save(lock1);
 		shedlockJpaRepository.save(lock2);
+		shedlockJpaRepository.save(lock3);
 
-		log.info("ShedLock 초기 데이터 2건 삽입 완료!");
+		log.info("ShedLock 초기 데이터 3건 삽입 완료!");
 	}
 }
