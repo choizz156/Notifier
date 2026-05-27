@@ -85,6 +85,6 @@ class RdsNotificationEventPublishAdapterTest {
 		// when & then
 		assertThatThrownBy(() -> adapter.publish(event))
 			.isInstanceOf(OptimisticLockingFailureException.class)
-			.hasMessage("이미 처리 중인 알람입니다.");
+			.hasMessage("이미 처리 중인 알람입니다. id = 1");
 	}
 }
