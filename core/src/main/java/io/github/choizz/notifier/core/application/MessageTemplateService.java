@@ -3,6 +3,7 @@ package io.github.choizz.notifier.core.application;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +25,7 @@ public class MessageTemplateService implements MessageTemplateUseCase {
 
 	@Override
 	@Transactional(readOnly = true)
+	@Cacheable(value = "messageTemplates", key = "#channel.name() + '-' + #type.name()")
 	public Optional<MessageTemplate> findActiveTemplate(Channel channel, NotificationType type) {
 		return messageTemplatePersistencePort.findByChannelAndNotificationType(channel, type)
 			.filter(MessageTemplate::isActive);

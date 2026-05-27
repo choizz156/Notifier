@@ -39,6 +39,7 @@ subprojects {
         testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
         implementation("org.springframework.boot:spring-boot-starter")
+        implementation("org.springframework.boot:spring-boot-starter-cache")
         testImplementation("org.springframework.boot:spring-boot-starter-test")
         implementation("org.springframework:spring-aop")
         implementation("org.aspectj:aspectjweaver")

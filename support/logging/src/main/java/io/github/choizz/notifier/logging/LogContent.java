@@ -1,4 +1,4 @@
-package io.github.choizz.logging;
+package io.github.choizz.notifier.logging;
 
 import static net.logstash.logback.argument.StructuredArguments.*;
 

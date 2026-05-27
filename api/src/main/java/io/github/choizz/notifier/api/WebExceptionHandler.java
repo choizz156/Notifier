@@ -8,7 +8,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import io.github.choizz.logging.LogContent;
+import io.github.choizz.notifier.logging.LogContent;
 import io.github.choizz.notifier.api.dto.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 

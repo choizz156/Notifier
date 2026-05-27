@@ -2,6 +2,7 @@ package io.github.choizz.notifier.adapter;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
@@ -20,6 +21,9 @@ import lombok.extern.slf4j.Slf4j;
 public class TemplateRendererAdapter implements TemplateRendererPort {
 
 	private final MessageTemplateUseCase messageTemplateUseCase;
+	
+	private final Map<String, String> staticTemplateCache = new ConcurrentHashMap<>();
+	private final Map<Channel, String> baseLayoutCache = new ConcurrentHashMap<>();
 
 	@Override
 	public String render(Channel channel, NotificationType type, Map<String, String> metadata) {
@@ -54,39 +58,44 @@ public class TemplateRendererAdapter implements TemplateRendererPort {
 	}
 
 	private String loadBaseLayoutFromClassPath(Channel channel) {
-		String templateName = Channel.EMAIL.equals(channel) ? "email-base.html" : "inapp-base.txt";
-		String templatePath = "templates/layout/" + templateName;
-		ClassPathResource resource = new ClassPathResource(templatePath);
+		return baseLayoutCache.computeIfAbsent(channel, key -> {
+			String templateName = Channel.EMAIL.equals(channel) ? "email-base.html" : "inapp-base.txt";
+			String templatePath = "templates/layout/" + templateName;
+			ClassPathResource resource = new ClassPathResource(templatePath);
 
-		if (!resource.exists()) {
-			log.warn("[{}] 공통 레이아웃을 찾을 수 없습니다: {}", channel, templatePath);
-			return "{body_content}";
-		}
+			if (!resource.exists()) {
+				log.warn("[{}] 공통 레이아웃을 찾을 수 없습니다: {}", channel, templatePath);
+				return "{body_content}";
+			}
 
-		try {
-			return new String(resource.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
-		} catch (Exception e) {
-			log.error("[{}] 공통 레이아웃 읽기 중 오류 발생: {}", channel, templatePath, e);
-			throw new IllegalStateException("공통 레이아웃 읽기 중 오류 발생", e);
-		}
+			try {
+				return new String(resource.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+			} catch (Exception e) {
+				log.error("[{}] 공통 레이아웃 읽기 중 오류 발생: {}", channel, templatePath, e);
+				throw new IllegalStateException("공통 레이아웃 읽기 중 오류 발생", e);
+			}
+		});
 	}
 
 	private String loadFromClassPath(Channel channel, NotificationType type) {
-		String extension = getExtension(channel);
-		String templatePath = "templates/%s.%s".formatted(type.name(), extension);
-		ClassPathResource resource = new ClassPathResource(templatePath);
+		String cacheKey = channel.name() + "-" + type.name();
+		return staticTemplateCache.computeIfAbsent(cacheKey, key -> {
+			String extension = getExtension(channel);
+			String templatePath = "templates/%s.%s".formatted(type.name(), extension);
+			ClassPathResource resource = new ClassPathResource(templatePath);
 
-		if (!resource.exists()) {
-			log.error("[{}] 정적 템플릿 파일을 찾을 수 없습니다: {}", channel, templatePath);
-			throw new IllegalArgumentException("템플릿을 찾을 수 없습니다. type = %s, channel = %s".formatted(type, channel));
-		}
+			if (!resource.exists()) {
+				log.error("[{}] 정적 템플릿 파일을 찾을 수 없습니다: {}", channel, templatePath);
+				throw new IllegalArgumentException("템플릿을 찾을 수 없습니다. type = %s, channel = %s".formatted(type, channel));
+			}
 
-		try {
-			return new String(resource.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
-		} catch (Exception e) {
-			log.error("[{}] 정적 템플릿 파일 읽기 중 오류 발생: {}", channel, templatePath, e);
-			throw new IllegalStateException("정적 템플릿 읽기 중 오류 발생", e);
-		}
+			try {
+				return new String(resource.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+			} catch (Exception e) {
+				log.error("[{}] 정적 템플릿 파일 읽기 중 오류 발생: {}", channel, templatePath, e);
+				throw new IllegalStateException("정적 템플릿 읽기 중 오류 발생", e);
+			}
+		});
 	}
 
 	private String replaceVariables(String content, Map<String, String> metadata) {

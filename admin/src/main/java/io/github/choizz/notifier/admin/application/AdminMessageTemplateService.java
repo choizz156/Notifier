@@ -1,5 +1,6 @@
 package io.github.choizz.notifier.admin.application;
 
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +19,7 @@ public class AdminMessageTemplateService {
 	private final MessageTemplatePersistencePort messageTemplatePersistencePort;
 
 	@Transactional
+	@CacheEvict(value = "messageTemplates", allEntries = true)
 	public MessageTemplate create(Channel channel, NotificationType type, String content) {
 		messageTemplatePersistencePort.findByChannelAndNotificationType(channel, type)
 			.ifPresent(template -> {
@@ -37,6 +39,7 @@ public class AdminMessageTemplateService {
 	}
 
 	@Transactional
+	@CacheEvict(value = "messageTemplates", allEntries = true)
 	public MessageTemplate updateContent(Long templateId, String newContent) {
 		MessageTemplate template = messageTemplatePersistencePort.findById(templateId);
 		template.updateContent(newContent);
