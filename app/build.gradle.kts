@@ -20,4 +20,5 @@ dependencies {
     implementation(project(":infrastructure:scheduler:spring"))
     
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("net.javacrumbs.shedlock:shedlock-spring:5.13.0")
 }

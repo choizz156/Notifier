@@ -24,7 +24,7 @@ import lombok.experimental.Accessors;
 	name = "notification_event_logs",
 	uniqueConstraints = {
 		@UniqueConstraint(
-			name = "uk_notification_event_logs_duplicate",
+			name = "uk_notification_logs_duplicate",
 			columnNames = {"reference_id", "reference_type", "channel_type", "subscriber_id", "event_status", "retry_count"}
 		)
 	}

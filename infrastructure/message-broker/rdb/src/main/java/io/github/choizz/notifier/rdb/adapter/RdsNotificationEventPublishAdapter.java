@@ -39,7 +39,7 @@ public class RdsNotificationEventPublishAdapter implements NotificationEventPubl
 
 		boolean isClaim = notificationLogUseCase.tryClaim(claimContext);
 		if(!isClaim){
-			throw new OptimisticLockingFailureException("이미 처리 중인 알람입니다.");
+			throw new OptimisticLockingFailureException("이미 처리 중인 알람입니다. id = %d".formatted(event.referencedId()));
 		}
 
 		NotifierPort notifierPort = notifierFacade.getNotifierPort(event.channel());

@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 public class NotificationLogService implements NotificationLogUseCase {
 
 	public static final List<EventStatus> TARGET_STATUSES = List.of(
-		EventStatus.REQUESTED, EventStatus.RETRIED, EventStatus.PROCESSING
+		EventStatus.REQUESTED, EventStatus.RETRIED
 	);
 
 	private final NotificationLogPersistencePort notificationLogPersistencePort;
