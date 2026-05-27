@@ -13,5 +13,5 @@ public interface CombinedNotificationProjection {
 	Boolean getIs_read();
 	LocalDateTime getCreated_at();
 	LocalDateTime getUpdated_at();
-	Integer getManual_retry_count();
+	Integer getRecover_count();
 }

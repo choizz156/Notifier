@@ -23,7 +23,7 @@ public interface CombinedNotificationJpaRepository extends Repository<Notificati
 				is_read, 
 				created_at,
 				updated_at,
-				manual_retry_count
+				recover_count
 			FROM notifications
 			WHERE subscriber_id = :subscriberId
 			
@@ -40,7 +40,7 @@ public interface CombinedNotificationJpaRepository extends Repository<Notificati
 				CASE WHEN r.id IS NOT NULL THEN true ELSE false END as is_read, 
 				p.created_at,
 				p.updated_at,
-				0 as manual_retry_count
+				0 as recover_count
 			FROM public_notifications p
 			LEFT JOIN public_notification_receipts r 
 			  ON p.id = r.public_notification_id AND r.subscriber_id = :subscriberId
@@ -73,7 +73,7 @@ public interface CombinedNotificationJpaRepository extends Repository<Notificati
 				is_read, 
 				created_at,
 				updated_at,
-				manual_retry_count
+				recover_count
 			FROM notifications
 			WHERE subscriber_id = :subscriberId
 			
@@ -90,7 +90,7 @@ public interface CombinedNotificationJpaRepository extends Repository<Notificati
 				CASE WHEN r.id IS NOT NULL THEN true ELSE false END as is_read, 
 				p.created_at,
 				p.updated_at,
-				0 as manual_retry_count
+				0 as recover_count
 			FROM public_notifications p
 			LEFT JOIN public_notification_receipts r 
 			  ON p.id = r.public_notification_id AND r.subscriber_id = :subscriberId

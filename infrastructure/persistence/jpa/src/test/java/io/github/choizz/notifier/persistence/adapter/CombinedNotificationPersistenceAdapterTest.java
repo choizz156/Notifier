@@ -117,7 +117,7 @@ class CombinedNotificationPersistenceAdapterTest {
 			@Override public Boolean getIs_read() { return isRead; }
 			@Override public LocalDateTime getCreated_at() { return createdAt; }
 			@Override public LocalDateTime getUpdated_at() { return createdAt; }
-			@Override public Integer getManual_retry_count() { return retryCount; }
+			@Override public Integer getRecover_count() { return retryCount; }
 		};
 	}
 }

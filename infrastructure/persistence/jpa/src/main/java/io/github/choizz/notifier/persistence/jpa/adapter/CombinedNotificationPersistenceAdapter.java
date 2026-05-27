@@ -62,7 +62,7 @@ public class CombinedNotificationPersistenceAdapter implements LoadCombinedNotif
 			notificationType.title(), 
 			projection.getIs_read(),
 			projection.getCreated_at(),
-			projection.getManual_retry_count()
+			projection.getRecover_count()
 		);
 	}
 }
